@@ -1,0 +1,116 @@
+"monstermash"
+{
+	"base"		"base"
+	"title"		"Monster Mash"
+	"maps"		"^mm_"
+	"menusystem"	"1"
+
+	"settings"
+	{
+
+
+		1
+		{
+			"name"		"mm_OrgasmicDeathSounds"
+			"text"		"Secret Orgasm Mode"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+
+		2
+		{
+			"name"		"mm_shootslow"
+			"text"		"Slowdown on Shoot"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+
+		3
+		{
+			"name"		"mm_kill_limit"
+			"text"		"Point Limit"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+
+		4
+		{
+			"name"		"mm_cleanup_time"
+			"text"		"Cleanup time (seconds)"
+			"type"		"Numeric"
+			"default"	"20"
+		}
+
+		5
+		{
+			"name"		"mm_spawnprotect"
+			"text"		"Spawin Protection (seconds)"
+			"type"		"Numeric"
+			"default"	"1"
+		}
+
+		6
+		{
+			"name"		"mm_aimrange"
+			"text"		"Aim Assist Range"
+			"type"		"Numeric"
+			"default"	"1000"
+		}
+
+		7
+		{
+			"name"		"mm_aimsize"
+			"text"		"Aim Assist Size"
+			"type"		"Numeric"
+			"default"	"20"
+		}
+
+		8
+		{
+			"name"		"mm_aimspeed"
+			"text"		"Aim Assist Speed"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+
+		9
+		{
+			"name"		"mm_buy_time"
+			"text"		"Buy time (seconds)"
+			"type"		"Numeric"
+			"default"	"15"
+		}
+
+		10
+		{
+			"name"		"mm_wackyfrequency"
+			"text"		"Wacky Round frequency"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+
+		11
+		{
+			"name"		"mm_budget"
+			"text"		"Budget"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+
+		12
+		{
+			"name"		"mm_healthregentime"
+			"text"		"Health regen time"
+			"type"		"Numeric"
+			"default"	"2"
+		}
+
+		13
+		{
+			"name"		"mm_medals"
+			"text"		"Medals"
+			"type"		"Numeric"
+			"default"	"1"
+		}
+	}
+}
