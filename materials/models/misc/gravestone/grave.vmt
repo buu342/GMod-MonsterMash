@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{            
+          	"$basetexture" "models/misc/gravestone/grave" 
+          	"$surfaceprop" "concrete"
+}

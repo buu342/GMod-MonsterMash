@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/swordartonline/kirito"
+	$nocull 1
+	$alphatest 1
+}

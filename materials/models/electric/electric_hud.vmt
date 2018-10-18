@@ -1,0 +1,46 @@
+"UnlitGeneric"
+{
+
+	"$baseTexture"	"models/electric/electric_Model"
+	
+	"$SEPARATEALPHATEXTURE" "models/electric/electric_Model"
+
+	"$additive" 1
+
+	"$vertexcolor" 1
+	"$vertexalpha" 1
+
+	"$selfillum" 1
+
+	"$texscale" 1
+
+	"$translucent" 1	
+
+	"Proxies"
+	{
+
+	"TextureTransform"
+		{
+			"scaleVar"	"$texscale"
+			
+			"resultVar"	"$basetexturetransform"
+		}
+
+	"AnimatedTexture"
+		{
+			"animatedtexturevar" "$baseTexture"	
+			"animatedtextureframenumvar" "$frame"
+			"animatedtextureframerate" 120.00
+		}
+
+	"AnimatedTexture"
+		{
+			"animatedtexturevar" "$SEPARATEALPHATEXTURE"
+			"animatedtextureframenumvar" "$separatealphaframe"
+			"animatedtextureframerate" 120.00
+		}
+
+
+
+	}
+}
