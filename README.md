@@ -16,7 +16,7 @@ Please be aware that the code is incredibly messy. This gamemode was developed o
 * Comedy jokes
 * Humorous occurences
 * White guilt
-* And much more
+* And much more<br><br>
 
 ### Credits
 * Buu342 for programming.
