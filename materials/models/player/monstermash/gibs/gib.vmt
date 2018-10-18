@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/gibs/gib"
+	"$bumpmap"	 "models/player/monstermash/gibs/gib_n"
+	"$surfaceprop"	"flesh"
+}

@@ -1,0 +1,15 @@
+"UnlitGeneric"
+{
+"$baseTexture" "models/player/monstermash/gibs/shock"
+"$surfaceprop" "Default"
+"selfillum" "1"
+"Proxies"
+{
+"AnimatedTexture"
+{
+"animatedTextureVar" "$basetexture"
+"animatedTextureFrameNumVar" "$frame"
+"animatedTextureFrameRate" "18"
+}
+}
+}

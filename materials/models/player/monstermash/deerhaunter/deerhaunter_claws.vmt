@@ -1,0 +1,10 @@
+
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models/player/monstermash/deerhaunter/deerhaunter_claws"
+	"$surfaceprop" "metal"
+	"$basealphaenvmapmask" 1
+
+}
+

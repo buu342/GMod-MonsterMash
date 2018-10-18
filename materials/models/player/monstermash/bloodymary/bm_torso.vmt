@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/player/monstermash/bloodymary/bm_torso"
+	"$halflambert" "1"
+
+}

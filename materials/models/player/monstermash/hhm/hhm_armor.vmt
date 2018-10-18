@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/player/monstermash/hhm\hhm_armor"
+
+	"$phong" "1"
+	"$phongexponent" "30"
+	"$phongboost" "0.25"	
+	"$phongfresnelranges"	"[0.1 0.1 0.1]"
+	"$halflambert" "1"
+
+	// Rim lighting parameters
+	"$rimlight" "1"	
+	"$rimlightexponent" "2"	
+	"$rimlightboost" "1"
+}

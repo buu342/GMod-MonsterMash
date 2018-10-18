@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/gibs/blank"
+	"$surfaceprop"	"silent"
+	$nocull 1
+}

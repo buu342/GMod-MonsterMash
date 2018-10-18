@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/player/monstermash/mummy/mummy_2"
+	"$nocull" 1
+
+}

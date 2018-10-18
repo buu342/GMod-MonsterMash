@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/player/monstermash/bloodymary/bm_hair1"
+	"$halflambert" "1"
+	"$nocull" "1"
+}

@@ -1,0 +1,6 @@
+VertexlitGeneric
+{
+	"$basetexture"		"models/player/monstermash/deerhaunter/deerhaunter_head"
+	"$model"				"1"
+
+}

@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/guest/skeleton_1"
+	"$surfaceprop"	"default"
+	"$halflambert"	1
+	"$nocull"		1
+	"$model"	1
+}

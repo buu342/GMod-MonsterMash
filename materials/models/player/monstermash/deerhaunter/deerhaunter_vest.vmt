@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTexture
+	"$basetexture" "models/player/monstermash/deerhaunter/deerhaunter_vest"
+	"$halflambert" 1
+	"$nodecal" "1"
+	$nocull 1
+}

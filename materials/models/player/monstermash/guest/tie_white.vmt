@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\player\monstermash\guest\tie_white"
+
+        "$nocull" "1"
+}
+
