@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/player/monstermash/scarecrow/scarecrow_glove"
+	
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" "1"
+	"$phongfresnelranges" "[0.1 0.4 0.6]"
+}

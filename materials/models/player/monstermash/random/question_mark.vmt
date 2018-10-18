@@ -1,0 +1,6 @@
+"UnLitGeneric"
+{
+	"$basetexture"	"models\player\monstermash\random\question_mark"
+	"$nocull"		1				
+	
+}

@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/scarecrow/scarecrow_hay"
+	"$surfaceprop"	"default"
+	"$nocull"		1
+	"$model"	1
+}

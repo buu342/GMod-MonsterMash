@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/player/monstermash/stein/stein_eyes"		
+	"$halflambert" "1"	
+	"$model" "1"
+
+
+}

@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTranslucentTexture
+	//"$translucent" 1
+"$alphatest" 1
+	"$basetexture" "models/player/monstermash/scarecrow/not_so_scared_crow"
+
+}
