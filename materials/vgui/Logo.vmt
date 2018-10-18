@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "vgui/Logo"
+	"$alphatest" "1"
+}

@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/hud/crosshair_bar"
+	"$alphatest" "1"
+	$vertexcolor 1
+}

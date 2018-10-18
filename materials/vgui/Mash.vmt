@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "vgui/Mash"
+	"$alphatest" "1"
+}
