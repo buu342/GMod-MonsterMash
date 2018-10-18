@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\player\monstermash\vampire\vampire_eyes"		
+	"$halflambert" "1"	
+	"$model" "1"
+
+
+}

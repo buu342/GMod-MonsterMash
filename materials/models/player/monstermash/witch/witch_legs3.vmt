@@ -1,0 +1,5 @@
+vertexlitgeneric
+{
+$basetexture "models/player/monstermash/witch/witch_legs3"
+$surfaceprop flesh
+}

@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\player\monstermash\vampire/vampire_cape_inner2"
+	"$nocull"		1	
+	// Rim lighting parameters
+	"$rimlight" "1"												// To enable rim lighting (requires phong)
+	"$rimlightexponent" "300"										// Exponent for phong component of rim lighting	
+	"$rimlightboost" "0.25"	
+}

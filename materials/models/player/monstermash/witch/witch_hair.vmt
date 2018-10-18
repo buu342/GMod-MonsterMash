@@ -1,0 +1,6 @@
+vertexlitgeneric
+{
+$basetexture "models/player/monstermash/witch/witch_hair"
+$surfaceprop flesh
+$nocull 1
+}
