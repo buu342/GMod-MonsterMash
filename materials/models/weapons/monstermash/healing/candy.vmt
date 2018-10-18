@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{	
+$baseTexture "models\weapons\monstermash\healing\candy"
+
+$phong 1
+$phongexponent 10
+$phongfresnelranges "[1 4 30]"
+$phongboost 1
+
+$basemapalphaphongmask 1
+//$envmaptint "[.05 .03 .01]"
+//$envmap env_cubemap
+//$basealphaenvmapmask 1
+}

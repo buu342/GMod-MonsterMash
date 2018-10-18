@@ -1,0 +1,5 @@
+VertexLitGeneric
+{
+$baseTexture "models\weapons\monstermash\pistol\pistol"
+$nocull "1"
+}

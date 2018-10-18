@@ -1,0 +1,5 @@
+VertexLitGeneric
+{
+    $baseTexture "models\weapons\monstermash\flamethrower\flamethrower_hot"
+    $selfillum 1
+}

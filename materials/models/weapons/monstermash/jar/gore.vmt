@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/weapons/monstermash/jar/gore"
+	"$surfaceprop"	"flesh"
+	"$model"	1
+	$nocull 1
+}

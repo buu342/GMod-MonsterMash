@@ -1,0 +1,7 @@
+"vertexlitGeneric"
+{
+	"$basetexture" "models\weapons\monstermash\cannon\cannon"
+	"$alphatest" "1"
+	"$surfaceprop" "metal"
+	"$model" 1
+}

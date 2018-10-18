@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/weapons/monstermash/acid/cork"
+	"$surfaceprop"	"wood"
+	"$model"	1
+}

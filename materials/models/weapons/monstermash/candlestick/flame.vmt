@@ -1,0 +1,14 @@
+"UnlitGeneric"
+{
+   "$basetexture" "models/weapons/monstermash/candlestick/flame"
+   "$translucent"		1
+   "Proxies"
+   {
+      "AnimatedTexture"
+      {
+         "animatedtexturevar" "$basetexture"
+         "animatedtextureframenumvar" "$frame"
+         "animatedtextureframerate" "15"
+      }
+   }
+}

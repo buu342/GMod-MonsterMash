@@ -1,0 +1,15 @@
+"VertexlitGeneric"
+{
+
+	"$basetexture" "models/weapons/monstermash/crossbow\t_longbowarrow"
+	"$halflambert" "1"				
+	"$nocull" 1	
+
+	"$phong" "1"
+	"$phongexponent" "22"
+	"$phongboost" "0.7"	
+	"$phongfresnelranges"	"[0.1 2 1]"
+
+}
+
+

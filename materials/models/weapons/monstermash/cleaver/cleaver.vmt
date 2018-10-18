@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+
+	$basetexture "models/weapons/monstermash/cleaver/cleaver"
+
+
+
+	 $phong "1"
+	 $phongboost  "1.0" 
+	 $phongfresnelranges "[0 0.5 1]"
+	 $phongexponent "5"
+}

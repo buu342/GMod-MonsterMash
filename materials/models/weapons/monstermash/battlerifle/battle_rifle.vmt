@@ -1,0 +1,4 @@
+VertexLitGeneric
+{
+$baseTexture "models\weapons\monstermash\battlerifle\battle_rifle"
+}

@@ -1,0 +1,20 @@
+"VertexlitGeneric"
+{
+	"$baseTexture" "models\weapons\monstermash\healing\c_urinejar_glass"
+	"$additive"	1
+
+//$translucent 1
+
+	"$phong" "1"
+	"$phongexponent" "25"  // was 65
+	$phongfresnelranges "[.1 0.5 2]"
+	//"$phongfresnelranges" "[1 2 4]"
+	"$lightwarptexture" "models\weapons\monstermash\healing\lightwarp"
+	"$phongboost" "10" // was 6
+	"$basemapalphaphongmask" "1"
+
+	"$rimlight" "1"						
+	"$rimlightexponent" "4"				
+	"$rimlightboost" "1"
+
+}

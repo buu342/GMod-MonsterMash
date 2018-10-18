@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{	
+$baseTexture "models\weapons\monstermash\healing\c_cap3"
+$phong 0
+$phongexponent 25
+$phongfresnelranges "[0.5 1 8]"
+$phongboost 2
+$basemapalphaphongmask 1
+
+"$rimlight" "1"						
+"$rimlightexponent" "20"				
+"$rimlightboost" ".25"
+	
+$envmaptint "[.05 .03 .01]"
+$envmap env_cubemap
+$basealphaenvmapmask 1
+}

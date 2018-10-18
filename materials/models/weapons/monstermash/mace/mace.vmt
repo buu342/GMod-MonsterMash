@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons/monstermash/mace/mace_d"
+	"$nocull" 1
+	
+	"$phong" "1"
+	"$phongexponent"				"0"
+	"$phongboost"					"0"
+
+	"$phongalbedotint" 1
+	"$phongexponenttexture" "models\demonssouls\common\exponent"
+
+	"$phongfresnelranges"			"[5 7 8]"
+	
+//	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.35 0.35 0.35]"
+	"$normalmapalphaenvmapmask" "1"
+}
