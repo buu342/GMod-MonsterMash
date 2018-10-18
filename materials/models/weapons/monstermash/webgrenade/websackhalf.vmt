@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/weapons/monstermash/webgrenade/webSackHalf"
+	"$surfaceprop"	"antlion_eggshell"
+	"$nocull" 1
+	"$halflambert" "1"
+	"$bumpmap"	"models/weapons/monstermash/webgrenade/webSackHalf_normal"
+	"$translucent"	"1"
+
+	"$envmaptint" "[.8 .8 .8]"
+	
+	"VertexLitGeneric_dx8"
+	{
+	"$fallbackmaterial" "Models/weapons/monstermash/webgrenade/websackHalf_dx8"
+	}
+}

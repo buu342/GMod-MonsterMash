@@ -1,0 +1,21 @@
+"VertexLitGeneric"
+{
+	
+	"$baseTexture"	"models\weapons\monstermash\urn\urn"
+	"$surfaceprop" "brick"
+
+	"$envmapcontrast" 0.05	
+	"$envmapsaturation" 1
+	"$envmaptint" "[0.05 0.05 0.05]"
+
+	"$envmap" "env_cubemap"
+
+	"vertexlitgeneric_HDR_dx9"
+
+	{
+
+               "$envmaptint" "[.5 .5 .5]"
+
+	}
+
+}

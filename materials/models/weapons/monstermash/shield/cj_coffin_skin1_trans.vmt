@@ -1,0 +1,5 @@
+VertexlitGeneric
+{
+	$basetexture		"models/weapons/monstermash/shield/CJ_Coffin_DIFF1_trans"
+	$translucent "1"
+}

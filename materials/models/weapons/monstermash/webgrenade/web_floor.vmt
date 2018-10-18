@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "models/weapons/monstermash/webgrenade/web_floor"
+	"$additive" "1"
+	"$vertexalpha" "1"
+	"$vertexcolor" 1
+	"$translucent" "1"
+}

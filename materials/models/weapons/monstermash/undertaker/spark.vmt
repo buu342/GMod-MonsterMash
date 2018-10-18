@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	// Original shader: AddTexture
+	"$basetexture" "models/weapons/monstermash/undertaker/spark"
+	$translucent 1
+}

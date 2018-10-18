@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/weapons/monstermash/webgrenade/webSackHalf"
+	"$surfaceprop"	"antlion_eggshell"
+	"$nocull" 1
+	"$halflambert" "1"
+	"$translucent"	"1"
+	"$envmaptint" "[.8 .8 .8]"
+}

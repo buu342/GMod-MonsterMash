@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\monstermash\scythe\scythe_handle"
+	"$surfaceprop" "Wood"
+	
+}

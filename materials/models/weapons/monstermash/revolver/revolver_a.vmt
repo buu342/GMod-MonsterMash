@@ -1,0 +1,13 @@
+"VertexlitGeneric"
+{
+
+	"$basetexture" "models\weapons\monstermash\revolver\Revolver_A_C"
+	"$halflambert" "1"				
+	"$nocull" 1		
+
+
+}
+
+
+
+

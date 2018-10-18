@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/weapons/monstermash/webgrenade/web"
+	"$surfaceprop"	"melon"
+	"$translucent"	"1"
+	"$model"	1
+	"$nocull" 1
+}

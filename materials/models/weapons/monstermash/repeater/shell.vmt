@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\monstermash\repeater\shell"
+	"$envmapmask" "models\weapons\monstermash\repeater\shell_ref"
+	"$envmap" "env_cubemap"
+}
