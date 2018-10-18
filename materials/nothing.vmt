@@ -1,0 +1,5 @@
+unlitgeneric
+{
+	$baseTexture "models/player/monstermash/gibs/blank"
+	$no_draw 1
+}
