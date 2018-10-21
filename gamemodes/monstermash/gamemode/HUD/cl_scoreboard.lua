@@ -108,7 +108,14 @@ function MM_Scoreboard:show()
                     NameColor = Color( 0, 0, 0 )
                 end 
                 
-				draw.DrawText( v:Nick(), "Chiller", 50+2, 8+2, NameColor, TEXT_ALIGN_LEFT )
+                local extra = " "
+                if v:Team() == 2 then
+                    extra = "(Spectating)"
+                elseif v:Team() == 5 then
+                    extra = "(Dead)"
+                end
+                
+				draw.DrawText( v:Nick()..extra, "Chiller", 50+2, 8+2, NameColor, TEXT_ALIGN_LEFT )
 
 				if table.HasValue(developers, v:SteamID()) then
 					draw.DrawText( "Developer", "Chiller", 536-48, 8+2, NameColor, TEXT_ALIGN_RIGHT )

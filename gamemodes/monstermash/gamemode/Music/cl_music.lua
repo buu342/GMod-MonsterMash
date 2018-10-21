@@ -134,7 +134,7 @@ function MusicThink(ply)
     end
     
     // Wacky round music    
-    if GetGlobalVariable("RoundsToWacky") == 0 then
+    if GetGlobalVariable("RoundsToWacky") != nil && GetGlobalVariable("RoundsToWacky") == 0 then
         if GetGlobalVariable("WackyRound_Event") == 0 then
             if ply == GetGlobalVariable("WackyRound_COOPOther") then return end
             if !GetGlobalVariable("Game_Over") && !ply.MusicWackyPlaying then
@@ -147,6 +147,7 @@ function MusicThink(ply)
                     end
                 end)
             elseif !GetGlobalVariable("Game_Over") && ply.MusicWackyPlaying then
+                if GetGlobalVariable("WackyRound_COOPOther") == nil then return end
                 local dist = ply:GetPos():Distance(GetGlobalVariable("WackyRound_COOPOther"):GetPos())
                 if ply.WackyMusic then
                     if dist < 1000 then
@@ -157,7 +158,7 @@ function MusicThink(ply)
                 end
             end
         end
-    elseif GetGlobalVariable("RoundsToWacky") != 0 then
+    elseif GetGlobalVariable("RoundsToWacky") != nil && GetGlobalVariable("RoundsToWacky") != 0 then
         ply.MusicWackyPlaying = false
         if ply.WackyMusic then
             ply.WackyMusic:Stop()
@@ -166,12 +167,12 @@ function MusicThink(ply)
     end   
     
     // Replace music on round start/end
-    if !ply.MusicPaused && (GetGlobalVariable("Game_Over") == true || GetGlobalVariable("RoundStartTimer") > CurTime()) then
+    if !ply.MusicPaused && ((GetGlobalVariable("Game_Over") != nil && GetGlobalVariable("Game_Over") == true) || (GetGlobalVariable("RoundStartTimer") != nil && GetGlobalVariable("RoundStartTimer") > CurTime())) then
         if ply.Music then
             MusicStop(ply)
         end
         ply.MusicPaused = true
-    elseif ply.MusicPaused && GetGlobalVariable("Game_Over") == true && !ply.MusicRoundEnd then
+    elseif ply.MusicPaused && GetGlobalVariable("Game_Over") != nil && GetGlobalVariable("Game_Over") == true && !ply.MusicRoundEnd then
         ply.MusicRoundEnd = true
         sound.PlayFile( "sound/gameplay/round_end.wav", "", function(station, num, err)
             if IsValid( station ) then 
@@ -180,7 +181,7 @@ function MusicThink(ply)
                 ply.Music:SetVolume(ply.MusicVolume)
             end
         end)
-    elseif ply.MusicPaused && GetGlobalVariable("Game_Over") == false && GetGlobalVariable("RoundStartTimer") < CurTime()+5 && !ply.MusicRoundStart then
+    elseif ply.MusicPaused && GetGlobalVariable("Game_Over") != nil && GetGlobalVariable("Game_Over") == false && GetGlobalVariable("RoundStartTimer") != nil && GetGlobalVariable("RoundStartTimer") < CurTime()+5 && !ply.MusicRoundStart then
         ply.MusicRoundStart = true
         sound.PlayFile( "sound/gameplay/round_start.wav", "", function(station, num, err)
             if IsValid( station ) then 
@@ -189,7 +190,7 @@ function MusicThink(ply)
                 ply.Music:SetVolume(ply.MusicVolume)
             end
         end)
-    elseif ply.MusicPaused && GetGlobalVariable("Game_Over") == false && GetGlobalVariable("RoundStartTimer") < CurTime() then
+    elseif ply.MusicPaused && GetGlobalVariable("Game_Over") != nil && GetGlobalVariable("Game_Over") == false && GetGlobalVariable("RoundStartTimer") != nil && GetGlobalVariable("RoundStartTimer") < CurTime() then
         ply.MusicPaused = false
         ply.MusicRoundEnd = false
         ply.MusicRoundStart = false

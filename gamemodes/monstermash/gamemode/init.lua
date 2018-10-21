@@ -451,6 +451,11 @@ hook.Add("Think", "Spooked", function()
             v:SetNWString("ShowMedalType2", v:GetNWString("ShowMedalType3"))
             v:SetNWInt("NumberShowingMedals", v:GetNWInt("NumberShowingMedals")-1)
         end
+        
+        // Extinguish dead/spectators
+        if v:IsOnFire() && (v:Team() == 2 || v:Team() == 5) then
+           v:Extinguish()
+        end
     end
     
 	for k, ent in pairs( ents.FindByClass("prop_ragdoll") ) do

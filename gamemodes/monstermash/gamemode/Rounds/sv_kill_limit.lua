@@ -65,7 +65,7 @@ function GM:Think()
                 
 				DoRoundEndStuff()
             elseif GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("Game_Over") == false then
-                if GetGlobalVariable("WackyRound_Event") == 0 && (#team.GetPlayers(3) == 0 || (GetGlobalVariable("WackyRound_COOPOther") != NULL && !GetGlobalVariable("WackyRound_COOPOther"):Alive()) || !IsValid(GetGlobalVariable("WackyRound_COOPOther") )) then
+                if GetGlobalVariable("WackyRound_Event") == 0 && (#team.GetPlayers(3) == 0 || (GetGlobalVariable("WackyRound_COOPOther") != nil && GetGlobalVariable("WackyRound_COOPOther") != NULL && !GetGlobalVariable("WackyRound_COOPOther"):Alive()) || !IsValid(GetGlobalVariable("WackyRound_COOPOther") )) then
                     SetGlobalVariable("Game_Over", true)
                     if #team.GetPlayers(3) == 0 then
                         SetGlobalVariable("Winner", GetGlobalVariable("WackyRound_COOPOther"):Name())

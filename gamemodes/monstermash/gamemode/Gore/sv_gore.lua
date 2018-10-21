@@ -241,8 +241,10 @@ function stuff(victim,inflictor,attacker)
 	effectdata4:SetStart( ply_pos+Vector(0,0,50) ) 
 	effectdata4:SetOrigin( ply_pos+Vector(0,0,50) )
 	util.Effect( "Spoopyghost", effectdata4 )
-    if GetConVarNumber("mm_ludicrousgibs") != 1 && IsValid(attacker) && attacker:IsPlayer() then
-        if victim == attacker && victim:GetNWFloat("SuicideDamageTaken") > 119 then
+    if (GetConVarNumber("mm_ludicrousgibs") != 1 && IsValid(attacker) && attacker:IsPlayer()) then
+        if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_COOPOther") == victim then
+            PlayerCorpse_Normal(ply_pos, ply_ang, ply_mdl, ply_skn, ply_col, ply_mat, attacker, victim, inflictor)
+        elseif victim == attacker && victim:GetNWFloat("SuicideDamageTaken") > 119 then
             PlayerCorpse_Gib(ply_pos, ply_ang, ply_mdl, ply_skn, ply_col, ply_mat, attacker, victim, inflictor)
         elseif victim == attacker && victim:GetNWFloat("SuicideDamageTaken") <= 119 then
             PlayerCorpse_Normal(ply_pos, ply_ang, ply_mdl, ply_skn, ply_col, ply_mat, attacker, victim, inflictor)
@@ -916,7 +918,6 @@ function stuff4(victim,attacker,hpremain,dmgtaken)
 			attacker:SendLua("surface.PlaySound('gameplay/hit_sound.wav')")
 		end
 	end
-    
 	
 	if IsValid(victim) && victim:IsPlayer() then
 		if victim:GetNWFloat("MM_FireDuration") > CurTime() then
@@ -937,10 +938,10 @@ function stuff4(victim,attacker,hpremain,dmgtaken)
     
     if victim == attacker then
         attacker:SetNWBool("DamagedSelf", true)
-        attacker:SetNWFloat("DamagedFrame", CurTime()+0.1)
+        attacker:SetNWFloat("DamagedFrame", CurTime()+0.02)
     else
         attacker:SetNWBool("DamagedOther", true)
-        attacker:SetNWFloat("DamagedFrame", CurTime()+0.1)
+        attacker:SetNWFloat("DamagedFrame", CurTime()+0.02)
         attacker:SetNWEntity("DamagedPlayer", victim)
     end
     

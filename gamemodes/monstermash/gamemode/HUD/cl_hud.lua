@@ -382,7 +382,7 @@ function hud()
 				else
 					surface.SetDrawColor( 255, 255, 255, 255 )
 				end
-				surface.SetMaterial( Material( "vgui/hud/crosshair_BAR" ) ) local size = 32*(1+bool_to_number(LocalPlayer():GetActiveWeapon():GetGun_MessWithArmStuff()))
+				surface.SetMaterial( Material( "vgui/hud/crosshair_BAR" ) ) local size = 34*(1+bool_to_number(LocalPlayer():GetActiveWeapon():GetGun_MessWithArmStuff()))
 				surface.DrawTexturedRect( (ScrW()/2) - (size/2), (ScrH()/2)-(size/2), size,size )
 			end
 			if LocalPlayer():GetActiveWeapon():GetClass() == "mm_cannon" then

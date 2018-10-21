@@ -36,7 +36,11 @@ function GM:PlayerInitialSpawn( ply )
 	
     ply:SetNWString("plymdl", table.Random(models))
     ply:SetNWInt("plyskn", math.random(5))
-    ply:SetTeam(2)
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_COOP") == true then
+        ply:SetTeam(5)
+    else
+        ply:SetTeam(2)
+    end
     ply:Spectate( OBS_MODE_ROAMING );
     ply:ConCommand( "noclip" )
 	ply:ConCommand( "mm_menu" )
@@ -113,7 +117,7 @@ function GM:PlayerSpawn( ply )
 		ply:SetBloodColor( BLOOD_COLOR_RED )
 	end
     
-    if ply:Team() == 1 then
+    if ply:Team() == 1 || ply:Team() == 3 then
 
 		if ply:GetNWString("Primary") != "" then
             ply:Give(ply:GetNWString("Primary"))
@@ -270,8 +274,8 @@ function GM:PlayerSpawn( ply )
                 ply:SetTeam(4)
                 ply:SetBloodColor( BLOOD_COLOR_MECH )
                 //ply:SetNWString("buff", "armor")
-                ply:SetMaxHealth(2000)
-                ply:SetHealth(2000)
+                ply:SetMaxHealth(#team.GetPlayers(3)*200)
+                ply:SetHealth(#team.GetPlayers(3)*200)
             else
                 ply:SetTeam(3)
             end

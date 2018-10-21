@@ -156,7 +156,7 @@ function GM:UpdateAnimation( ply, velocity, maxseqgroundspeed )
 end
 
 concommand.Add( "mm_rebuildweapons", function( ply )
-    if table.HasValue(admins, ply:SteamID()) then
+    if table.HasValue(admins, ply:SteamID()) && SERVER then
         ImplementWeapons()
         net.Start( "RebuildWeapons" )
         net.Broadcast()

@@ -1074,6 +1074,38 @@ function Class_Menu()
                 draw.RoundedBox( 0, 0, 0, w, 2, Color( 0, 0, 0, 255 ) )
                 draw.RoundedBox( 0, 0, h-2, w, 2, Color( 0, 0, 0, 255 ) )
             end
+            Current.DoClick = function()
+                if category == "random" then return end
+                if !(i <= #MonsterMash_Weapons[category]) then return end
+                if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == LocalPlayer() then return end
+                local ent = MonsterMash_Weapons[category][1].entity
+                local tp = weapontypes_name[i]
+                local lastcost = "lastcost_"..tp
+                local start = "MM_Wep_"..tp
+                if LocalPlayer():GetNWString(tp) == "" then return end
+                if LocalPlayer():GetNWInt("gold")+LocalPlayer():GetNWInt(lastcost) >= MonsterMash_Weapons[category][1].cost then
+                    net.Start(start)
+                    net.WriteString(ent)
+                    net.WriteFloat(MonsterMash_Weapons[category][1].cost)
+                    net.SendToServer()
+                    LocalPlayer():SetNWInt("gold",LocalPlayer():GetNWInt("gold")-MonsterMash_Weapons[category][1].cost+LocalPlayer():GetNWInt(lastcost))
+                    LocalPlayer():SetNWInt(lastcost,MonsterMash_Weapons[category][1].cost)
+                    LocalPlayer():SetNWString(tp,ent)
+                    GoldText:SetText(LocalPlayer():GetNWInt("gold"))
+                    GoldText:SizeToContents()
+                    surface.PlaySound("ui/keys_pickup-0"..math.random(1,4)..".wav")
+                    if LocalPlayer():GetNWInt("gold") == GetConVar("mm_budget"):GetInt() then
+                        GoldIcon:SetPos(150+90, menuh-80)
+                        GoldText:SetPos(190+90, menuh-70)
+                    elseif LocalPlayer():GetNWInt("gold") < 10 then
+                        GoldIcon:SetPos(150+100, menuh-80)
+                        GoldText:SetPos(190+100, menuh-70)
+                    else
+                        GoldIcon:SetPos(150+94, menuh-80)
+                        GoldText:SetPos(190+94, menuh-70)
+                    end
+                end
+            end
         end
         //}
         
@@ -1439,7 +1471,8 @@ function Class_Menu()
                 end
                 LocalPlayer():ConCommand(MusicButton.command..MusicButton.Arg)
                 timer.Simple(0.1, function()
-                    if MusicButton.command == "mm_musicplayerstart" && LocalPlayer().MusicIndex != 0 && MusicList[LocalPlayer().MusicIndex] != nil then
+                    if MusicButton == nil || MusicList[LocalPlayer().MusicIndex] != nil then return end
+                    if MusicButton.command == "mm_musicplayerstart" && LocalPlayer().MusicIndex != 0 then
                         LocalPlayer():ChatPrint("Now playing "..MusicList[LocalPlayer().MusicIndex].name.." by "..MusicList[LocalPlayer().MusicIndex].author)
                     elseif MusicButton.command == "mm_musicplayerstop" then
                         LocalPlayer():ChatPrint("Stopping music")
@@ -1562,7 +1595,7 @@ function Class_Menu()
                 if self.Different && !self:IsEditing() then
                     self.Different = false
                     surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-                    LocalPlayer():ConCommand(self.command.." "..tostring(self:GetValue()))
+                    RunConsoleCommand(self.command, tostring(self:GetValue()))
                 end
             end
             TextEntry.OnChange = function( self )
@@ -1602,7 +1635,7 @@ function Class_Menu()
                 else
                     booltoint = 1
                 end
-                LocalPlayer():ConCommand(Checkbox.command.." "..booltoint)
+                RunConsoleCommand(Checkbox.command, booltoint)
             end
             local Text = vgui.Create("DLabel", admin)
             Text:SetPos(x+18,y+1)
@@ -1628,7 +1661,7 @@ function Class_Menu()
         AdminButton:SetSize( 150, 48 )
         AdminButton.DoClick = function()
             surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-            LocalPlayer():ConCommand("mm_rebuildweapons") 
+            RunConsoleCommand("mm_rebuildweapons", "") 
         end
         AdminButton.Paint = function(self, w, h) SimpleButtonPaint(self, w, h) end
         
@@ -1779,7 +1812,11 @@ function Class_Menu()
         Tab:SetParent( ps )	
         Tab:SetFont("TheDefaultSettings3")
         Tab:SetTextColor(  Color( 0, 0, 0, 255 ) )
-        Tab:SetText( tabstext[i] )
+        if tabstext[i] == "Spawn" && LocalPlayer():Team() != 2 then
+            Tab:SetText( "Close" )
+        else
+            Tab:SetText( tabstext[i] )
+        end
         Tab:SetSize( math.ceil(menuw/buttons), tabheight )
         Tab.DoClick = function()
             for k, v in pairs(ps.Items) do

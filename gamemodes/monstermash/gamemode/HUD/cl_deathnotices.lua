@@ -34,6 +34,7 @@ local function RecvPlayerKilledSelf()
     else
         attacker = victim:GetNWEntity("MM_Assister"):Name()
         attackerteam = victim:GetNWEntity("MM_Assister"):Team()
+        if !IsValid(victim:GetNWEntity("MM_AssisterInflictor")) || victim:GetNWEntity("MM_AssisterInflictor"):GetClass() == nil then return end
         inflictor = tostring(victim:GetNWEntity("MM_AssisterInflictor"):GetClass())
     end
     
@@ -354,6 +355,10 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
 		draw.SimpleText( death.right.." got too spooked.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
 		end
 		
+        if string.find(string.lower(icon), "sent_jitterskull") then
+		draw.SimpleText( death.right.." was eaten by the jitterskull.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+		end
+        
 		if string.find(string.lower(icon), "mm_fencepost") then
 		draw.SimpleText( death.left.." was on the fence with what to do about "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
 		end

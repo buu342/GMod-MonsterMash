@@ -46,7 +46,7 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	end
     
     if (ply:Health() - dmginfo:GetDamage()) <= 0 then return end
-    
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_COOPOther") == victim then return end
 	if ply:GetNWInt("Dismember") == 0 && dmginfo:GetInflictor():GetClass() != "mm_coachgun" then return end
     
     if dmginfo:GetInflictor():GetClass() == "mm_coachgun" then
