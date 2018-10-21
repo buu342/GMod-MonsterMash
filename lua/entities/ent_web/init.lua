@@ -69,7 +69,7 @@ function ENT:Think()
 		self:SetModelScale(0, 1)
 	end
     for k, v in pairs(player.GetAll()) do
-        if v:GetPos():Distance(self:GetPos()) < self:GetModelScale()*90 && v:GetPos().z > self:GetPos().z-5 && v:GetPos().z < self:GetPos().z+10 && self:Visible(v) && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
+        if v != self:GetNWEntity("Sticky_Attacker" ) && v:GetPos():Distance(self:GetPos()) < self:GetModelScale()*90 && v:GetPos().z > self:GetPos().z-5 && v:GetPos().z < self:GetPos().z+10 && self:Visible(v) && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
             if !v:HasGodMode() && !table.HasValue(self.ListOfVictims, v) then
                 v:SetNWFloat("Sticky",CurTime()+4)
                 v:SetNWEntity("Sticky_Attacker", self:GetNWEntity("Sticky_Attacker" ))

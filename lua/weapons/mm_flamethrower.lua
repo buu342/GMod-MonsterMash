@@ -326,6 +326,12 @@ function SWEP:Holster()
 	end
 end
 
+function SWEP:OnDrop()
+    if self.LoopSound then
+        self.LoopSound:Stop()
+    end
+end
+
 function SWEP:OnRemove()
     if self.LoopSound then
         self.LoopSound:Stop()

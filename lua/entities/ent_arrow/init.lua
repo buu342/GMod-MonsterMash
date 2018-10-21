@@ -53,7 +53,7 @@ function ENT:Think()
 	end
 	
 	if self.Parenty == 1 then
-		if !self:GetParent():Alive() then
+		if IsValid(self:GetParent()) && self:GetParent():IsPlayer() && !self:GetParent():Alive() then
 		self:GetParent():Extinguish()
 		self.Entity:Remove()
 		end

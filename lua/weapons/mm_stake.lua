@@ -143,7 +143,11 @@ function SWEP:DamageStuff()
             if ( !IsValid( attacker ) ) then attacker = self end
             dmginfo:SetAttacker( attacker )
             dmginfo:SetInflictor( self )
-			dmginfo:SetDamage( self.Primary.Damage )
+            if IsValid( tr.Entity ) && GetGlobalVariable("RoundsToWacky") != nil && GetGlobalVariable("RoundsToWacky") == 0 && tr.Entity:GetClass() == GetGlobalVariable("WackyRound_COOPOther") then
+                dmginfo:SetDamage( 50 )
+            else 
+                dmginfo:SetDamage( self.Primary.Damage )
+            end
             dmginfo:SetDamageForce( self.Owner:GetForward() * 5 )
             if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:GetClass() == "sent_skellington" || tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0  )) && IsFirstTimePredicted() then
                 if self:Backstab() && tr.Entity:Health() - dmginfo:GetDamage() <= 0 then

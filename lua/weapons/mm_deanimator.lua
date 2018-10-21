@@ -163,13 +163,13 @@ function SWEP:Think()
 		local effectdata = EffectData()
 		effectdata:SetOrigin( self.Owner:GetBonePosition( self.Owner:LookupBone("ValveBiped.Bip01_R_Hand") ) )
 		util.Effect( "StunstickImpact", effectdata )
-        if GetConVar("mm_deanimatorshake"):GetInt() == 1 then
+        if GetConVar("mm_deanimatorshake") != nil && GetConVar("mm_deanimatorshake"):GetInt() == 1 then
             self.Owner:ViewPunch(Angle(math.Rand(-2,2),math.Rand(-2,2),0))
         end
 		self:SetGun_Shake(CurTime()+1)
 	elseif IsValid(self.Owner) && self:GetGun_Shake() > CurTime() then
 		local punch = (self:GetGun_Shake()-CurTime())*(2/3)
-        if GetConVar("mm_deanimatorshake"):GetInt() == 1 then
+        if GetConVar("mm_deanimatorshake") != nil && GetConVar("mm_deanimatorshake"):GetInt() == 1 then
             self.Owner:ViewPunch(Angle(math.Rand(-punch,punch),math.Rand(-punch,punch),0))
         end
 	end

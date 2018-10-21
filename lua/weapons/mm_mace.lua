@@ -1,5 +1,5 @@
 SWEP.SelectIcon = "vgui/entities/mm_mace"
-SWEP.Cost = 35
+SWEP.Cost = 30
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -14,7 +14,7 @@ SWEP.HoldType 			= "melee"
 
 SWEP.FiresUnderwater = true
 SWEP.Base					= "mm_melee_base"
-SWEP.Primary.Damage			= 65
+SWEP.Primary.Damage			= 60
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
 SWEP.Primary.Automatic		= true

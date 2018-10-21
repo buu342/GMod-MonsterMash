@@ -82,7 +82,7 @@ function ENT:Explode()
 		
         for k, v in pairs(player.GetAll()) do
 			if v:GetPos():Distance(self:GetPos()) < 256 then
-				if v != self.Owner && !v:HasGodMode() && v:Alive() && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
+				if v != self.Owner && !v:HasGodMode() && v:Alive() && v:Visible() && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
 					if v:GetInfoNum( "mm_pussymode", 0 ) == 1 then
 						v:ConCommand("play gameplay/halloween_boo1.mp3")
 					else

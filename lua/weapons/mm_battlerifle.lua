@@ -49,16 +49,16 @@ SWEP.DrawAmmo = true
 SWEP.Base = "mm_gun_base"
 
 SWEP.Primary.Sound = "weapons/battlerifle/fire.wav" 
-SWEP.Primary.Damage = 21
+SWEP.Primary.Damage = 17
 SWEP.Primary.TakeAmmo = 1
 SWEP.Primary.ClipSize = 18
 SWEP.Primary.Ammo = "ammo_battlerifle"
 SWEP.Primary.DefaultClip = 18
-SWEP.Primary.Spread = 0.07
+SWEP.Primary.Spread = 0.0725
 SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Recoil = 0.3
-SWEP.Primary.Delay = 0.75
+SWEP.Primary.Delay = 0.8
 SWEP.Primary.BurstDelay = 0.075
 SWEP.Primary.Force = 1
 
@@ -261,7 +261,7 @@ end
 function SWEP:Reload()
 	if self:Clip1() < self:GetMaxClip1() then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self:GetPrimaryAmmoType())
-        self.Weapon:DefaultReload( ACT_VM_RELOAD )
+        self.Weapon:DefaultReload( ACT_VM_RELOAD_EMPTY )
         local AnimationTime = self.Owner:GetViewModel():SequenceDuration()
         if self.Owner:GetNWInt("ArmMissing") > 0 then
             self.Owner:GetViewModel():SetPlaybackRate(0.5)
