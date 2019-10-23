@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/hud/crosshair_caution_triangle"
+	"$alphatest" "1"
+	$vertexcolor 1
+}

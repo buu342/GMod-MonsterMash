@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/hud/crosshair_caution_fill"
+	$vertexcolor 1
+	"$alpha" 1
+	"$vertexalpha" "1"
+}
