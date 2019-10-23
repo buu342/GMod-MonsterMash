@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_sword"
 SWEP.Cost = 30
+SWEP.Points = 40
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -80,8 +81,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end
@@ -110,6 +111,9 @@ function SWEP:DamageStuff()
 			else
 				dmginfo:SetDamage( self.Primary.Damage )
 			end
+            if (self:Backstab() && self:GetClass() != "mm_candlestick" && GetConVar("mm_assassination"):GetInt() == 1) then
+                dmginfo:SetDamage( self.Primary.Damage*10 )
+            end
             dmginfo:SetDamageForce( self.Owner:GetForward() * 5 )
 			if tr.Entity:IsPlayer() && math.Rand(0,1)*100 < self.ConcussChance then
 				dmginfo:SetDamageType(DMG_SLASH)
@@ -170,7 +174,7 @@ function SWEP:DamageStuff()
 end
 	
 function SWEP:PrimaryAttack()
-	
+	self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
     self:SetHoldType("melee")
     self:SetWeaponHoldType("melee")
     timer.Simple(0.2,function() if !IsValid(self) then return end self:SetHoldType("knife") self:SetWeaponHoldType("knife") end)
@@ -184,18 +188,6 @@ function SWEP:PrimaryAttack()
     self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
     self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
-end
-
-function SWEP:Think()
-    if self.Owner:GetNWInt("LegMissing") == 3 then
-        self.Owner:SetWalkSpeed(85)
-        self.Owner:SetRunSpeed(85)
-    else
-        self.Owner:SetWalkSpeed(self.WalkSpeed)
-        self.Owner:SetRunSpeed(self.WalkSpeed)
-    end
-    self:DamageStuff()
-	self:LegsDismembered()
 end
 
 function SWEP:SetupDataTables()

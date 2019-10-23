@@ -1,5 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_repeater"
 SWEP.Cost = 40
+SWEP.Points = 25
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_garand" )
 
 game.AddAmmoType( { 
  name = "ammo_repeater",
@@ -107,6 +110,14 @@ function SWEP:Think()
         self:StartMyReload()
     end
     
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
+    end
+    
     if self:GetMM_ReloadTimer() < CurTime() && !(self:GetMM_ReloadTimer() == 0) then
         self:SetMM_Reloading(false)
         self:SetMM_ReloadTimer(0)
@@ -133,6 +144,7 @@ function SWEP:Think()
 		self.Owner:SetWalkSpeed(1)
 		self.Owner:SetRunSpeed(1)
 	end
+    
 	if (self.Owner:KeyReleased(IN_ATTACK2) && self:GetGun_Charge() != 0) || self.Owner:IsOnGround() == false then
 		if self.Owner:IsOnGround() then
 			self:Shoot()

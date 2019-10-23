@@ -58,7 +58,7 @@ function MM_Scoreboard:show()
 		draw.SimpleTextOutlined	( "Deaths:", "DermaDefault", 612-48, 10, Color( 255, 255, 255, 255 ),TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1, Color( 0, 0, 0, 255 ) )
 		draw.SimpleTextOutlined	( "Ping:", "DermaDefault", 670-48, 10, Color( 255, 255, 255, 255 ),TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1, Color( 0, 0, 0, 255 ) )
 		
-		draw.SimpleTextOutlined	( "Kill Limit: "..tostring(GetConVar("mm_kill_limit"):GetInt()), "DermaDefault", 16, height-22, Color( 255, 255, 255, 255 ),TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1, Color( 0, 0, 0, 255 ) )
+		draw.SimpleTextOutlined	( "Point Limit: "..tostring(GetConVar("mm_point_limit"):GetInt()), "DermaDefault", 16, height-22, Color( 255, 255, 255, 255 ),TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1, Color( 0, 0, 0, 255 ) )
 		draw.SimpleTextOutlined	( "Map: "..tostring(game.GetMap()), "DermaDefault", 360, height-22, Color( 255, 255, 255, 255 ),TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color( 0, 0, 0, 255 ) )
 		draw.SimpleTextOutlined	( "Player Count: "..tostring(table.Count(player.GetAll())).."/"..tostring(game.MaxPlayers()), "DermaDefault", 720-16, height-22, Color( 255, 255, 255, 255 ),TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1, Color( 0, 0, 0, 255 ) )
 	end
@@ -103,7 +103,9 @@ function MM_Scoreboard:show()
                 elseif table.HasValue(admins, v:SteamID()) then
                     NameColor = Color( 0, 255, 255 )
                 elseif table.HasValue(aborter, v:SteamID()) then
-                    NameColor = Color( 0, 255, 0 )
+                    NameColor = Color( 0, 255, 0 )                
+                elseif table.HasValue(edgelord, v:SteamID()) then
+                    NameColor = Color( 255, 0, 255 )
                 else
                     NameColor = Color( 0, 0, 0 )
                 end 
@@ -122,7 +124,9 @@ function MM_Scoreboard:show()
 				elseif table.HasValue(admins, v:SteamID()) then
                     draw.DrawText( "Administrator", "Chiller", 536-48, 8+2, NameColor, TEXT_ALIGN_RIGHT )
 				elseif table.HasValue(aborter, v:SteamID()) then
-					draw.DrawText( "Professional Aborter", "Chiller", 536-48, 8+2, Color( 0, 255, 0 ), TEXT_ALIGN_RIGHT )
+					draw.DrawText( "Professional Aborter", "Chiller", 536-48, 8+2, Color( 0, 255, 0 ), TEXT_ALIGN_RIGHT )				
+                elseif table.HasValue(edgelord, v:SteamID()) then
+					draw.DrawText( "Friendly Neighborhood Edgelord", "Chiller", 536-48, 8+2, Color( 255, 0, 255 ), TEXT_ALIGN_RIGHT )
 				else
 					draw.DrawText( "User", "Chiller", 536-48, 8+2, NameColor, TEXT_ALIGN_RIGHT )			
 				end

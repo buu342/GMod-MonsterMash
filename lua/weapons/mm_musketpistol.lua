@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_musketpistol"
 SWEP.Cost = 40
+SWEP.Points = 40
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 /*---------------------------------
 Created with buu342s Swep Creator
@@ -88,6 +92,7 @@ function SWEP:Initialize()
     util.PrecacheSound(self.Primary.Sound) 
 	self:SetWeaponHoldType( self.HoldType )
 	self.Owner:SetNWFloat("mm_musketpistol_recharge", 0)
+    self:SetDuelGun_Charge(0)
 	if CLIENT then
 		self.JumpTime = 0
 		self.LandTime = 0
@@ -217,3 +222,11 @@ end
 
 function SWEP:Reload()
 end
+
+hook.Add("StartCommand", "DisableCrouchWithMusket", function( ply, cmd )
+
+    if IsValid(ply) && ply:Alive() && IsValid(ply:GetActiveWeapon()) && ply:GetActiveWeapon() != nil && ply:GetActiveWeapon():GetClass() == "mm_musketpistol" && ply:GetActiveWeapon():GetDuelGun_Charge() != 0 then
+        cmd:RemoveKey(IN_DUCK)
+    end
+
+end)

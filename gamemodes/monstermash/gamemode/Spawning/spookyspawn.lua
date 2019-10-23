@@ -101,6 +101,14 @@ hook.Add( "CalcView", "MyCalcView", function( ply, pos, angles, fov )
             view.angles = angles+Angle(0,0,((ply:GetNWFloat("DivingLeft")-CurTime())/0.5)*360)
             view.fov = fov
             return view
+        end        
+        if ply:GetNWFloat("MM_Hallucinate") > CurTime() then
+            local view = {}
+            local totalang = 120
+            view.origin = pos+Vector(0,0,0)
+            view.angles = angles+Angle(0,0,totalang/2-math.abs(math.sin(-CurTime()/4)*totalang))
+            view.fov = fov
+            return view
         end
     end
 end)

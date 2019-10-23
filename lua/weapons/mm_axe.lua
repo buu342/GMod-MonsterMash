@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_axe"
 SWEP.Cost = 25
+SWEP.Points = 40
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""

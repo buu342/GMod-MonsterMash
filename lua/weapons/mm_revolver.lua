@@ -1,5 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_revolver"
 SWEP.Cost = 15
+SWEP.Points = 40
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_revolver" )
 
 local soundData = {
     name   = "Weapon_686.HammerBack" ,
@@ -98,3 +101,6 @@ SWEP.Secondary.ClipSize = 0
 SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
+
+SWEP.UseDistance = true
+SWEP.ShootDistance = 1152

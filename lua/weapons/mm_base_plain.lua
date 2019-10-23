@@ -2,9 +2,21 @@ SWEP.Spawnable= false
 SWEP.AdminSpawnable= false
 SWEP.AdminOnly = false
 
+SWEP.CrosshairMaterial = Material( "" )
+SWEP.CrosshairSize = 0
+SWEP.CrosshairChargeMaterial = Material("")
+SWEP.CrosshairChargeSize = 0
+SWEP.CrosshairRechargeMaterial = Material( "" )
+SWEP.CrosshairRechargeSize = 0
+
 SWEP.MessedWithArmStuff = false
 
 SWEP.Base = "weapon_base"
+
+if SERVER then
+    util.AddNetworkString("GetAutoReloadMM")
+end
+
 
 function bool_to_number(value)
     if value == true then
@@ -17,6 +29,9 @@ end
 function SWEP:LegsDismembered()
     self:ArmsDismembered()
     self:DodgeStuff()
+    if CLIENT then
+        self:CheckAutoReload()
+    end
     if IsValid(self.Owner) then
         if self.Owner:GetNWFloat("Sticky") > CurTime() then
             self.Owner:SetJumpPower(0)
@@ -127,7 +142,7 @@ function SWEP:ArmsDismembered()
         self:SetGun_MessWithArmStuff(true)
     end
 
-    if (self.Owner:GetNWInt("ArmMissing") > 0 && self.Owner:GetNWInt("ArmMissing") != 3) && self.Base != "mm_melee_base" then
+    if (self.Owner:GetNWInt("ArmMissing") > 0 && self.Owner:GetNWInt("ArmMissing") != 3) && self.Base != "mm_melee_base" && self:GetClass() != "mm_wand" then
         self:SetHoldType("duel")
     elseif (self.Owner:GetNWInt("ArmMissing") > 0 && self.Owner:GetNWInt("ArmMissing") != 3) then
         self:SetHoldType("fist")
@@ -147,6 +162,18 @@ function SWEP:ArmsDismembered()
                 self.ViewModelFlip = false
             end
         end
+    end
+    if IsValid(self.Owner) && self.Owner:GetNWFloat("MM_Deanimatorstun") > CurTime() then 
+		local effectdata = EffectData()
+		effectdata:SetOrigin( self.Owner:GetBonePosition( self.Owner:LookupBone("ValveBiped.Bip01_Spine1") ) )
+		util.Effect( "StunstickImpact", effectdata )
+        if GetConVar("mm_deanimatorshake") != nil && GetConVar("mm_deanimatorshake"):GetInt() == 1 then
+            self.Owner:ViewPunch(Angle(math.Rand(-2,2),math.Rand(-2,2),0))
+        end
+    end
+    if IsValid(self.Owner) && self.Owner:GetNWFloat("MM_Hallucinate") < CurTime() && self.Owner:GetNWFloat("MM_Hallucinate") != 0 then
+    self.Owner:SetNWFloat("MM_Hallucinate", 0)
+    self.Owner:SetDSP(0, false)
     end
 end
 
@@ -301,9 +328,9 @@ function SWEP:DodgeStuff()
     if gmod.GetGamemode().Name == "Monster Mash" then
         local ply = self.Owner
         if !IsValid(ply) || !ply:Alive() then return end
-        if ply:GetNWFloat("Sticky") > CurTime() || ply:GetNWFloat("Spooked") > CurTime() || ply:GetNWFloat("LegMissing") == 3 || ply:GetNWFloat("DiveCooldown") > CurTime() then return end
+        if ply:GetNWFloat("Sticky") > CurTime() || ply:GetNWFloat("Spooked") > CurTime() || ply:GetNWFloat("LegMissing") == 3 || ply:GetNWFloat("DiveCooldown") < 5 then return end
         if ply:KeyDown(IN_MOVELEFT) && ply:KeyDown(IN_SPEED) then
-            ply:SetNWFloat("DiveCooldown", CurTime()+5)
+            ply:SetNWFloat("DiveCooldown", 0)
             ply:AnimRestartMainSequence()
             ply:SetCycle(0.17)
             ply:Freeze(true)
@@ -314,7 +341,7 @@ function SWEP:DodgeStuff()
                 net.Broadcast()
             end
         elseif ply:KeyDown(IN_MOVERIGHT) && ply:KeyDown(IN_SPEED) then
-            ply:SetNWFloat("DiveCooldown", CurTime()+5)
+            ply:SetNWFloat("DiveCooldown", 0)
             ply:AnimRestartMainSequence()
             ply:SetCycle(0)
             ply:Freeze(true)
@@ -346,6 +373,7 @@ end
 
 function SWEP:DrawWorldModel()
     if !IsValid(self.Owner) then self:DrawModel() return end
+    if self.Owner:GetNWBool("MM_UsingInvisibility") then return end
     if self:GetClass() == "mm_shield" || self.Owner:GetNWInt("ArmMissing") == 0 || self.Owner:GetNWInt("ArmMissing") == 1 then
         self:DrawModel()
     else
@@ -353,3 +381,20 @@ function SWEP:DrawWorldModel()
         self:DrawModel()
     end
 end
+
+if CLIENT then
+    local lastvalue = 2 
+    function SWEP:CheckAutoReload()
+        if GetConVar("mm_autoreload"):GetInt() != lastvalue then
+            net.Start("GetAutoReloadMM")
+                net.WriteInt(GetConVar("mm_autoreload"):GetInt(), 32)
+            net.SendToServer()
+            lastvalue = GetConVar("mm_autoreload"):GetInt()
+        end
+    end
+end
+
+net.Receive("GetAutoReloadMM", function(len, ply)
+    local autoreload = net.ReadInt(32)
+    ply:SetNWInt("MM_AutoReload", autoreload)
+end)

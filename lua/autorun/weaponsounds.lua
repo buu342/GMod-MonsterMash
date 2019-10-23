@@ -1,4 +1,44 @@
 local soundData = {
+    name   = "Weapon_Beretta.ClipIn" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/colt/colt_magin.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Beretta.SlideRelease" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/colt/colt_slide.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Beretta.ClipOut" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/colt/colt_magout.wav"
+}
+sound.Add(soundData)
+
+game.AddAmmoType( { 
+ name = "ammo_colt",
+ dmgtype = DMG_BULLET,
+ tracer = TRACER_LINE,
+ force = 2000
+} )
+
+local soundData = {
     name   = "Weapon_AR15.ClipOut",
     channel  = CHAN_ITEM,
     volume   = 0.7,
@@ -481,3 +521,58 @@ local soundData = {
     sound   = "weapons/crossbow/crossbow_rope.wav"
 }
 sound.Add(soundData)
+
+local soundData = {
+    name   = "MM_Crossbow.Rope" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/crossbow/crossbow_rope.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Shock_Rifle.BoltBack" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/shockrifle/shockrifle_bolt_back.wav.wav"
+}
+sound.Add(soundData)    
+
+local soundData = {
+    name   = "Shock_Rifle.BoltBack" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/shockrifle/shockrifle_bolt_back.wav"
+}
+sound.Add(soundData)    
+
+local soundData = {
+    name   = "Shock_Rifle.BoltForward" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/shockrifle/shockrifle_bolt_forward.wav"
+}
+sound.Add(soundData)    
+
+local soundData = {
+    name   = "Shock_Rifle.Insert" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/shockrifle/shockrifle_insert.wav"
+}
+sound.Add(soundData)    

@@ -80,7 +80,7 @@ function ENT:Touch( ent )
 
 			if speed >= 150 then
 				local damage = speed * 0.03
-				ent:TakeDamage(damage , self:GetNWEntity("OriginalOwner"), self)
+				ent:TakeDamage(damage , self:GetNWEntity("OriginalOwner"), self.Inflictor)
 				ent:EmitSound("weapons/fx/rics/arrow_impact_flesh"..math.random(2,4)..".wav")
                 self:SetOwner(ent)
 			end
@@ -95,11 +95,11 @@ function ENT:Touch( ent )
         else 
             if ent:IsValid() && ent:GetNWFloat("DivingRight") < CurTime() && ent:GetNWFloat("DivingLeft") < CurTime() then
                
-                local damageprop = 45
+                local damageprop = 50
                 if !table.HasValue(self.CanDamageAgain, ent) then
                     table.insert(self.CanDamageAgain, 1, ent)
                     ent:SetNWInt("Dismember", 1)
-                    ent:TakeDamage(damageprop , self:GetNWEntity("OriginalOwner"), self)
+                    ent:TakeDamage(damageprop , self:GetNWEntity("OriginalOwner"), self.Inflictor)
                     self:EmitSound("weapons/crossbow/hitbod"..tostring(math.random(1,2))..".wav")
                     //if self.Owner:IsPlayer() then
                         self:SetOwner(ent)

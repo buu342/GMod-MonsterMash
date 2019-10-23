@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_cleaver"
 SWEP.Cost = 5
+SWEP.Points = 40
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -15,7 +19,7 @@ SWEP.HoldType 			= "melee"
 
 SWEP.FiresUnderwater = true
 SWEP.Base					= "mm_melee_base"
-SWEP.Primary.Damage		= 25
+SWEP.Primary.Damage		= 35
 SWEP.Primary.ClipSize		= 1
 SWEP.Primary.DefaultClip	= 1
 SWEP.Primary.Automatic		= true

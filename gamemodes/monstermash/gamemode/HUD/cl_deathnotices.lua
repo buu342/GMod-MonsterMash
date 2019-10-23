@@ -223,11 +223,15 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
         draw.SimpleText( death.left.." asked "..death.right.." if they were feeling lucky.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
         
+        if string.find(string.lower(icon), "mm_wand") || string.find(string.lower(icon), "ent_magicball") then
+        draw.SimpleText( death.left.." put a curse on "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        end
+        
         if string.find(string.lower(icon), "mm_coachgun") then
         draw.SimpleText( death.left.." told "..death.right.." to shop smart; shop S-Mart.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
         
-        if string.find(string.lower(icon), "ent_sawblade") then
+        if string.find(string.lower(icon), "mm_sawblade") then
         draw.SimpleText( death.left.." trimmed a little off "..death.right.."'s top.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
 		
@@ -238,8 +242,16 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
 		if string.find(string.lower(icon), "mm_colt") then
         draw.SimpleText( death.left.." asked "..death.right.." if they approve of their party favors.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
+        
+        if string.find(string.lower(icon), "mm_minigun") then
+        draw.SimpleText( death.left.." gunned "..death.right.." down in the streets of Detroit.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        end
 		
 		if string.find(string.lower(icon), "mm_deanimator") then
+        draw.SimpleText( death.left.." gave "..death.right.." a jolt from their electrode.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        end
+        
+        if string.find(string.lower(icon), "ent_deanimatorball") then
         draw.SimpleText( death.left.." gave "..death.right.." a jolt from their electrode.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
         
@@ -271,8 +283,16 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
         draw.SimpleText( death.left.." declared open season on "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
         
+        if string.find(string.lower(icon), "mm_electricrifle") then
+        draw.SimpleText( death.left.." zapped "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        end
+        
         if string.find(string.lower(icon), "mm_undertaker") then
         draw.SimpleText( death.left.." nailed "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        end
+        
+        if string.find(string.lower(icon), "mm_chainsaw") then
+        draw.SimpleText( death.left.." massacred "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
         
         if string.find(string.lower(icon), "mm_shield") then
@@ -284,7 +304,7 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
         end
         
         if string.find(string.lower(icon), "mm_battleaxe") then
-        draw.SimpleText( death.left.." introduced "..death.right.." to their wife.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        draw.SimpleText( death.left.." went medieval on "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
         
         if string.find(string.lower(icon), "mm_candlestick") then
@@ -311,16 +331,20 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
         draw.SimpleText( death.left.." revealed to "..death.right.." that they were not left-handed.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end 
         
-        if string.find(string.lower(icon), "ent_pumpkin_nade") then
+        if string.find(string.lower(icon), "mm_pumpkinnade") then
         draw.SimpleText( death.left.." played catch with "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end 
 		
-		if string.find(string.lower(icon), "ent_cannonball") then
+		if string.find(string.lower(icon), "mm_cannon") then
         draw.SimpleText( death.left.." had a ball with "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end 
         
 		if string.find(string.lower(icon), "mm_hook") then
         draw.SimpleText( death.left.." was "..death.right.."'s hooker.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
+        end
+        
+        if string.find(string.lower(icon), "mm_flaregun") || string.find(string.lower(icon), "ent_flare") then
+        draw.SimpleText( death.left.." signaled "..death.right.." to get in their grave.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
 		
 		if string.find(string.lower(icon), "mm_carbine") then
@@ -339,11 +363,11 @@ local function DrawDeath( x, y, death, hud_deathnotice_time )
         draw.SimpleText( death.left.." showed "..death.right.." what real cleavage looks like.",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
 		
-		if string.find(string.lower(icon), "ent_skull") then
+		if string.find(string.lower(icon), "mm_skull") then
         draw.SimpleText( death.left.." recited Hamlet with "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
 		
-		if string.find(string.lower(icon), "ent_arrow") then
+		if string.find(string.lower(icon), "mm_crossbow") then
         draw.SimpleText( death.left.." practiced their archery on "..death.right..".",		"ChatFont", x + ( w / 2 ) + 160, y, death.color2, TEXT_ALIGN_RIGHT )
         end
 		

@@ -58,12 +58,12 @@ end
 
 function ENT:Think()
 	if self.Dead and SERVER then
-		local startp = self:GetPos()
-       	local traceinfo = {start = startp, endpos = startp - Vector(0,0,50), filter = self, mask = MASK_SOLID_BRUSHONLY}
-       	local trace = util.TraceLine(traceinfo)
-       	local todecal1 = trace.HitPos + trace.HitNormal
-       	local todecal2 = trace.HitPos - trace.HitNormal
-        util.Decal("FadingScorch", todecal1, todecal2)
+        if self.Decal then
+            local startp = self:GetPos()
+            local traceinfo = {start = startp, endpos = startp - Vector(0,0,50), filter = self, mask = MASK_SOLID_BRUSHONLY}
+            local trace = util.TraceLine(traceinfo)
+            util.DecalEx( Material(util.DecalMaterial( "Scorch" )), trace.Entity, trace.HitPos, trace.HitNormal, Color(255,255,255,255), 0.2, 0.2 )
+        end
 		self:Remove()
 	end
 	local col = COLLISION_RADIUS + (CurTime()-self.MyScale)*2
@@ -90,7 +90,7 @@ function ENT:Explode( entity )
 			entity:Ignite(5) 
 			entity:SetNWFloat("MM_FireDuration", CurTime() + 5)
 
-			entity:SetNWInt("MM_FireDamage", 3)
+			entity:SetNWInt("MM_FireDamage", 4)
 			entity:SetNWEntity("MM_FireOwner", self.Owner)
 			entity:SetNWEntity("MM_FireInflictor", self:GetNWEntity("FlamethrowerDamageInflictor"))
 		end

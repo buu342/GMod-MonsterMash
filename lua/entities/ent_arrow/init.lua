@@ -89,7 +89,7 @@ function ENT:Touch( ent )
 				self:PhysicsInit( SOLID_NONE )
 				self:SetParent(ent)
 				local damage = speed * 0.03
-				ent:TakeDamage(damage , self:GetOwner(), self)
+				ent:TakeDamage(damage , self.Owner, self.Inflictor)
 				ent:EmitSound("weapons/fx/rics/arrow_impact_flesh"..math.random(2,4)..".wav")
 				if self.ArrowType == 1 then
 					ent:Ignite( math.Rand( 5, 6 ), 0 )
@@ -103,52 +103,27 @@ function ENT:Touch( ent )
 				end
 				self:Remove()
 			end
-			return false end
-			if ent:IsWorld() then
-				self.NotStuck = false
-				self:SetMoveType( MOVETYPE_NONE )
-				self:PhysicsInit( SOLID_NONE )
-				self:EmitSound("weapons/crossbow/hitbod"..tostring(math.random(1,2))..".wav")
-				if self.ArrowType == 1 then
-					ent:Ignite( math.Rand( 5, 6 ), 0 )
-					ent:Fire( "IgniteLifeTime", math.Rand( 10, 12 ), 0 )
-				elseif self.ArrowType == 2 then
-					local effectdata = EffectData()
-					effectdata:SetOrigin(self.Entity:GetPos())
-					util.Effect( "Explosion", effectdata )
-					util.BlastDamage(self.Entity, self.Entity, self.Entity:GetPos(), 125, 125)
-					self:Remove()
-				end
-				self:SetPos(self:GetPos() + self:GetForward()*0)
-			else
-				if ent:IsValid() && ent:GetNWFloat("DivingRight") < CurTime() && ent:GetNWFloat("DivingLeft") < CurTime() then
-					self.NotStuck = false
-					self:SetMoveType( MOVETYPE_NONE )
-					self:PhysicsInit( SOLID_NONE )
-					self:SetParent(ent)
-					local damageprop = speed * 0.015
+			return false 
+        end
+        if ent:IsWorld() then
+            self.NotStuck = false
+            self:SetMoveType( MOVETYPE_NONE )
+            self:PhysicsInit( SOLID_NONE )
+            self:EmitSound("weapons/crossbow/hitbod"..tostring(math.random(1,2))..".wav")
+            self:SetPos(self:GetPos() + self:GetForward()*0)
+        else
+            if ent:IsValid() && ent:GetNWFloat("DivingRight") < CurTime() && ent:GetNWFloat("DivingLeft") < CurTime() then
+                self.NotStuck = false
+                self:SetMoveType( MOVETYPE_NONE )
+                self:PhysicsInit( SOLID_NONE )
+                self:SetParent(ent)
+                local damageprop = speed * 0.015
+                ent:TakeDamage(damageprop , self.Owner, self.Inflictor)
+                local physforce = speed * 8
+                local phy = ent:GetPhysicsObject()
+                self.RemoveArrow = CurTime() + 20
+                self:EmitSound("weapons/crossbow/hitbod"..tostring(math.random(1,2))..".wav")
 					
-					if self.ArrowType == 1 then
-						ent:Ignite( math.Rand( 5, 6 ), 0 )
-						ent:Fire( "IgniteLifeTime", math.Rand( 10, 12 ), 0 )
-					end
-					
-					ent:TakeDamage(damageprop , self:GetOwner(), self)
-					local physforce = speed * 8
-					local phy = ent:GetPhysicsObject()
-					self.RemoveArrow = CurTime() + 20
-					self:EmitSound("weapons/crossbow/hitbod"..tostring(math.random(1,2))..".wav")
-					
-					if self.ArrowType == 1 then
-						ent:Ignite( math.Rand( 5, 6 ), 0 )
-						ent:Fire( "IgniteLifeTime", math.Rand( 10, 12 ), 0 )
-					elseif self.ArrowType == 2 then
-						local effectdata = EffectData()
-						effectdata:SetOrigin(self.Entity:GetPos())
-						util.Effect( "Explosion", effectdata )
-						util.BlastDamage(self.Entity, self.Entity, self.Entity:GetPos(), 125, 125)
-						self:Remove()
-					end
 				self:SetPos(self:GetPos() + self:GetForward()*2)
 			end
 		end

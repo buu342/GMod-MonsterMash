@@ -73,7 +73,7 @@ function ENT:Explode()
         explo:SetKeyValue("iMagnitude", "100")
         explo:Spawn()
         explo:Activate()
-        util.BlastDamage(self, self.Owner, self:GetPos(), 200,140)
+        util.BlastDamage(self.Inflictor, self.Owner, self:GetPos(), 200,140)
     
 		local i
 		for i=1,10 do

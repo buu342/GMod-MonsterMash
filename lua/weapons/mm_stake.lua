@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_stake"
 SWEP.Cost = 35
+SWEP.Points = 20
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -49,7 +53,8 @@ function SWEP:PrimaryAttack()
 	if self:GetNextPrimaryFire() > CurTime() then return end
     self.Weapon:EmitSound(self.MissSound)
     self:SetFaketimer(CurTime() + self.TimeToHit)
-   if self:Backstab() then
+    self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
+    if self:Backstab() then
 		self.Weapon:SendWeaponAnim( ACT_VM_HITKILL )
 	else
 		self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
@@ -62,9 +67,7 @@ function SWEP:PrimaryAttack()
     self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 end
 
-function SWEP:Think()
-    self:DamageStuff()
-	self:LegsDismembered()
+function SWEP:DoOtherStuff()
 	if self.Weapon:Clip1() < 1 then
 		self.Weapon:SendWeaponAnim( ACT_VM_DRAW )
 		self.Owner:GetViewModel():SetPlaybackRate( 0 )
@@ -92,8 +95,8 @@ function SWEP:Backstab()
             start = self.Owner:GetShootPos(),
             endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 150,
             filter = self.Owner,
-            mins = Vector( -10, -10, -8 ),
-            maxs = Vector( 10, 10, 8 ),
+            mins = Vector( -20, -20, -16 ),
+            maxs = Vector( 20, 20, 16 ),
             mask = MASK_SHOT_HULL
         } )
     end

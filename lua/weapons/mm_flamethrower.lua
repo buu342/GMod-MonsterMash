@@ -1,5 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_flamethrower"
-SWEP.Cost = 55
+SWEP.Cost = 45
+SWEP.Points = 25
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 game.AddAmmoType( { 
  name = "ammo_revolver",
@@ -12,7 +15,7 @@ game.AddAmmoType( {
 Created with buu342s Swep Creator
 ---------------------------------*/
 
-SWEP.PrintName = "Flamethrower"
+SWEP.PrintName = "Cremator"
     
 SWEP.Author = "Demo"
 SWEP.Contact = ""
@@ -58,7 +61,7 @@ SWEP.Primary.Spread = 0.14
 SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Recoil = 0.1
-SWEP.Primary.Delay = 0.02
+SWEP.Primary.Delay = 0.03
 SWEP.Primary.Force = 0
 
 SWEP.Secondary.ClipSize = 0
@@ -91,6 +94,14 @@ function SWEP:Think()
 		self.Owner:SetWalkSpeed(self.WalkSpeed)
 		self.Owner:SetRunSpeed(self.WalkSpeed)
 	end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
+    end
 
 	if self.Owner:KeyPressed(IN_ATTACK) && self.Owner:OnGround() && self:Clip1() > 0 && self:GetGun_Reloading() == false && self.Owner:GetNWFloat("Bloodied") < CurTime() then
 		vm:SetSequence(vm:LookupSequence("shootloop_start"))
@@ -217,7 +228,7 @@ function SWEP:Think()
     
     if self:GetGun_Reloading() == true && self:GetGun_FakeTimer2() < CurTime() then
         self:SetGun_Reloading(false)
-        self:SetClip1( math.min(self:Clip1() + 35, 150) )
+        self:SetClip1( math.min(self:Clip1() + 40, 150) )
     end
     if self:GetGun_Reloading() == false then
         self:LegsDismembered()
@@ -242,7 +253,7 @@ function SWEP:PrimaryAttack()
 		effectdata4:SetOrigin( self.Owner:GetViewModel():GetAttachment("1").Pos )
 		effectdata4:SetAngles( self.Owner:EyeAngles() )
 		effectdata4:SetScale( 1 )
-		util.Effect( "flamethrower_flame", effectdata4 )
+		util.Effect( "flamethrower_charge", effectdata4 )
 	end
 	
 	if SERVER then
@@ -255,7 +266,7 @@ function SWEP:PrimaryAttack()
 		effectdata4:SetOrigin( pos )
 		effectdata4:SetAngles( self.Owner:EyeAngles() )
 		effectdata4:SetScale( 1 )
-		util.Effect( "flamethrower_flame", effectdata4 )
+		util.Effect( "flamethrower_charge", effectdata4 )
 	end
 		
 	local rnda = self.Primary.Recoil * -1 
@@ -275,28 +286,27 @@ function SWEP:PrimaryAttack()
 	end
 	self:SetNextSecondaryFire( CurTime() + self.Primary.Delay ) 
 	
-	
-	if SERVER then
-		self.Owner:SetAnimation(PLAYER_ATTACK1)
-		local grenade = ents.Create("ent_flamehitbox")
+    if SERVER then
+        local ent = ents.Create("ent_fireballsmol")
+        local pos = self.Owner:GetShootPos()
+        pos = pos + self.Owner:GetForward() * 15
+        pos = pos + self.Owner:GetRight() * 10
+        pos = pos + self.Owner:GetUp() * -25
+        ent:SetPos(pos)
+        ent:SetAngles(self.Owner:EyeAngles())
+        ent:SetOwner(self.Owner)
+        ent.Own = self.Owner
+        ent.Inf = self
+        ent:SetNWEntity("FlamethrowerDamageInflictor", self)
+        ent:Spawn()
+        ent:Activate()
+        ent:SetOwner(self.Owner)
+        
+        local phys = ent:GetPhysicsObject()
 
-		local pos = self.Owner:GetShootPos()
-		pos = pos + self.Owner:GetForward() * 40
-		pos = pos + self.Owner:GetRight() * 10
-		pos = pos + self.Owner:GetUp() * -20
-		
-		 
-		local ang = self.Owner:EyeAngles()
-		ang = ang:Forward()
-		
-		grenade:SetPos(pos)
-		grenade:SetAngles(self.Owner:GetAngles())
-		grenade:SetOwner(self.Owner)
-		grenade:Spawn()
-		grenade:Activate()
-		grenade:SetVelocity( ( ang ):GetNormalized() * 500 + self.Owner:GetVelocity() * 1 )
-        grenade:SetNWEntity("FlamethrowerDamageInflictor", self)
-	end
+        self.Force = 10000
+        phys:ApplyForceCenter(self.Owner:GetAimVector() * self.Force * 1.2 + Vector(0, 0, 200))
+    end
 	
 end
 
@@ -330,6 +340,8 @@ function SWEP:OnDrop()
     if self.LoopSound then
         self.LoopSound:Stop()
     end
+	self.Owner = nil
+	timer.Simple(GetConVar( "mm_cleanup_time" ):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then  self:Remove() end end)
 end
 
 function SWEP:OnRemove()

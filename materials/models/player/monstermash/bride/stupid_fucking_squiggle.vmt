@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitTranslucentTexture
+	"$translucent" 1
+	"$basetexture" "models\player\monstermash\bride\stupid_fucking_squiggle"
+	"$halflambert" 1
+	"$nodecal" "1"
+	"$nocull" "1"
+}

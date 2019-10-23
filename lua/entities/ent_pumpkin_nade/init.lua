@@ -75,7 +75,7 @@ function ENT:Explode()
         explo:SetKeyValue("iMagnitude", "100")
         explo:Spawn()
         explo:Activate()
-        util.BlastDamage(self, self.MyOwner, self:GetPos(), 200,175)
+        util.BlastDamage(self.Inflictor, self.Owner, self:GetPos(), 200,175)
 
         local effectdata4 = EffectData()
         effectdata4:SetStart( self:GetPos() ) 

@@ -1,3 +1,5 @@
+SWEP.Points = 75
+
 SWEP.Contact 		= ""
 SWEP.Author			= ""
 SWEP.Instructions	= ""
@@ -49,24 +51,13 @@ SWEP.DismemberChance	= 0
 function SWEP:PrimaryAttack()
     self:SetHoldType("melee")
     self:SetWeaponHoldType("melee")
+    self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
     timer.Simple(0.2,function() if !IsValid(self) then return end self:SetHoldType("slam") self:SetWeaponHoldType("slam") end)
     self.Weapon:EmitSound(self.MissSound)
     self:SetFaketimer(CurTime() + self.TimeToHit)
     self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
     self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
-end
-
-function SWEP:Think()
-    if self.Owner:GetNWInt("LegMissing") == 3 then
-        self.Owner:SetWalkSpeed(85)
-        self.Owner:SetRunSpeed(85)
-    else
-        self.Owner:SetWalkSpeed(self.WalkSpeed)
-        self.Owner:SetRunSpeed(self.WalkSpeed)
-    end
-    self:DamageStuff()
-	self:LegsDismembered()
 end
 
 function SWEP:DamageStuff()
@@ -86,8 +77,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end

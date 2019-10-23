@@ -45,7 +45,7 @@ function ENT:SpawnFunction( ply, tr, ClassName )
 
 end
 
-function FindNearestPlayer( pos, range )
+function ENT:FindNearestPlayer( pos, range )
 	
 	local nearestply = nil
     
@@ -98,7 +98,7 @@ end
 function ENT:Think()
 
 	self:NextThink( CurTime() + 0.001 )
-	local ply = FindNearestPlayer(self:GetPos(), 8138)
+	local ply = self:FindNearestPlayer(self:GetPos(), 8138)
 	
 	if GetConVar("ai_disabled"):GetInt() == 1 || (ply == nil && self:GetState() == "Chase") then 
 		self:SetState("Idle")

@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\player\monstermash\gibs\hay_splat"
+	"$surfaceprop" "default_silent"
+	"$translucent" "1"
+	"$decal" "1"
+}

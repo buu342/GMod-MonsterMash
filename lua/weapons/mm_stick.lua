@@ -1,4 +1,8 @@
+SWEP.Points = 0
 SWEP.SelectIcon = "vgui/entities/mm_stick"
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -95,17 +99,7 @@ function SWEP:SecondaryAttack()
     end
 end
 
-function SWEP:Think()
-    if self.Owner:GetNWInt("LegMissing") == 3 then
-        self.Owner:SetWalkSpeed(85)
-        self.Owner:SetRunSpeed(85)
-    else
-        self.Owner:SetWalkSpeed(self.WalkSpeed)
-        self.Owner:SetRunSpeed(self.WalkSpeed)
-    end
-    self:DamageStuff()
-	self:LegsDismembered()
-    self:DoOtherStuff()
+function SWEP:DoOtherStuff()
     if self.Owner:OnGround() && SERVER && IsValid(self.Trail) then
         self.Trail:Remove()
     end

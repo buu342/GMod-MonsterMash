@@ -1,0 +1,16 @@
+"UnlitGeneric"
+{
+	"$additive" "1"
+	"$basetexture" "animated/burn"
+	// "$translucent" "1"
+	"$alpha" "1"
+	"Proxies"
+	{
+		"AnimatedTexture"
+		{
+			"animatedtexturevar" "$basetexture"
+			"animatedtextureframenumvar" "$frame"
+			"animatedtextureframerate" 14
+		}
+	}
+}

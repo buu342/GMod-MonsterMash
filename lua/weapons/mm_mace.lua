@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_mace"
 SWEP.Cost = 30
+SWEP.Points = 40
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""

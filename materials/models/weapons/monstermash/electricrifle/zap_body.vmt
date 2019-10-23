@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\weapons\monstermash\electricrifle\zap_body"
+	"$nocull"	"1"
+}

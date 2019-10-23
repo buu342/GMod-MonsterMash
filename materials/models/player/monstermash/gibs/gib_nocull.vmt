@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/gibs/gib"
+	"$bumpmap" "models/player/monstermash/gibs/gib_normal"
+	"$surfaceprop" "flesh"
+	"$model" "1"
+	"$nocull" "1"
+	"$halflambert" "1"
+	"$phong" "1"
+	"$phongboost" "5"
+	"$phongexponent" 25
+	//"$phongexponenttexture" "Models/zombie_fast/fast_zombie_phong"
+	//"$phongalbedotint" "1"										
+	"$phongfresnelranges"	"[.2 .6 1]"
+}

@@ -1,5 +1,10 @@
 SWEP.SelectIcon = "vgui/entities/mm_deanimator"
 SWEP.Cost = 75
+SWEP.Points = 10
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_caution" )
+SWEP.CrosshairMaterial2 = Material( "vgui/hud/crosshair_caution_triangle" )
+SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_caution_fill" )
 
 game.AddAmmoType( { 
  name = "ammo_zap",
@@ -8,7 +13,7 @@ game.AddAmmoType( {
  force = 2000
 } )
 
-SWEP.PrintName = "DeAnimator"
+SWEP.PrintName = "De-Animator"
     
 SWEP.Author = "Demo"
 SWEP.Contact = ""
@@ -42,20 +47,24 @@ SWEP.DrawAmmo = true
 
 SWEP.Base = "mm_gun_base"
 
-SWEP.Primary.Sound = "ambient/levels/labs/electric_explosion1.wav" 
-SWEP.Primary.Damage = 125
+SWEP.Primary.Sound = "weapons/deanimator/plasma.wav" 
+SWEP.Secondary.Sound = "ambient/levels/labs/electric_explosion1.wav" 
+SWEP.Primary.Damage = 10
 SWEP.Primary.TakeAmmo = 1
 SWEP.Primary.ClipSize = 100
 SWEP.Primary.Ammo = "ammo_zap"
 SWEP.Primary.DefaultClip = 100
-SWEP.Primary.Spread = 0.001
+SWEP.Primary.Spread = 0.1625
 SWEP.Primary.NumberofShots = 1
-SWEP.Primary.Automatic = false
-SWEP.Primary.Recoil = 1
-SWEP.Primary.Delay = 4
+SWEP.Primary.Automatic = true
+SWEP.Primary.Recoil = 0.25
+SWEP.Primary.Delay = 0.1
 SWEP.Primary.Force = 0
 SWEP.HoldType = "shotgun"
 
+SWEP.Secondary.Delay = 4
+SWEP.Secondary.Damage = 125
+SWEP.Secondary.Spread = 0.001
 SWEP.Secondary.ClipSize = 0
 SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
@@ -111,46 +120,17 @@ function SWEP:Think()
         self.Owner:SetRunSpeed(self.WalkSpeed)
     end
 	
-	if self.Owner:KeyPressed(IN_ATTACK) && self:GetNextPrimaryFire() < CurTime() && self.Owner:OnGround() && self:Clip1() >= 20 then
+	if self.Owner:KeyPressed(IN_ATTACK2) && self:GetNextPrimaryFire() < CurTime() && self.Owner:OnGround() && self:Clip1() >= 20 then
 		self:EmitSound("npc/attack_helicopter/aheli_charge_up.wav",60,100,1,CHAN_WEAPON)
         self:SetGun_CanCharge(true)
 	end
 	
-	if self.Owner:KeyDown(IN_ATTACK) && self:GetGun_CanCharge() == true && !self.Owner:KeyDown(IN_ATTACK2) && self:GetNextPrimaryFire() < CurTime() && self.Owner:OnGround() && self:Clip1() >= 20 then
+	if self.Owner:KeyDown(IN_ATTACK2) && self:GetGun_CanCharge() == true && !self.Owner:KeyDown(IN_ATTACK) && self:GetNextPrimaryFire() < CurTime() && self.Owner:OnGround() && self:Clip1() >= 20 then
         self.Owner:SetWalkSpeed(self.ShootSpeed)
 		self.Owner:SetRunSpeed(self.ShootSpeed)
 		if self:GetGun_Charge() >= 150 then
-            self.Owner:EmitSound("weapons/cannon/explosion1.wav",140)
-            if SERVER then
-                self.Owner:TakeDamage(1337, self.Owner, self)
-                if self.Owner:IsValid() then
-                    self.Owner:Ignite(7) 
-                end
-            end
-            
-            if IsValid(self.Owner) then
-                local dir = -self.Owner:GetAimVector()-Vector(0,0,self.Owner:GetAimVector().z)
-                dir:Normalize()
-                self.Owner:SetVelocity(dir*250)
-            end
-            local effectdata5 = EffectData()
-			effectdata5:SetOrigin( self:GetPos() )
-			util.Effect( "Fireball_Explosion", effectdata5 ) 
-				
-			local effectdata3 = EffectData()
-			effectdata3:SetOrigin( self:GetPos() )
-			effectdata3:SetScale( 1 )
-			util.Effect( "ManhackSparks", effectdata3 )
-				
-			local effectdata4 = EffectData()
-			effectdata4:SetStart( self:GetPos() ) 
-			effectdata4:SetOrigin( self:GetPos() )
-			effectdata4:SetScale( 1 )
-			util.Effect( "HelicopterMegaBomb", effectdata4 )
-			if SERVER then
-				self:Remove()
-                return
-			end
+            self:ExplodePlayer()
+            return
 		else
             self:SetGun_Charge(self:GetGun_Charge()+0.85)
             if (self:GetGun_Charge() > self:Clip1() && self:Clip1() != 100) then
@@ -173,17 +153,26 @@ function SWEP:Think()
             self.Owner:ViewPunch(Angle(math.Rand(-punch,punch),math.Rand(-punch,punch),0))
         end
 	end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
+    end
 	
-	if self.Owner:KeyReleased(IN_ATTACK) && !self.Owner:KeyDown(IN_ATTACK2) && self:GetGun_CanCharge() == true && self:GetNextPrimaryFire() < CurTime() && self:Clip1() >= 20 then
+	if self.Owner:KeyReleased(IN_ATTACK2) && !self.Owner:KeyDown(IN_ATTACK) && self:GetGun_CanCharge() == true && self:GetNextPrimaryFire() < CurTime() && self:Clip1() >= 20 then
         if self:GetGun_Charge() > 100 then
             self:SetGun_Charge(100)
         end
+        
 		self:ShootEffects()
         self.Owner:SetCycle(0)
-		self:SetNextPrimaryFire( CurTime() + self.Primary.Delay*(self:GetGun_Charge()/100)+1 )
-		self:SetNextSecondaryFire( CurTime() + self.Primary.Delay*(self:GetGun_Charge()/100)+1 ) 
+		self:SetNextPrimaryFire( CurTime() + self.Secondary.Delay*(self:GetGun_Charge()/100)+1 )
+		self:SetNextSecondaryFire( CurTime() + self.Secondary.Delay*(self:GetGun_Charge()/100)+1 ) 
 		self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
-		self:EmitSound(self.Primary.Sound,75,100,1,CHAN_WEAPON)
+		self:EmitSound(self.Secondary.Sound,75,100,1,CHAN_WEAPON)
 		self.Owner:ConCommand("play weapons/electric_machine.wav")
 		local pos = self.Owner:GetShootPos()
 		pos = pos + self.Owner:GetForward()
@@ -193,11 +182,16 @@ function SWEP:Think()
         self:TakePrimaryAmmo(math.max(20,self:GetGun_Charge()))
 		bullet.Num = self.Primary.NumberofShots 
 		bullet.Src = pos
-		bullet.Dir = self.Owner:GetAimVector() 
-		bullet.Spread = Vector( self.Primary.Spread * 0.1 , self.Primary.Spread * 0.1, 0)
+        local traceply = self.Owner:GetEyeTrace()
+        if (traceply.Entity:IsPlayer()) then
+            bullet.Dir = (traceply.Entity:GetBonePosition( traceply.Entity:LookupBone("ValveBiped.Bip01_Spine4") )-self.Owner:EyePos()):Angle():Forward()
+        else
+            bullet.Dir = (self.Owner:EyeAngles() + self.Owner:GetPunchAngle()):Forward()
+        end
+		bullet.Spread = Vector( self.Secondary.Spread * 0.1 , self.Secondary.Spread * 0.1, 0)
 		bullet.Tracer = 1
 		bullet.TracerName = "deanimatortracer"
-		bullet.Force = self.Primary.Force 
+		bullet.Force = 1
 		bullet.Damage = 0//math.max(12.5, self.Primary.Damage*(self:GetGun_Charge()/100))
 		bullet.AmmoType = self.Primary.Ammo
 		bullet.Callback = function(attacker, trace, dmginfo)
@@ -207,6 +201,8 @@ function SWEP:Think()
             if trace.HitWorld then 
                 util.Decal( "scorch", TP, TM ) 
             end 
+
+            trace.Entity:SetNWFloat("Zappy", CurTime()+0.1)
             
             local effectdata = EffectData()
             effectdata:SetOrigin( trace.HitPos )
@@ -221,11 +217,16 @@ function SWEP:Think()
 				for k, v in pairs( player.GetAll() ) do
 					if v:GetPos():Distance(trace.HitPos) < 128 then
 						v:Ignite(1,1)
+                        if v != self.Owner then
+                            local pushvel = trace.Normal * 1500
+                            pushvel.z = math.Clamp(pushvel.z, 50, 100)
+                            v:SetVelocity(v:GetVelocity() + pushvel)
+                        end
 					end
 				end
 				
 			end
-            util.BlastDamage(self, self.Owner, trace.HitPos, 128, math.max(15, self.Primary.Damage*(self:GetGun_Charge()/100)))
+            util.BlastDamage(self, self.Owner, trace.HitPos, 128, math.max(15, self.Secondary.Damage*(self:GetGun_Charge()/100)))
 		end
         if self.Owner:GetNWInt("LegMissing") == 3 then
             self.Owner:SetWalkSpeed(85)
@@ -240,8 +241,22 @@ function SWEP:Think()
 		self.Owner:FireBullets( bullet ) 
 
 	end
+    
+    if !self.Owner:KeyDown(IN_ATTACK2) && !self.Owner:KeyDown(IN_ATTACK) then
+        if self:GetGun_Charge() > 0 then
+            self:SetGun_Charge(self:GetGun_Charge()-1)
+        end
+        if self:GetGun_Charge() < 0 then
+            self:SetGun_Charge(0)
+        end
+    end
+    
+    if self:GetNextPrimaryFire() > CurTime() then
+        self.Owner:SetWalkSpeed(self.ShootSpeed)
+		self.Owner:SetRunSpeed(self.ShootSpeed)
+    end
 	
-	if  IsValid(self.Owner) && (self.Owner:KeyReleased(IN_ATTACK) || !self.Owner:OnGround() || self.Owner:KeyPressed(IN_ATTACK2) )   then
+	if IsValid(self.Owner) && (self.Owner:KeyReleased(IN_ATTACK2) || !self.Owner:OnGround() || (self.Owner:KeyPressed(IN_ATTACK) && self:GetGun_Charge() != 0) )   then
 		self:EmitSound("common/null.wav",75,100,1,CHAN_WEAPON)
         self:SetGun_Charge(0)
         self:SetGun_CanCharge(false)
@@ -275,10 +290,45 @@ function SWEP:Think()
 	self:LegsDismembered()
 end
 
+function SWEP:ExplodePlayer()
+    self.Owner:EmitSound("weapons/cannon/explosion1.wav",140)
+    if SERVER then
+        util.BlastDamage(self, self.Owner, self.Owner:GetPos()+Vector(0,0,70), 200, 140)
+        if self.Owner:IsValid() then
+            self.Owner:Ignite(7) 
+        end
+    end
+    
+    if IsValid(self.Owner) then
+        local dir = -self.Owner:GetAimVector()-Vector(0,0,self.Owner:GetAimVector().z)
+        dir:Normalize()
+        self.Owner:SetVelocity(dir*250)
+    end
+    local effectdata5 = EffectData()
+    effectdata5:SetOrigin( self:GetPos() )
+    util.Effect( "Fireball_Explosion", effectdata5 ) 
+        
+    local effectdata3 = EffectData()
+    effectdata3:SetOrigin( self:GetPos() )
+    effectdata3:SetScale( 1 )
+    util.Effect( "ManhackSparks", effectdata3 )
+        
+    local effectdata4 = EffectData()
+    effectdata4:SetStart( self:GetPos() ) 
+    effectdata4:SetOrigin( self:GetPos() )
+    effectdata4:SetScale( 1 )
+    util.Effect( "HelicopterMegaBomb", effectdata4 )
+    if SERVER then
+        self:Remove()
+        return
+    end
+end
+
 function SWEP:Reload()
 	if self:Clip1() < self:GetMaxClip1() then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self:GetPrimaryAmmoType())
         self.Weapon:DefaultReload( ACT_VM_RELOAD )
+        self:SetGun_Charge(0)
         local AnimationTime = self.Owner:GetViewModel():SequenceDuration()
         if self.Owner:GetNWInt("ArmMissing") > 0 then
             self.Owner:GetViewModel():SetPlaybackRate(0.5)
@@ -297,17 +347,112 @@ function SWEP:Reload()
 	end
 end
 
+function SWEP:PrimaryAttack()
+
+	if self:GetNextPrimaryFire() > CurTime() then return end
+	
+    self:SetGun_Charge(self:GetGun_Charge()+10)
+    if self:GetGun_Charge() > 100 then
+        self:ExplodePlayer()
+        return
+    end
+    
+	if self.Weapon:Clip1() <= 0 || !self.Owner:OnGround() then 
+		self:EmitSound( "Weapon_Pistol.Empty",75,100,1,CHAN_ITEM )
+		self:SetNextPrimaryFire( CurTime() + 0.2 )
+	else
+        if self.Owner:GetNWInt("LegMissing") == 3 then
+            self.Owner:SetWalkSpeed(1)
+            self.Owner:SetRunSpeed(1)
+            self.Owner:SetVelocity(-self.Owner:GetVelocity())
+        end
+		self:SetGun_FakeTimer1(CurTime()+0.5)
+		local pos = self.Owner:GetShootPos()
+		pos = pos + self.Owner:GetForward()
+		pos = pos + self.Owner:GetRight() 
+		pos = pos + self.Owner:GetUp()
+		local bullet = {} 
+		bullet.Num = 1
+		bullet.Src = pos
+		bullet.Dir = (self.Owner:EyeAngles() + self.Owner:GetPunchAngle()):Forward()
+		bullet.Spread = Vector( self.Primary.Spread * 0.1 , self.Primary.Spread * 0.1, 0)*(1+bool_to_number(self:GetGun_MessWithArmStuff()))
+		bullet.Tracer = 1
+		if self.UseDistance then
+			bullet.Distance = self.ShootDistance
+		end
+		bullet.TracerName = "ToolTracer"
+		bullet.Force = self.Primary.Force 
+		bullet.Damage = self.Primary.Damage
+		bullet.AmmoType = self.Primary.Ammo 
+		bullet.Callback = function(attacker, tr, dmginfo)
+            dmginfo:SetInflictor(self)
+		end
+
+		 
+		local rnda = self.Primary.Recoil * -1 
+		local rndb = self.Primary.Recoil * math.random(-1, 1) 
+		 
+        self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
+        self.Owner:SetAnimation( PLAYER_ATTACK1 )
+    
+		self.Owner:FireBullets( bullet ) 
+		self:EmitSound(Sound(self.Primary.Sound),140) 
+		self.Owner:ViewPunch( Angle( rnda,rndb,rnda )*(1+bool_to_number(self:GetGun_MessWithArmStuff())) ) 
+        
+		self:TakePrimaryAmmo(5) 
+		
+		if self.Owner:GetNWFloat("Bloodied") > CurTime() then
+            self:SetNextPrimaryFire( CurTime() + self.Primary.Delay*4 )
+            self:SetNextSecondaryFire( CurTime() + self.Secondary.Delay*4 ) 
+            self.Owner:GetViewModel():SetPlaybackRate( 0.5 )
+		else
+            self.Owner:GetViewModel():SetPlaybackRate( 1 )
+            self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+		end
+		self:SetNextSecondaryFire( CurTime() + self.Secondary.Delay ) 
+	end
+end 
+
+
 function ElectricEffect() 
 	cam.Start3D( EyePos(), EyeAngles() ) 
 	for k, v in pairs( ents.GetAll() ) do 
-		if IsValid(v) && v:IsPlayer() && v:GetNWFloat("MM_Deanimatorstun") > CurTime() then 
-			render.SetBlend( 1 )
-			render.MaterialOverride( Material("models/player/monstermash/gibs/shock") ) 
-			v:DrawModel() 
-			render.SetBlend( 1 ) 
-			render.MaterialOverride( 0 ) 
+		if IsValid(v) && v:IsPlayer() then
+            if v:GetNWFloat("MM_Deanimatorstun") > CurTime() then 
+                render.SetBlend( 1 )
+                render.MaterialOverride( Material("models/player/monstermash/gibs/shock") ) 
+                v:DrawModel() 
+                render.SetBlend( 1 ) 
+                render.MaterialOverride( 0 ) 
+                render.SetBlend( 1 )
+                render.MaterialOverride( Material("animated/zap") ) 
+                v:DrawModel() 
+                render.SetBlend( 1 ) 
+                render.MaterialOverride( 0 ) 
+            end
+            if v:GetNWFloat("Zappy") > CurTime() then
+                render.SetBlend( 1 )
+                render.MaterialOverride( Material("animated/zap") ) 
+                v:DrawModel() 
+                render.SetBlend( 1 ) 
+                render.MaterialOverride( 0 ) 
+            end
+            if v:IsOnFire() then 
+                render.SetBlend( 1 )
+                render.MaterialOverride( Material("animated/burn") ) 
+                v:DrawModel() 
+                render.SetBlend( 1 ) 
+                render.MaterialOverride( 0 ) 
+            end
 		end
+        if IsValid(v) && v:GetClass() == "sent_mm_body" && v:GetNWBool("Zappy") == true then
+            render.SetBlend( 1 )
+            render.MaterialOverride( Material("animated/zap") ) 
+            v:DrawModel() 
+            render.SetBlend( 1 ) 
+            render.MaterialOverride( 0 ) 
+        end
 	end 
 	cam.End3D() 
 end 
-hook.Add("RenderScreenspaceEffects","ElectricEffect",ElectricEffect)
+hook.Add("RenderScreenspaceEffects", "ElectricEffect", ElectricEffect)

@@ -1,4 +1,6 @@
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
+    local dismember = ply:GetNWInt("Dismember")
+    ply:SetNWInt("Dismember", 0)
     if GetGlobalVariable("RoundsToWacky") == 0 && dmginfo:GetAttacker():IsPlayer() && ply:IsPlayer() && dmginfo:GetAttacker():Team() == ply:Team() && ply:Team() == 3 && dmginfo:GetAttacker():IsPlayer() != ply then 
         dmginfo:ScaleDamage( 0 ) 
         ply:SetNWFloat("Acidied", 0)
@@ -41,13 +43,9 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
         dmginfo:ScaleDamage( 0 )
     end
     
-    if ply:GetNWString("Buff") == "armor" && dmginfo:IsBulletDamage() then
-        dmginfo:ScaleDamage( 0.8 )
-	end
-    
     if (ply:Health() - dmginfo:GetDamage()) <= 0 then return end
     if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_COOPOther") == victim then return end
-	if ply:GetNWInt("Dismember") == 0 && dmginfo:GetInflictor():GetClass() != "mm_coachgun" then return end
+	if dismember == 0 && dmginfo:GetInflictor():GetClass() != "mm_coachgun" then return end
     
     if dmginfo:GetInflictor():GetClass() == "mm_coachgun" then
         if ply:GetNWFloat("DamageTaken")+10 <= 40 then
@@ -59,8 +57,7 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
             return 
         end
     end
-    
-	ply:SetNWInt("Dismember", 0)
+
     local total = 0
     if ply:GetNWInt("LegMissing") == 1 then
         total = total + 1
@@ -78,13 +75,14 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
         total = 2
     end
     if total >= 2 then return end
-    if ht == -1 && dmginfo:GetInflictor():GetClass() != "mm_coachgun" then return end
+    //if ht == -1 && dmginfo:GetInflictor():GetClass() != "mm_coachgun" then return end
     if ply:GetNWString("Buff") == "armor" then return end
     local part = math.random(1,4)
     if dmginfo:GetAttacker() != ply  then
         dmginfo:GetAttacker():SetNWFloat("LastScoreTime", CurTime()+1)
         AddMedal(dmginfo:GetAttacker(), "dismember")
     end
+    
     while part != 0 do
         if part == 1 then
             if ply:GetNWInt("LegMissing") == 0 then
@@ -169,6 +167,7 @@ end
 
 function LoseLimb(ply, which, model)
     if !ply:Alive() then return end
+    ply:EmitSound("ambient/machines/slicer1.wav")
     if which == "leftarm" then
         CreateGibBody("models/monstermash/bloody_mary_final.mdl", "models/monstermash/gibs/bm_arm_left.mdl", ply, true)
         CreateGibBody("models/monstermash/deer_haunter_final.mdl", "models/monstermash/gibs/dh_arm_left.mdl", ply, true)
@@ -181,6 +180,12 @@ function LoseLimb(ply, which, model)
         CreateGibBody("models/monstermash/vampire_final.mdl", "models/monstermash/gibs/vampire_arm_left.mdl", ply, true)
         CreateGibBody("models/monstermash/stein_final.mdl", "models/monstermash/gibs/stein_arm_left.mdl", ply, true)
         CreateGibBody("models/monstermash/witch_final.mdl", "models/monstermash/gibs/witch_arm_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/banshee_final.mdl", "models/monstermash/gibs/banshee_arm_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/mad_scientist_final.mdl", "models/monstermash/gibs/scientist_arm_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/bride_final.mdl", "models/monstermash/gibs/bride_arm_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/zombie_final.mdl", "models/monstermash/gibs/zombie_arm_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/rex_final.mdl", "models/monstermash/gibs/rex_arm_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/invisible_man_final.mdl", "models/monstermash/gibs/invisibleman_arm_left.mdl", ply, true)
     elseif which == "rightarm" then
         CreateGibBody("models/monstermash/bloody_mary_final.mdl", "models/monstermash/gibs/bm_arm_right.mdl", ply, true)
         CreateGibBody("models/monstermash/deer_haunter_final.mdl", "models/monstermash/gibs/dh_arm_right.mdl", ply, true)
@@ -193,6 +198,12 @@ function LoseLimb(ply, which, model)
         CreateGibBody("models/monstermash/vampire_final.mdl", "models/monstermash/gibs/vampire_arm_right.mdl", ply, true)
         CreateGibBody("models/monstermash/stein_final.mdl", "models/monstermash/gibs/stein_arm_right.mdl", ply, true)
         CreateGibBody("models/monstermash/witch_final.mdl", "models/monstermash/gibs/witch_arm_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/banshee_final.mdl", "models/monstermash/gibs/banshee_arm_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/mad_scientist_final.mdl", "models/monstermash/gibs/scientist_arm_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/bride_final.mdl", "models/monstermash/gibs/bride_arm_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/zombie_final.mdl", "models/monstermash/gibs/zombie_arm_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/rex_final.mdl", "models/monstermash/gibs/rex_arm_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/invisible_man_final.mdl", "models/monstermash/gibs/invisibleman_arm_right.mdl", ply, true)
     elseif which == "leftleg" then
         CreateGibBody("models/monstermash/bloody_mary_final.mdl", "models/monstermash/gibs/bm_leg_left.mdl", ply, true)
         CreateGibBody("models/monstermash/deer_haunter_final.mdl", "models/monstermash/gibs/dh_leg_left.mdl", ply, true)
@@ -205,6 +216,12 @@ function LoseLimb(ply, which, model)
         CreateGibBody("models/monstermash/vampire_final.mdl", "models/monstermash/gibs/vampire_leg_left.mdl", ply, true)
         CreateGibBody("models/monstermash/stein_final.mdl", "models/monstermash/gibs/stein_leg_left.mdl", ply, true)
         CreateGibBody("models/monstermash/witch_final.mdl", "models/monstermash/gibs/witch_leg_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/banshee_final.mdl", "models/monstermash/gibs/banshee_leg_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/mad_scientist_final.mdl", "models/monstermash/gibs/scientist_leg_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/bride_final.mdl", "models/monstermash/gibs/bride_leg_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/zombie_final.mdl", "models/monstermash/gibs/zombie_leg_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/rex_final.mdl", "models/monstermash/gibs/rex_leg_left.mdl", ply, true)
+        CreateGibBody("models/monstermash/invisible_man_final.mdl", "models/monstermash/gibs/invisibleman_leg_left.mdl", ply, true)
     elseif which == "rightleg" then
         CreateGibBody("models/monstermash/bloody_mary_final.mdl", "models/monstermash/gibs/bm_leg_right.mdl", ply, true)
         CreateGibBody("models/monstermash/deer_haunter_final.mdl", "models/monstermash/gibs/dh_leg_right.mdl", ply, true)
@@ -217,6 +234,12 @@ function LoseLimb(ply, which, model)
         CreateGibBody("models/monstermash/vampire_final.mdl", "models/monstermash/gibs/vampire_leg_right.mdl", ply, true)
         CreateGibBody("models/monstermash/stein_final.mdl", "models/monstermash/gibs/stein_leg_right.mdl", ply, true)
         CreateGibBody("models/monstermash/witch_final.mdl", "models/monstermash/gibs/witch_leg_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/banshee_final.mdl", "models/monstermash/gibs/banshee_leg_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/mad_scientist_final.mdl", "models/monstermash/gibs/scientist_leg_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/bride_final.mdl", "models/monstermash/gibs/bride_leg_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/zombie_final.mdl", "models/monstermash/gibs/zombie_leg_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/rex_final.mdl", "models/monstermash/gibs/rex_leg_right.mdl", ply, true)
+        CreateGibBody("models/monstermash/invisible_man_final.mdl", "models/monstermash/gibs/invisibleman_leg_right.mdl", ply, true)
     end
 end
 
@@ -258,7 +281,10 @@ function CreateGibBody(check,path,victim,dobleed)
 end
 
 function GM:GetFallDamage( ply, speed )
-	if ply:GetNWString("Buff") != "double_jump" then
-		return 10
+	if ply:GetNWString("Buff") == "broom" then
+		return 0
+    else
+        speed = speed - 526.5;
+		return speed * 100/(922.5-526.5);
 	end
 end

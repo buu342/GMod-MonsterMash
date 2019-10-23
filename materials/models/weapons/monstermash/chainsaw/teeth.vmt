@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+"$baseTexture" "models/weapons/monstermash/chainsaw/teeth"
+"$surfaceprop" "Default"
+"$translucent" 1
+"$nocull" 1
+"Proxies"
+{
+"AnimatedTexture"
+{
+"animatedTextureVar" "$basetexture"
+"animatedTextureFrameNumVar" "$frame"
+"animatedTextureFrameRate" "50"
+}
+}
+}

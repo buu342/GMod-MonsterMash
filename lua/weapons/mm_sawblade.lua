@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_sawblade"
 SWEP.Cost = 60
+SWEP.Points = 10
 
 game.AddAmmoType( { 
  name = "ammo_crossbow",
@@ -7,6 +8,9 @@ game.AddAmmoType( {
  tracer = TRACER_LINE,
  force = 2000
 } )
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
 
 /*---------------------------------
 Created with buu342s Swep Creator
@@ -49,7 +53,7 @@ SWEP.DrawAmmo = true
 SWEP.Base = "mm_gun_base"
 
 SWEP.Primary.Sound = "weapons/crossbow/fire.wav" 
-SWEP.Primary.Damage = 45
+SWEP.Primary.Damage = 50
 SWEP.Primary.TakeAmmo = 1
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Ammo = "ammo_crossbow"
@@ -95,6 +99,7 @@ function SWEP:PrimaryAttack()
         Arrow:SetNWEntity("OriginalOwner", self.Owner)
 		Arrow:SetAngles(eAng)
 		Arrow.ArrowType = self.ArrowType
+        Arrow.Inflictor = self
 		Arrow:Spawn()
 		Arrow:SetVelocity(Arrow:GetForward()*3500)
         Arrow:SetNWVector("OriginalSpeed", Arrow:GetForward()*3500)

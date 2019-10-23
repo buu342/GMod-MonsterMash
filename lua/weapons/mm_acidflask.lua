@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_acidflask"
 SWEP.Cost = 30
+SWEP.Points = 40
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
 
 /*---------------------------------
 Created with buu342s Swep Creator

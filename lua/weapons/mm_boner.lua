@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_boner"
 SWEP.Cost = 5
+SWEP.Points = 75
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""

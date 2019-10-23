@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_pumpkinnade"
 SWEP.Cost = 35
+SWEP.Points = 10
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
 
 local soundData = {
     name   = "Weapon_pnade.PinPull" ,
@@ -124,6 +128,7 @@ end
  
 function SWEP:Think()
 	self:LegsDismembered()
+    self.MyOwner = self.Owner
 	if self.Weapon:Clip1() < 1 then
 		self.Owner:GetViewModel():SetPlaybackRate( 0 )
 		return
@@ -167,6 +172,8 @@ function SWEP:Think()
 				grenade:SetPos(pos)
 				grenade:SetAngles(Angle(math.random(1, 100), math.random(1, 100), math.random(1, 100)))
 				grenade:SetOwner(self.Owner)
+                grenade.Owner = self.Owner
+                grenade.Inflictor = self
 				grenade:Spawn()
 				grenade:Activate()
 				 
@@ -209,8 +216,10 @@ function SWEP:OnDrop()
 		grenade:SetOwner(self.Owner)
 		grenade:Spawn()
 		grenade:Activate()
-		grenade.MyOwner = self.MyOwner
-		self:Remove()
+        grenade.Owner = self.MyOwner
+        grenade.Inflictor = self
+		self:SetNoDraw(true)
+        timer.Simple(GetConVar( "mm_cleanup_time" ):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then  self:Remove() end end)
 	else
 		self.Owner = nil
 		timer.Simple(GetConVar( "mm_cleanup_time" ):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then  self:Remove() end end)

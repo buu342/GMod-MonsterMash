@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_shovel"
 SWEP.Cost = 15
+SWEP.Points = 75
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""

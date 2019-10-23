@@ -1,5 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_pumpshotgun"
-SWEP.Cost = 30
+SWEP.Cost = 35
+SWEP.Points = 25
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 /*---------------------------------
 Created with buu342s Swep Creator
@@ -42,19 +45,20 @@ SWEP.DrawAmmo = true
 SWEP.Base = "mm_gun_base"
 
 SWEP.Primary.Sound = "weapons/pumpaction/fire.wav" 
-SWEP.Primary.Damage = 7
+SWEP.Primary.Damage = 8
 SWEP.Primary.TakeAmmo = 1
 SWEP.Primary.ClipSize = 6
 SWEP.Primary.Ammo = "ammo_shotgun"
 SWEP.Primary.DefaultClip = 6
-SWEP.Primary.Spread = 0.5
+SWEP.Primary.Spread = 0.85
 SWEP.Primary.NumberofShots = 8
 SWEP.Primary.Automatic = false
 SWEP.Primary.Recoil = 2
-SWEP.Primary.Delay = 1
+SWEP.Primary.Delay = 1.1
 SWEP.Primary.BurstDelay = 0.3
 SWEP.Primary.Force = 1
 
+SWEP.Secondary.Spread = 1
 SWEP.Secondary.ClipSize = 0
 SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
@@ -65,7 +69,7 @@ SWEP.ReloadAmmoTime = 0.7 -- When does the ammo appear in the mag?
 SWEP.ReloadSpeed = 120
 
 SWEP.UseDistance = true
-SWEP.ShootDistance = 640
+SWEP.ShootDistance = 448
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float",0,"Gun_FakeTimer1")
@@ -100,9 +104,17 @@ function SWEP:Think()
         self:SetHoldType("rpg")
         end
     end
-    if self.Owner:KeyPressed(IN_RELOAD) && CurTime() > self:GetNextPrimaryFire() && !self:GetMM_Reloading() == true && self.Weapon:Clip1() < self.Primary.ClipSize then
+    if self.Owner:KeyPressed(IN_RELOAD) && CurTime() > self:GetNextPrimaryFire() && !self:GetMM_Reloading() && self.Weapon:Clip1() < self.Primary.ClipSize then
         self:SetMM_Reloading(true)
         self:StartMyReload()
+    end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
     end
     
 	self:LegsDismembered()
@@ -137,11 +149,7 @@ function SWEP:Think()
 	elseif !self.Owner:KeyDown(IN_ATTACK2) then
 		self:SetBurstCount(0)
 	end
-	
-	if self.Primary.Spread > 0.5 then
-		self.Primary.Spread = self.Primary.Spread*0.99
-	end
-    
+
     self:DoMyReload()
 	self:LegsDismembered()
 end
@@ -159,7 +167,6 @@ function SWEP:PrimaryAttack()
         self.Owner:SetRunSpeed(1)
     end
     
-	self.Primary.Spread = 0.5
 	self:SetGun_FakeTimer1(CurTime()+0.5)
 	 
 	local bullet = {} 
@@ -212,7 +219,6 @@ function SWEP:ShootBurst()
     end
 	if ( !self:CanPrimaryAttack() ) || !self.Owner:OnGround() then return end
 	if self:GetMM_Reloading() == true then return end
-	self.Primary.Spread = 0.75
 	self:SetGun_FakeTimer1(CurTime()+0.5)
 	 
 	local bullet = {} 
@@ -222,7 +228,7 @@ function SWEP:ShootBurst()
 	if self.UseDistance then
 		bullet.Distance = self.ShootDistance
 	end
-	bullet.Spread = Vector( self.Primary.Spread * 0.1 , self.Primary.Spread * 0.1, 0)
+	bullet.Spread = Vector( self.Secondary.Spread * 0.1 , self.Secondary.Spread * 0.1, 0)
 	bullet.Tracer = 1
 	bullet.TraceName = "Tracer"
 	bullet.Force = self.Primary.Force 

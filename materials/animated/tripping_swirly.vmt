@@ -1,0 +1,17 @@
+UnlitGeneric
+{
+	$basetexture "animated/tripping_swirly"
+	$alphatest 1
+
+	"Proxies"
+	{
+		 "AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "12"
+		}
+        }
+
+
+}

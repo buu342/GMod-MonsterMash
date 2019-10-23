@@ -14,7 +14,7 @@ function EFFECT:Init( data )
 		else
 		mat = "particle/smokesprites_000"..tostring(thing)
 		end
-		local particle = emitter:Add( mat, Pos + Vector( math.random( -100, 100 ), math.random( -100, 100 ), 0 ) )
+		local particle = emitter:Add( mat, Pos + Vector( math.random( -200, 200 ), math.random( -200, 200 ), 0 ) )
 		particle:SetVelocity( Vector( math.random( -10, 10), math.random( -10, 10 ), math.random( 50, 100 ) ) )
 		particle:SetGravity( Vector(0,0,-20) )
 		particle:SetDieTime( math.random( 1,2 ) )

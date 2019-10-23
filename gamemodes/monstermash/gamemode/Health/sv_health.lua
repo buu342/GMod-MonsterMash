@@ -17,6 +17,8 @@ function GM:PlayerHurt(victim, attacker, health, damage)
 
 end
 
+util.AddNetworkString( "EmitConcussEffect" )
+
 function GM:EntityTakeDamage(victim, dmginfo)
 
     if (victim:GetClass() == "prop_ragdoll" ) then
@@ -64,6 +66,20 @@ function GM:EntityTakeDamage(victim, dmginfo)
     if dmginfo:GetInflictor():GetClass() == "ent_fireball" then
         dmginfo:SetDamage(0) 
     end
+    if dmginfo:GetInflictor():GetClass() == "ent_fireballsmol" then
+        dmginfo:SetDamage(0) 
+    end
+    if dmginfo:GetInflictor():GetClass() == "ent_deanimatorball" then
+        dmginfo:SetDamage(0) 
+    end    
+    if dmginfo:GetInflictor():GetClass() == "ent_magicball" then
+        dmginfo:SetDamage(0) 
+    end
+    
+    if victim:GetNWString("Buff") == "armor" && dmginfo:IsBulletDamage() then
+        dmginfo:SetDamage( dmginfo:GetDamage() * 0.5 )
+	end
+    
 	if victim:IsPlayer() && dmginfo:GetDamageType() == DMG_SLASH then 
 		victim:SetNWFloat("MM_Concussion", CurTime() + 8)
 		victim:SetDSP( 35, false )
@@ -71,8 +87,12 @@ function GM:EntityTakeDamage(victim, dmginfo)
             dmginfo:GetAttacker():SetNWFloat("LastScoreTime", CurTime()+1)
             AddMedal(dmginfo:GetAttacker(), "concuss")
             dmginfo:GetAttacker():EmitSound("gameplay/crit_hit.wav")
+            net.Start("EmitConcussEffect")
+            net.WriteEntity(victim)
+            net.Broadcast()
         end
-	end
+	end	
+    
 	local e = dmginfo:GetInflictor()
 	if IsValid(e) and e:GetClass() == "entityflame" && victim:IsPlayer() then
 		dmginfo:SetDamageType( DMG_SLASH )

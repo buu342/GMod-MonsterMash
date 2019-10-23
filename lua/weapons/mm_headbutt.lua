@@ -41,7 +41,7 @@ SWEP.DrawAmmo			= false
 SWEP.DrawCrosshair		= true
 
 SWEP.TimeToHit          = 0.3
-SWEP.Reach              = 28
+SWEP.Reach              = 33
 SWEP.HitSound1 = Sound("weapons/bone/boner1.wav")
 SWEP.HitSound2 = Sound("weapons/bone/boner2.wav")
 SWEP.HitSound3 = Sound("weapons/bone/boner1.wav")
@@ -60,6 +60,7 @@ function SWEP:PrimaryAttack()
 	
     self:SetHoldType("melee")
     self:SetWeaponHoldType("melee")
+    self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
     if SERVER then
         net.Start( "DoStupidStuff" )
             net.WriteEntity(self)
@@ -100,8 +101,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end

@@ -1,5 +1,13 @@
 SWEP.SelectIcon = "vgui/entities/mm_battlerifle"
 SWEP.Cost = 50
+SWEP.Points = 25
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_BAR" )
+SWEP.CrosshairSize = 34
+SWEP.CrosshairChargeSize = 0
+SWEP.CrosshairChargeMaterial = Material("")
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeSize = 16
 
 game.AddAmmoType( { 
  name = "ammo_battlerifle",
@@ -54,11 +62,11 @@ SWEP.Primary.TakeAmmo = 1
 SWEP.Primary.ClipSize = 18
 SWEP.Primary.Ammo = "ammo_battlerifle"
 SWEP.Primary.DefaultClip = 18
-SWEP.Primary.Spread = 0.0725
+SWEP.Primary.Spread = 0.0675
 SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Recoil = 0.3
-SWEP.Primary.Delay = 0.8
+SWEP.Primary.Delay = 0.7
 SWEP.Primary.BurstDelay = 0.075
 SWEP.Primary.Force = 1
 
@@ -130,6 +138,15 @@ function SWEP:Think()
 			self:SetBurstCount(1)
 		end
 	end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
+    end
+    
 	if CLIENT then
 
 		if !self.Owner:IsOnGround() then
@@ -247,7 +264,7 @@ function SWEP:SecondaryAttack()
 		self:ShootEffects2()
 		local phys = grenade:GetPhysicsObject()
 	 
-		self.Force = 5000
+		self.Force = 2500
 	 
 		phys:ApplyForceCenter(self.Owner:GetAimVector() * self.Force * 1.2 + Vector(0, 0, 200))
 
@@ -280,4 +297,19 @@ function SWEP:Reload()
         
 	end
 	self.Owner:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD,  ACT_GESTURE_RELOAD_SMG1, true )
+end
+
+function SWEP:FireAnimationEvent(pos,ang,event)
+
+	if (event==21) then 
+		if IsValid(self.Owner) && IsValid(self.Owner:GetViewModel()) then
+			local effectdata = EffectData()
+			local vm = self.Owner:GetViewModel()
+			if vm:GetAttachment(1) != nil then
+				effectdata:SetOrigin( self.Owner:GetViewModel():GetAttachment(1).Pos )
+				util.Effect( "mm_muzzle", effectdata )
+			end
+		end
+	end
+
 end

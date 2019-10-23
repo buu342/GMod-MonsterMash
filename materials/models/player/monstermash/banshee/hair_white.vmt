@@ -1,0 +1,7 @@
+vertexlitgeneric
+{
+$basetexture "models/player/monstermash/banshee/hair_white"
+$surfaceprop flesh
+$nocull 1
+$translucent 1
+}

@@ -1,6 +1,6 @@
 if SERVER then return end
 
-local version = "Version 1.0 Release" 
+local version = "Version 1.5 Release" 
 local panic_button = false
 
 function SimpleButtonPaint(self, w, h)
@@ -53,8 +53,13 @@ function Class_Menu()
         "models/monstermash/witch_final.mdl",
         "models/monstermash/headless_horseman_final.mdl",
         "models/monstermash/stein_final.mdl",
+        "models/monstermash/bride_final.mdl",
         "models/monstermash/mummy_final.mdl",
         "models/monstermash/bloody_mary_final.mdl",
+        "models/monstermash/invisible_man_final.mdl",
+        "models/monstermash/mad_scientist_final.mdl",
+        "models/monstermash/banshee_final.mdl",
+        "models/monstermash/zombie_final.mdl",
     }
     local SelectedModel = ""	
     
@@ -137,7 +142,7 @@ function Class_Menu()
         surface.SetTextPos( w+67,ScrH()-8-108 )
         surface.DrawText( "- DrHammer" )
         surface.SetTextPos( w+67,ScrH()-8-90 )
-        surface.DrawText( "- Rex" )
+        surface.DrawText( "- Rex the Impaler" )
         surface.SetTextPos( w+67,ScrH()-8-72 )
         surface.DrawText( "- Billion SL" )
         surface.SetTextPos( w+67,ScrH()-8-54 )
@@ -147,6 +152,10 @@ function Class_Menu()
         surface.SetTextPos( w,ScrH()-8-18 )
         if game.GetMap() == "mm_harvest_v1" then
             surface.DrawText( "Current map: "..game.GetMap().." created by Demo" )
+        elseif game.GetMap() == "mm_harvest_night" then
+            surface.DrawText( "Current map: "..game.GetMap().." created by Demo" )
+        elseif game.GetMap() == "mm_swamp" then
+            surface.DrawText( "Current map: "..game.GetMap().." created by Mushroom Guy, finished by Demo" )
         elseif game.GetMap() == "mm_village" then
             surface.DrawText( "Current map: "..game.GetMap().." created by Billion" )
         else
@@ -233,26 +242,26 @@ function Class_Menu()
     text:SetPos(0,322)
     text:SetColor( Color( 0, 0, 0, 255 ) )
     text:SetFont("Trebuchet18")
-    text:SetText("Controls\n\nF1\nQ\nShift + A/D\nF\nZ\n")
+    text:SetText("Controls\nF1\nQ\nC\nShift + A/D\nF\nZ\n")
     text:SizeToContents()
     local text = vgui.Create("DLabel", welcome)
     text:SetPos(72,322)
     text:SetColor( Color( 0, 0, 0, 255 ) )
     text:SetFont("Trebuchet18")
-    text:SetText("\n\nOpen this menu\nHeal\nDodge Roll\nCandlestick\nTaunt")
+    text:SetText("\nOpen this menu\nHeal\nActivate Buff\nDodge Roll\nCandlestick\nTaunt")
     text:SizeToContents()
     
     local text = vgui.Create("DLabel", welcome)
-    text:SetPos(484,358)
+    text:SetPos(484,322)
     text:SetColor( Color( 0, 0, 0, 255 ) )
     text:SetFont("Trebuchet18")
     text:SetText("What's new this update?")
     text:SizeToContents()
     local text = vgui.Create("DLabel", welcome)
-    text:SetPos(484,358)
+    text:SetPos(484,322)
     text:SetColor( Color( 0, 0, 0, 255 ) )
     text:SetFont("Trebuchet18")
-    text:SetText("\n\n     Added medal system\n Brand new HUD + Menu    \nTHE SKULL RECHARGES!!")
+    text:SetText("\n\n               New weapons\n             New characters\n                            Buffs\n              Melee dashing\n            And much more!")
     text:SizeToContents()
     //}
 
@@ -453,7 +462,7 @@ function Class_Menu()
 ]]..                        [[                         Trivia
 ]]..                        [[Scarecrow's biggest desire in life
 ]]..                        [[is to obtain a brain, so he has
-]]..                        [[joined the mash to bash it out of 
+]]..                        [[joined the mash to slash it out of 
 ]]..                        [[whoever stands in the way of him 
 ]]..                        [[and his scythe.
 
@@ -535,6 +544,37 @@ function Class_Menu()
 ]]..                        [[Hates: Heads
 ]]
             CharacterName:SetText("   The Headless\n     Horseman")
+            CharacterName:SizeToContents()
+            CharacterDesc:SetText(desc)
+            CharacterDesc:SizeToContents()
+        end
+        
+        local function ResetInvisibleManStuffButton()
+            SkinButton:SetPos( 1000000, 1000000 )
+            SkinButton2:SetPos( 1000000, 1000000 )
+            SkinButton3:SetPos( 1000000, 1000000 )
+            SkinButton4:SetPos( 1000000, 1000000 )
+            SkinButton5:SetPos( 1000000, 1000000 )
+            SkinButton6:SetPos( 1000000, 1000000 )
+            local desc =    [[
+
+           
+
+]]..                        [[                   First seen in
+]]..                        [[The Invisible Man (1897)
+
+
+]]..                        [[                         Trivia
+]]..                        [[An unhinged, yet brilliant scientist
+]]..                        [[who had engineered the means to
+]]..                        [[become invisibile. Not so much
+]]..                        [[for reversing the process, however.
+
+
+]]..                        [[Loves: Streaking
+]]..                        [[Hates: Intrusive people
+]]
+            CharacterName:SetText("   The Invisible\n           Man")
             CharacterName:SizeToContents()
             CharacterDesc:SetText(desc)
             CharacterDesc:SizeToContents()
@@ -808,7 +848,7 @@ function Class_Menu()
 
 ]]..                        [[                         Trivia
 ]]..                        [[The wrapped remains of once 
-]]..                        [[powerful rulers of acient egypt.
+]]..                        [[powerful rulers of Ancient Egypt.
 
 
 ]]..                        [[Loves: Yu-Gi-Oh!
@@ -839,6 +879,241 @@ function Class_Menu()
             CharacterDesc:SizeToContents()
         end
         
+        local function ResetMadScientistStuffButton()
+            local x = (mdl_size/2-(30*5)/2+mdl_disp)
+            local desc =    [[                   First seen in
+]]..                        [[1962
+
+
+]]..                        [[                         Trivia
+]]..                        [[He’s almost as smart as the 
+]]..                        [[Invisible Man, but not smart 
+]]..                        [[enough to invent invisibility. Hence 
+]]..                        [[why he is mad.
+
+
+]]..                        [[Loves: Unorthodox medical 
+]]..                        [[            procedures
+]]..                        [[Hates: Lacking the ability to close 
+]]..                        [[            his eyes
+]]
+
+            SkinButton:SetPos( x, 400 )
+            SkinButton:SetPos( x, 400 )
+            SkinButton.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 186, 179, 122, 255 )
+                surface.DrawRect( 0, 0, SkinButton:GetWide(), SkinButton:GetTall() )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton2:SetPos( x+35, 400 )
+            SkinButton2.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 115, 200, 116, 255 )
+                surface.DrawRect( 0, 0, SkinButton2:GetWide(), SkinButton2:GetTall() )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            
+            SkinButton3:SetPos( x+70, 400 )
+            SkinButton3.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 153, 57, 8, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall() )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton4:SetPos( x+105, 400 )
+            SkinButton4.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 142, 0, 0, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall() )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton5:SetPos( x+140, 400 )
+            SkinButton5.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 123, 44, 162, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall() )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton6:SetPos( 1000000, 1000000 )
+            CharacterName:SetText(" Mad Scientist\n")
+            CharacterName:SizeToContents()
+            CharacterDesc:SetText(desc)
+            CharacterDesc:SizeToContents()
+        end
+        
+        local function ResetBansheeStuffButton()
+            local x = (mdl_size/2-(30*3)/2+mdl_disp)
+            local desc =    [[                   First seen in
+]]..                        [[1380
+
+
+]]..                        [[                         Trivia
+]]..                        [[A sort of goddess of death that 
+]]..                        [[observes one's relatives before
+]]..                        [[they die. Kinda like the Shinigami
+]]..                        [[from Death Note except without 
+]]..                        [[the Death Note or having anything 
+]]..                        [[to do with a Shinigami.
+
+
+]]..                        [[Loves: Shrieking
+]]..                        [[Hates: Final Destination characters
+]]
+
+            SkinButton:SetPos( x, 400 )
+            SkinButton.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 38, 66, 38, 255 )
+                surface.DrawRect( 0, 0, SkinButton:GetWide(), SkinButton:GetTall() )
+                surface.SetDrawColor( 38, 42, 38, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall()/2 )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton2:SetPos( x+35, 400 )
+            SkinButton2.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 43, 35, 50, 255 )
+                surface.DrawRect( 0, 0, SkinButton:GetWide(), SkinButton:GetTall() )
+                surface.SetDrawColor( 128, 128, 128, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall()/2 )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            
+            SkinButton3:SetPos( x+70, 400 )
+            SkinButton3.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 37, 40, 70, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall() )
+                surface.SetDrawColor( 0, 0, 0, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall()/2 )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton4:SetPos( 1000000, 1000000 )
+            SkinButton5:SetPos( 1000000, 1000000 )
+            SkinButton6:SetPos( 1000000, 1000000 )
+            CharacterName:SetText("       Banshee\n")
+            CharacterName:SizeToContents()
+            CharacterDesc:SetText(desc)
+            CharacterDesc:SizeToContents()
+        end
+        
+        local function ResetZombieStuffButton()
+            local x = (mdl_size/2-(30*3)/2+mdl_disp)
+            local desc =    [[                   First seen in
+]]..                        [[Night of the Living Dead (1968)
+
+
+]]..                        [[                         Trivia
+]]..                        [[Re-Animated corpses who rise 
+]]..                        [[from their graves at nightfall to 
+]]..                        [[feast upon the living. Not to be 
+]]..                        [[confused with vampires, who also
+]]..                        [[rise from their graves at nightfall 
+]]..                        [[to feast upon the living.
+
+
+]]..                        [[Loves: Getting home from work  
+]]..                        [[            and catching the start of 
+]]..                        [[            his favorite movie on TV
+]]..                        [[Hates: Being expected to dance to
+]]..                        [[            thriller
+]]
+
+            SkinButton:SetPos( x, 400 )
+            SkinButton.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 72, 69, 47, 255 )
+                surface.DrawRect( 0, 0, SkinButton:GetWide(), SkinButton:GetTall() )
+                surface.SetDrawColor( 180, 159, 116, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall()/2 )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton2:SetPos( x+35, 400 )
+            SkinButton2.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 55, 40, 46, 255 )
+                surface.DrawRect( 0, 0, SkinButton:GetWide(), SkinButton:GetTall() )
+                surface.SetDrawColor( 130, 124, 77, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall()/2 )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            
+            SkinButton3:SetPos( x+70, 400 )
+            SkinButton3.Paint = function()
+                if LocalPlayer().LastTab != 2 then return end
+                surface.SetDrawColor( 49, 52, 48, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall() )
+                surface.SetDrawColor( 131, 122, 101, 255 )
+                surface.DrawRect( 0, 0, SkinButton3:GetWide(), SkinButton3:GetTall()/2 )
+                surface.SetDrawColor( 255, 255, 255, 255 )
+            end
+            SkinButton4:SetPos( 1000000, 1000000 )
+            SkinButton5:SetPos( 1000000, 1000000 )
+            SkinButton6:SetPos( 1000000, 1000000 )
+            CharacterName:SetText("       Zombie\n")
+            CharacterName:SizeToContents()
+            CharacterDesc:SetText(desc)
+            CharacterDesc:SizeToContents()
+        end
+        
+        local function ResetBrideStuffButton()
+            local desc =    [[                   First seen in
+]]..                        [[Bride of Frankenstein
+
+
+]]..                        [[                         Trivia
+]]..                        [[We need more money, but hockey 
+]]..                        [[masks aren't popular yet. Hmm...
+
+
+
+]]..                        [[Loves: Not being alive
+]]..                        [[Hates: Arranged marriages
+]]
+
+            SkinButton:SetPos( 1000000, 1000000 )
+            SkinButton2:SetPos( 1000000, 1000000 )
+            SkinButton3:SetPos( 1000000, 1000000 )
+            SkinButton4:SetPos( 1000000, 1000000 )
+            SkinButton5:SetPos( 1000000, 1000000 )
+            SkinButton6:SetPos( 1000000, 1000000 )
+            CharacterName:SetText("       The Bride")
+            CharacterName:SizeToContents()
+            CharacterDesc:SetText(desc)
+            CharacterDesc:SizeToContents()
+        end
+        
+        local function ResetRexStuffButton()
+            local x = (mdl_size/2-(30*3)/2+mdl_disp)
+            local desc =    [[                   First seen in
+]]..                        [[Some edgey loser's Steam profile
+
+
+]]..                        [[                         Trivia
+]]..                        [[If I had a revolver with 2 bullets
+]]..                        [[and I was in a room with Hitler and
+]]..                        [[a stoner, I would shoot hitler twice
+]]..                        [[cause I would beat the stoner to
+]]..                        [[death with my own hands.
+
+
+]]..                        [[Loves: Yiff
+]]..                        [[Hates: Gamers
+]]
+
+            SkinButton:SetPos( 1000000, 1000000 )
+            SkinButton2:SetPos( 1000000, 1000000 )
+            SkinButton3:SetPos( 1000000, 1000000 )
+            SkinButton4:SetPos( 1000000, 1000000 )
+            SkinButton5:SetPos( 1000000, 1000000 )
+            SkinButton6:SetPos( 1000000, 1000000 )
+            CharacterName:SetText("           Rex\n")
+            CharacterName:SizeToContents()
+            CharacterDesc:SetText(desc)
+            CharacterDesc:SizeToContents()
+        end
+        
         if ply:GetNWString("plymdl") == "models/monstermash/deer_haunter_final.mdl" then
             ResetDeerHaunterStuffButton()
         elseif ply:GetNWString("plymdl") == "models/monstermash/vampire_final.mdl" then
@@ -855,14 +1130,26 @@ function Class_Menu()
             ResetWitchStuffButton()
         elseif ply:GetNWString("plymdl") == "models/monstermash/headless_horseman_final.mdl" then
             ResetHeadlessHorsemanStuffButton()
+        elseif ply:GetNWString("plymdl") == "models/monstermash/invisible_man_final.mdl" then
+            ResetInvisibleManStuffButton()
         elseif ply:GetNWString("plymdl") == "models/monstermash/stein_final.mdl" then
             ResetSteinStuffButton()
+        elseif ply:GetNWString("plymdl") == "models/monstermash/bride_final.mdl" then
+            ResetBrideStuffButton()
         elseif ply:GetNWString("plymdl") == "models/monstermash/random_character.mdl" then
             ResetRandomStuffButton()
         elseif ply:GetNWString("plymdl") == "models/monstermash/mummy_final.mdl" then
             ResetMummyStuffButton()
         elseif ply:GetNWString("plymdl") == "models/monstermash/bloody_mary_final.mdl" then
             ResetBloodyMaryStuffButton()
+        elseif ply:GetNWString("plymdl") == "models/monstermash/mad_scientist_final.mdl" then
+            ResetMadScientistStuffButton()
+        elseif ply:GetNWString("plymdl") == "models/monstermash/banshee_final.mdl" then
+            ResetBansheeStuffButton()              
+        elseif ply:GetNWString("plymdl") == "models/monstermash/zombie_final.mdl" then
+            ResetZombieStuffButton()            
+        elseif ply:GetNWString("plymdl") == "models/monstermash/rex_final.mdl" then
+            ResetRexStuffButton()        
         end
         
         local function ModelRandomizer()
@@ -887,8 +1174,14 @@ function Class_Menu()
             elseif  i == 6  then ResetWitchStuffButton()
             elseif  i == 7  then ResetHeadlessHorsemanStuffButton()
             elseif  i == 8  then ResetSteinStuffButton()
-            elseif  i == 9  then ResetMummyStuffButton()
-            elseif  i == 10  then ResetBloodyMaryStuffButton()
+            elseif  i == 9  then ResetBrideStuffButton()
+            elseif  i == 10  then ResetMummyStuffButton()
+            elseif  i == 11  then ResetBloodyMaryStuffButton()
+            elseif  i == 12  then ResetInvisibleManStuffButton()
+            elseif  i == 13  then ResetMadScientistStuffButton()
+            elseif  i == 14  then ResetBansheeStuffButton()
+            elseif  i == 15  then ResetZombieStuffButton()
+            elseif  i == 1337  then ResetRexStuffButton()
             end        
         end
         
@@ -948,7 +1241,28 @@ function Class_Menu()
                 draw.RoundedBox( 4, 0, 0, w, h, Color( 0, 0, 0, 105 ) )
             end
         end
-        
+        if table.HasValue(developers, LocalPlayer():SteamID()) || table.HasValue(admins, LocalPlayer():SteamID()) || table.HasValue(edgelord, LocalPlayer():SteamID()) then
+            BGPanel = vgui.Create( "DPanel", character )
+            BGPanel:SetPos( menuw-80, menuh-100 )
+            BGPanel:SetSize( 64, 64 )
+            local mdl = vgui.Create( "SpawnIcon", BGPanel )
+            mdl:SetSize( BGPanel:GetSize() )
+            mdl:SetModel( "models/monstermash/rex_final.mdl" )
+            mdl:SetSkin(ply:GetNWInt("plyskn"))
+            function mdl:DoClick()
+                CallButton(1337)
+                SelectedModel = "models/monstermash/rex_final.mdl"
+                ply:SetNWString("plymdl","models/monstermash/rex_final.mdl")
+                net.Start("MMPlyModel")
+                net.WriteString("models/monstermash/rex_final.mdl")
+                net.SendToServer()
+                timer.Simple( 0, function() UpdateFromConvars() CallButton(1337) end )
+                surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
+            end
+            BGPanel.Paint = function(self, w, h)
+                draw.RoundedBox( 4, 0, 0, w, h, Color( 0, 0, 0, 105 ) )
+            end
+        end
         //}
 
         UpdateFromConvars()
@@ -1021,7 +1335,7 @@ function Class_Menu()
         "Handgun", 
         "Primary", 
         "Throwable", 
-        "Coming Soon", 
+        "Buff", 
         "Randomize"
     }
 
@@ -1123,14 +1437,13 @@ function Class_Menu()
             TypeTab:SetText( weapontypes_name[k] )
             TypeTab:SetSize( 128, 48 )
             TypeTab.DoClick = function()
-                if k == 5 then return end
                 LocalPlayer():SetNWString("Category", weapontypes[k])
                 category = LocalPlayer():GetNWString("Category")
                 surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
                 if k == 6 then
                     for z = 1, 5 do
                         local tp = weapontypes_name[z]
-                        if tp == "Coming Soon" then
+                        if tp == "Buff" then
                             tp = "Buff"
                         end
                         net.Start("MM_Wep_"..tp)
@@ -1185,31 +1498,46 @@ function Class_Menu()
                     if category == "random" then return end
                     if !(i <= #MonsterMash_Weapons[category]) then return end
                     if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == LocalPlayer() then return end
-                    local ent = MonsterMash_Weapons[category][i].entity
-                    local tp = LocalPlayer():GetNWString("Category")
-                    local lastcost = "lastcost_"..tp
-                    local start = "MM_Wep_"..tp
-                    if LocalPlayer():GetNWInt("gold")+LocalPlayer():GetNWInt(lastcost) >= MonsterMash_Weapons[category][i].cost then
+                    if category != "buff" then
+                        local ent = MonsterMash_Weapons[category][i].entity
+                        local tp = LocalPlayer():GetNWString("Category")
+                        local lastcost = "lastcost_"..tp
+                        local start = "MM_Wep_"..tp
+                        if LocalPlayer():GetNWInt("gold")+LocalPlayer():GetNWInt(lastcost) >= MonsterMash_Weapons[category][i].cost then
+                            net.Start(start)
+                            net.WriteString(ent)
+                            net.WriteFloat(MonsterMash_Weapons[category][i].cost)
+                            net.SendToServer()
+                            LocalPlayer():SetNWInt("gold",LocalPlayer():GetNWInt("gold")-MonsterMash_Weapons[category][i].cost+LocalPlayer():GetNWInt(lastcost))
+                            LocalPlayer():SetNWInt(lastcost,MonsterMash_Weapons[category][i].cost)
+                            LocalPlayer():SetNWString(tp,ent)
+                            GoldText:SetText(LocalPlayer():GetNWInt("gold"))
+                            GoldText:SizeToContents()
+                            surface.PlaySound("ui/keys_pickup-0"..math.random(1,4)..".wav")
+                            if LocalPlayer():GetNWInt("gold") == GetConVar("mm_budget"):GetInt() then
+                                GoldIcon:SetPos(150+90, menuh-80)
+                                GoldText:SetPos(190+90, menuh-70)
+                            elseif LocalPlayer():GetNWInt("gold") < 10 then
+                                GoldIcon:SetPos(150+100, menuh-80)
+                                GoldText:SetPos(190+100, menuh-70)
+                            else
+                                GoldIcon:SetPos(150+94, menuh-80)
+                                GoldText:SetPos(190+94, menuh-70)
+                            end
+                        end
+                    else
+
+                        local ent = MonsterMash_Weapons[category][i].entity
+                        local tp = LocalPlayer():GetNWString("Category")
+                        local lastcost = "lastcost_"..tp
+                        local start = "MM_Wep_"..tp
                         net.Start(start)
                         net.WriteString(ent)
                         net.WriteFloat(MonsterMash_Weapons[category][i].cost)
                         net.SendToServer()
-                        LocalPlayer():SetNWInt("gold",LocalPlayer():GetNWInt("gold")-MonsterMash_Weapons[category][i].cost+LocalPlayer():GetNWInt(lastcost))
-                        LocalPlayer():SetNWInt(lastcost,MonsterMash_Weapons[category][i].cost)
-                        LocalPlayer():SetNWString(tp,ent)
-                        GoldText:SetText(LocalPlayer():GetNWInt("gold"))
-                        GoldText:SizeToContents()
+
+                        LocalPlayer():SetNWString(tp.."_ready",ent)
                         surface.PlaySound("ui/keys_pickup-0"..math.random(1,4)..".wav")
-                        if LocalPlayer():GetNWInt("gold") == GetConVar("mm_budget"):GetInt() then
-                            GoldIcon:SetPos(150+90, menuh-80)
-                            GoldText:SetPos(190+90, menuh-70)
-                        elseif LocalPlayer():GetNWInt("gold") < 10 then
-                            GoldIcon:SetPos(150+100, menuh-80)
-                            GoldText:SetPos(190+100, menuh-70)
-                        else
-                            GoldIcon:SetPos(150+94, menuh-80)
-                            GoldText:SetPos(190+94, menuh-70)
-                        end
                     end
                 end
                 button.Paint = function( self, w, h )
@@ -1235,15 +1563,21 @@ function Class_Menu()
                                     range = string.SetChar( range, z, "+" )
                                 end
                                 
-                                TextDesc:SetText(a.description.."\n\nTier: "..a.classification.."\nDamage: "..a.damage.."\nRange: "..range.."\n\nConcuss chance: "..a.concusschance.."%\nBleed chance: "..a.bleedchance.."%\nDismember chance: "..a.dismemberchance.."%")
+                                TextDesc:SetText(a.description.."\n\nBase points: "..a.points.."\nDamage: "..a.damage.."\nRange: "..range.."\n\nConcuss chance: "..a.concusschance.."%\nBleed chance: "..a.bleedchance.."%\nDismember chance: "..a.dismemberchance.."%")
                                 TextDesc:SetAutoStretchVertical(true)
                                 TextDesc:SetWrap(true)
                             elseif category == "throwable" then
                                 local a = MonsterMash_Weapons[category][i]
                                 
-                                TextDesc:SetText(a.description.."\n\nTier: "..a.classification.."\nDamage: "..a.damage.."\nChargeup: "..tostring(a.chargeup))
+                                TextDesc:SetText(a.description.."\n\nBase points: "..a.points.."\nDamage: "..a.damage.."\nChargeup: "..tostring(a.chargeup))
                                 TextDesc:SetAutoStretchVertical(true)
-                                TextDesc:SetWrap(true)                        
+                                TextDesc:SetWrap(true)            
+                            elseif category == "buff" then
+                                local a = MonsterMash_Weapons[category][i]
+                                
+                                TextDesc:SetText(a.description)
+                                TextDesc:SetAutoStretchVertical(true)
+                                TextDesc:SetWrap(true)                                           
                             else
                                 local a = MonsterMash_Weapons[category][i]
                                 local range = "     "
@@ -1259,7 +1593,7 @@ function Class_Menu()
                                     range = string.SetChar( range, z, "+" )
                                 end
                                 
-                                TextDesc:SetText(a.description.."\n\nTier: "..a.classification.."\nDamage: "..damage.."\nRange: "..range.."\n\nFiremode: "..a.firemode.."\nClip size: "..a.clipsize)
+                                TextDesc:SetText(a.description.."\n\nBase points: "..a.points.."\nDamage: "..damage.."\nRange: "..range.."\n\nFiremode: "..a.firemode.."\nClip size: "..a.clipsize)
                                 TextDesc:SetAutoStretchVertical(true)
                                 TextDesc:SetWrap(true)
                             end
@@ -1273,7 +1607,7 @@ function Class_Menu()
                     
                     local ent = MonsterMash_Weapons[category][i].entity
                     local col = Color(0,0,0,255)
-                    if LocalPlayer():GetNWString(LocalPlayer():GetNWString("Category")) == ent then
+                    if (LocalPlayer():GetNWString("Category") != "buff" && LocalPlayer():GetNWString(LocalPlayer():GetNWString("Category")) == ent) || (LocalPlayer():GetNWString("Category") == "buff" && LocalPlayer():GetNWString("NextApplyBuff") == ent) then
                         col = Color( 0, 0, 255, 255 )
                     end
                     draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 105 ) )
@@ -1282,7 +1616,11 @@ function Class_Menu()
                     draw.RoundedBox( 0, 0, 0, w, 2, col )
                     draw.RoundedBox( 0, 0, h-2, w, 2, col )
                     if button:IsHovered() == true then
-                        button:SetText( MonsterMash_Weapons[category][i].cost.." Gold" )
+                        if category != "buff" then
+                            button:SetText( MonsterMash_Weapons[category][i].cost.." Gold" )
+                        else
+                            button:SetText( MonsterMash_Weapons[category][i].cost.." Medals" )
+                        end
                         button:SetImage( "nothing" )
                         //LocalPlayer():SetNWString("Category", "Melee")
                     else
@@ -1315,22 +1653,34 @@ function Class_Menu()
     local text
     local command
     
-    for i=1, 5 do
+    for i=1, 9 do
         if i == 1 then
             text = "Aim Assist"
             command = "mm_aimenable"
         elseif i == 2 then
+            text = "Melee hard lock"
+            command = "mm_meleeaim"
+        elseif i == 3 then
             text = "Dodge firstperson rotation"
             command = "mm_rollrotatescreen"
-        elseif i == 3 then
+        elseif i == 4 then
             text = "Disable Haunted Urn Screamers"
             command = "mm_pussymode"
-        elseif i == 4 then
+        elseif i == 5 then
             text = "Blur Menu Background"
             command = "mm_blurmenu"
-        elseif i == 5 then
+        elseif i == 6 then
             text = "Deanimator shake"
-            command = "mm_deanimatorshake"
+            command = "mm_deanimatorshake"         
+        elseif i == 7 then
+            text = "Show tips in deathcam"
+            command = "mm_deathtips"        
+        elseif i == 8 then
+            text = "Auto reload when empty"
+            command = "mm_autoreload"              
+        elseif i == 9 then
+            text = "Screen blood"
+            command = "mm_screenblood"        
         end
         local Checkbox = vgui.Create( "DCheckBox", options )
         Checkbox.command = command
@@ -1549,32 +1899,41 @@ function Class_Menu()
         local text
         local x = 0
         local y = 12
-        for i=1, 9 do
+        for i=1, 12 do
             if i == 1 then
                 text = "Point Limit"
-                command = "mm_kill_limit"
+                command = "mm_point_limit"
             elseif i == 2 then
+                text = "Round Time"
+                command = "mm_roundtimer"            
+            elseif i == 3 then
+                text = "Rounds to map swap"
+                command = "mm_maxrounds"
+            elseif i == 4 then
                 text = "Gold Limit"
                 command = "mm_budget"
-            elseif i == 3 then
+            elseif i == 5 then
                 text = "Buy Time"
                 command = "mm_buy_time"
-            elseif i == 4 then
+            elseif i == 6 then
                 text = "Health Regen Time"
-                command = "mm_healthregentime"
-            elseif i == 5 then
+                command = "mm_healthregentime"            
+            elseif i == 7 then
+                text = "Health Regen Amount"
+                command = "mm_healthregenamount"
+            elseif i == 8 then
                 text = "Wacky Round frequency"
                 command = "mm_wackyfrequency"
-            elseif i == 6 then
+            elseif i == 9 then
                 text = "Cleanup Time"
                 command = "mm_cleanup_time"
-            elseif i == 7 then
+            elseif i == 10 then
                 text = "Aim Size"
                 command = "mm_aimsize"
-            elseif i == 8 then
+            elseif i == 11 then
                 text = "Aim Range"
                 command = "mm_aimrange"
-            elseif i == 9 then
+            elseif i == 12   then
                 text = "Aim Speed"
                 command = "mm_aimspeed"
             end
@@ -1603,13 +1962,13 @@ function Class_Menu()
             end
             
             y = y + 20
-            if i == 6 then
+            if i == 8 then
                 y = y + 20
             end
         end
 
         y = y + 20
-        for i=1, 4 do
+        for i=1, 7 do
             if i == 1 then
                 text = "Tazerman Mode"
                 command = "mm_tasermanmode"
@@ -1621,7 +1980,16 @@ function Class_Menu()
                 command = "mm_OrgasmicDeathSounds"
             elseif i == 4 then
                 text = "Medals"
-                command = "mm_medals"
+                command = "mm_medals"            
+            elseif i == 5 then
+                text = "Wacky Taunts"
+                command = "mm_wackytaunts"
+            elseif i == 6 then
+                text = "Backstabs always 1-hit kill"
+                command = "mm_assassination"
+            elseif i == 7 then
+                text = "Spawn Protection"
+                command = "mm_spawnprotect"
             end
             if GetConVar(command) == nil then continue end 
             local Checkbox = vgui.Create( "DCheckBox", admin )
@@ -1654,7 +2022,7 @@ function Class_Menu()
         -------------------------------------------------*/
         //{
         local AdminButton = vgui.Create( "DButton", admin )
-        AdminButton:SetPos( 0, menuh-84 )
+        AdminButton:SetPos( 0+316, menuh-84 )
         AdminButton:SetFont("TheDefaultSettings3")
         AdminButton:SetTextColor(  Color( 0, 0, 0, 255 ) )
         AdminButton:SetText( "Rebuild Weapons" )
@@ -1666,7 +2034,7 @@ function Class_Menu()
         AdminButton.Paint = function(self, w, h) SimpleButtonPaint(self, w, h) end
         
         local AdminButton = vgui.Create( "DButton", admin )
-        AdminButton:SetPos( 156, menuh-84 )
+        AdminButton:SetPos( 156+316, menuh-84 )
         AdminButton:SetFont("TheDefaultSettings3")
         AdminButton:SetTextColor(  Color( 0, 0, 0, 255 ) )
         AdminButton:SetText( "End Round" )

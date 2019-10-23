@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/scientist/eyebrows_0"
+	"$surfaceprop"	"silent"
+	"$no_draw"	1
+}

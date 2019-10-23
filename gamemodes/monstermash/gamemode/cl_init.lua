@@ -1,7 +1,6 @@
 include( 'shared.lua' )
 include( 'Admin/adminlist.lua' )
 include( 'Menu/cl_menu.lua' )
-include( 'Menu/cl_menu_old.lua' )
 include( 'Music/cl_music.lua' )
 include( 'HUD/cl_hud.lua' )
 include( 'HUD/cl_scoreboard.lua' )
@@ -19,12 +18,41 @@ function GM:OnSpawnMenuOpen()
     RunConsoleCommand("mm_healplayer")
 end
 
+net.Receive("EmitConcussEffect", function() 
+    local victim = net.ReadEntity()
+    local effectdata = EffectData()
+    effectdata:SetEntity( victim )
+    util.Effect( "concuss", effectdata )
+end)
+
+local haydecalmat = Material("models/player/monstermash/gibs/hay_splat")
+net.Receive("DoHayDecal", function()
+    local data = net.ReadTable()
+    //PrintTable(data)
+    util.DecalEx(haydecalmat, game.GetWorld(), data.HitPos, data.HitNormal, Color(255,255,255,255), 0.2, 0.2)
+end)
+
 CreateClientConVar( "mm_aimenable", "0", true, false )
+CreateClientConVar( "mm_meleeaim", "0", true, false )
 CreateClientConVar( "mm_pussymode", "0", true, true )
 CreateClientConVar( "mm_blurmenu", "1", true, true )
 CreateClientConVar( "mm_rollrotatescreen", "1", true, false )
 CreateClientConVar( "mm_cleardecals", "60", true, false )
 CreateClientConVar( "mm_deanimatorshake", "1", true, false )
+CreateClientConVar( "mm_deathtips", "1", true, false )
+CreateClientConVar( "mm_autoreload", "1", true, false )
+CreateClientConVar( "mm_screenblood", "0", true, false )
+
+function GM:OnContextMenuOpen()
+    if LocalPlayer():GetNWString("buff_ready") == "" || LocalPlayer():GetNWString("buff") != "" then return end
+    if LocalPlayer():GetNWInt("buffcost") == LocalPlayer():GetNWInt("MM_MedalsEarned") then 
+        LocalPlayer():ConCommand("play ui/lunatic_distant2.wav")
+        LocalPlayer():SetNWString("buff", LocalPlayer():GetNWString("buff_ready"))
+        net.Start("MM_Apply_Buff")
+        net.SendToServer()
+        LocalPlayer():SetNWInt("MM_MedalsEarned", 0)
+    end
+end
 
 hook.Add("Think", "ClientsideThink", function()
     for k, v in pairs( ents.FindByClass("player") ) do
@@ -112,89 +140,54 @@ hook.Add("Think", "ClientsideThink", function()
 				dlight.DieTime = CurTime() + 0.05
 			end
 		end
+        if IsValid(v) && v:GetNWFloat("MM_FireTime") > CurTime() then
+            local dlight = DynamicLight( v:EntIndex() )
+            if ( dlight ) then
+                local r, g, b, a = v:GetColor()
+                dlight.Pos = v:GetPos()
+                dlight.r = 240
+                dlight.g = 104
+                dlight.b = 0
+                dlight.brightness = 1
+                dlight.Decay = 2048
+                dlight.Size = 512
+                dlight.DieTime = CurTime() + 0.25
+            end  
+        end
 		if IsValid(v) && v:GetNWFloat("MM_Deanimatorstun") > CurTime() then
 			v:SetNWInt("LightingFrame", (v:GetNWInt("LightingFrame") + 1) % 5)
 		end
     end
-    for k, v in pairs( ents.FindByClass("ent_pumpkin_nade") ) do
-        if IsValid(v) && CLIENT then
-            local dlight = DynamicLight( v:EntIndex() )
-            if ( dlight ) then
-                local r, g, b, a = v:GetColor()
-                dlight.Pos = v:GetPos()
-                dlight.r = 240
-                dlight.g = 104
-                dlight.b = 0
-                dlight.brightness = 3
-                dlight.Decay = 2048
-                dlight.Size = 512
-                dlight.DieTime = CurTime() + 0.25
-            end  
-        end
-    end
-    for k, v in pairs( ents.FindByClass("ent_fireball") ) do
-        if IsValid(v) && CLIENT then
-            local dlight = DynamicLight( v:EntIndex() )
-            if ( dlight ) then
-                local r, g, b, a = v:GetColor()
-                dlight.Pos = v:GetPos()
-                dlight.r = 240
-                dlight.g = 104
-                dlight.b = 0
-                dlight.brightness = 2
-                dlight.Decay = 1000
-                dlight.Size = 160
-                dlight.DieTime = CurTime() + 1
-            end  
-        end
-    end
-    for k, v in pairs( ents.FindByClass("ent_acidflask") ) do
-        if IsValid(v) && CLIENT then
-            local dlight = DynamicLight( v:EntIndex() )
-            if ( dlight ) then
-                local r, g, b, a = v:GetColor()
-                dlight.Pos = v:GetPos()
-                dlight.r = 181
-                dlight.g = 230
-                dlight.b = 29
-                dlight.brightness = 2
-                dlight.Decay = 512
-                dlight.Size = 160
-                dlight.DieTime = CurTime() + 1
-            end  
-        end
-    end
-    for k, v in pairs( ents.FindByClass("ent_acid") ) do
-        if IsValid(v) && CLIENT then
-            local dlight = DynamicLight( v:EntIndex() )
-            if ( dlight ) then
-                local r, g, b, a = v:GetColor()
-                dlight.Pos = v:GetPos()
-                dlight.r = 181
-                dlight.g = 230
-                dlight.b = 29
-                dlight.brightness = 2
-                dlight.Decay = 512
-                dlight.Size = 160
-                dlight.DieTime = CurTime() + 1
-            end  
-        end
-    end
-    
-    for k, v in pairs( ents.FindByClass("ent_smokenade") ) do
-        if IsValid(v) && CLIENT then
-            local dlight = DynamicLight( v:EntIndex() )
-            if ( dlight ) then
-                local r, g, b, a = v:GetColor()
-                dlight.Pos = v:GetPos()
-                dlight.r = 163
-                dlight.g = 73
-                dlight.b = 164
-                dlight.brightness = 3
-                dlight.Decay = 2048
-                dlight.Size = 512
-                dlight.DieTime = CurTime() + 0.25
-            end  
+
+    if CLIENT then
+        if GetConVar( "mm_meleeaim" ):GetInt() == 1 && IsValid(LocalPlayer():GetActiveWeapon()) && LocalPlayer():GetActiveWeapon().Base == "mm_melee_base" then
+        
+            if LocalPlayer():GetNWFloat("MeleeAttackAim") < CurTime() then
+                return
+            end
+            local ply = LocalPlayer()
+			local size = 64
+        
+            local tr = util.TraceHull( {
+                start = ply:GetShootPos(),
+                endpos = ply:GetShootPos() + ply:GetAimVector() * 128,
+                filter = ply,
+                mins = Vector( -size/2, -size/2, -size/2 ),
+                maxs = Vector( size/2, size/2, size/2 ),
+                mask = MASK_SHOT_HULL
+            } )
+            
+            if tr.HitNonWorld then 
+                local target = tr.Entity
+                if target:IsPlayer() then 
+                    local targetbody = target:LookupBone("ValveBiped.Bip01_Spine4")
+                    
+                    local targetbodypos,targetbodyang = target:GetBonePosition(targetbody)
+                    local aimto = (targetbodypos-ply:GetShootPos()):Angle()
+                    local thing = LerpAngle(80*FrameTime(),ply:EyeAngles(),aimto)
+                    ply:SetEyeAngles(Angle(thing.p,thing.y,0))
+                end
+            end
         end
     end
 	
@@ -214,6 +207,7 @@ hook.Add("Think", "ClientsideThink", function()
 				maxs = Vector( size/2, size/2, size/2 ),
 				mask = MASK_SHOT_HULL
 			} )
+            
 			if tr.HitNonWorld then 
 				local target = tr.Entity
 				if target:IsPlayer() then 
@@ -264,7 +258,10 @@ hook.Add("RenderScreenspaceEffects", "BloodiedScreen", function()
 		DrawMaterialOverlay( "models/shadertest/shader4", (v:GetNWFloat("Bloodied")-CurTime())/50 )
 	end
 	if IsValid(v) && IsValid(v:GetActiveWeapon()) && v:GetNWFloat("MM_Deanimatorstun") > CurTime() then
-		DrawMaterialOverlay( "models/electric/electric_hud", 0.2 )
+		DrawMaterialOverlay( "animated/zap", 0.2 )
+	end
+    if IsValid(v) && IsValid(v:GetActiveWeapon()) && v:IsOnFire() then
+		DrawMaterialOverlay( "animated/burn", 0.2 )
 	end
 end)
 

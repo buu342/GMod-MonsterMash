@@ -63,13 +63,16 @@ function ENT:Touch( ent )
     if ent:GetClass() == "trigger_soundscape" then return end
 	local speed = self:GetVelocity():Length()
 	if ent:IsValid() && self:GetNWBool("HitAlready") == false && ent:GetNWFloat("DivingRight") < CurTime() && ent:GetNWFloat("DivingLeft") < CurTime() then
-		local damage = 35
+		local damage = 25
+        if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then
+            damage = 9001
+        end
         self.NotStuck = false
 		local d = DamageInfo()
 		d:SetDamage(damage)
 		d:SetDamageType(DMG_SLASH)
 		d:SetAttacker( self.MyOwner )
-		d:SetInflictor(self)
+		d:SetInflictor(self.Inflictor)
 		ent:TakeDamageInfo(d)
 		self.Owner = nil
 		self:SetOwner(nil)

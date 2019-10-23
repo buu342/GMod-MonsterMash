@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_skull"
 SWEP.Cost = 10
+SWEP.Points = 40
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 /*---------------------------------
 Created with buu342s Swep Creator
@@ -44,7 +48,7 @@ SWEP.ReloadSound = "sound/epicreload.wav"
 SWEP.Base = "mm_base_plain"
  
 SWEP.Primary.Sound = "weapons/revolver/fire1.wav"
-SWEP.Primary.Damage = 35
+SWEP.Primary.Damage = 25
 SWEP.Primary.TakeAmmo = 1
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Ammo = "RPG_Round"
@@ -118,8 +122,13 @@ function SWEP:Think()
         self:SetClip1(1)
         self:SetPrimed(true)
 	end
+    
+    if self.Owner:KeyPressed(IN_ATTACK) && self:GetNextPrimaryFire() < CurTime() then
+		self.Weapon:SendWeaponAnim(ACT_VM_HAULBACK)
+		self:SetGun_FakeTimer1(CurTime()+0.1)
+	end
 
-	if self:GetNextPrimaryFire() < CurTime() && self.Owner:KeyPressed(IN_ATTACK) && self:GetPrimed() == true then
+	if self:GetNextPrimaryFire() < CurTime() && self.Owner:KeyReleased(IN_ATTACK) && self:GetPrimed() == true then
         self:SetPrimed(false)
         self.Weapon:SendWeaponAnim(ACT_VM_THROW)
         self.Weapon:SetGun_FakeTimer2(CurTime()+1)
@@ -142,6 +151,8 @@ function SWEP:Think()
             grenade:SetOwner(self.Owner)
             grenade:Spawn()
             grenade:Activate()
+            grenade.Inflictor = self
+            grenade.Owner = self.Owner
             local phys = grenade:GetPhysicsObject()
             phys:ApplyForceCenter(self.Owner:GetAimVector() * self.Primary.Force * 1.2 + Vector(0, 0, 200))
  
@@ -151,18 +162,14 @@ function SWEP:Think()
         self:SetNextPrimaryFire(CurTime()+1)
         self:TakePrimaryAmmo(1) 
         self.Owner:SetNWFloat("mm_skull_recharge", CurTime()+20)
-		self:SetGun_FakeTimer2(CurTime()+0.2)
         local rnda = self.Primary.Recoil * -1
         local rndb = self.Primary.Recoil * math.random(-1, 1)
         self.Owner:ViewPunch( Angle( rnda,rndb,rnda ) )
     end
    
-    if self:GetGun_FakeTimer1() > 0 && CurTime() > self:GetGun_FakeTimer1() then
+    if self:GetGun_FakeTimer1() > 0 && CurTime() < self:GetGun_FakeTimer1() then
         self:SetPrimed(true)
         self:SetGun_FakeTimer1(0)
-    end
-    if self:GetGun_FakeTimer2() > 0 && CurTime() > self:GetGun_FakeTimer2() then
-        self:SetGun_FakeTimer2(0)
     end
 	self:LegsDismembered()
 end

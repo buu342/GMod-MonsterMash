@@ -113,7 +113,9 @@ function ENT:RenderOverride()
 	local angle = Angle(0, 0, 0)
 	local scale = 64
 	local pos = self:GetPos()//self:GetNWVector("DoSpawnPos")-Vector(32,-scale/2,0)-Vector(0,0,1.8)
-
+    
+    if !self:GetOwner():IsLineOfSightClear(LocalPlayer()) then return end
+    
 	render.SetStencilEnable( true )
 	
 		local dirtscale

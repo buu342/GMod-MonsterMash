@@ -39,7 +39,7 @@ function ENT:PhysicsCollide()
 end
 
 function ENT:Explode()
-	util.BlastDamage(self:GetNWEntity("FlamethrowerDamageInflictor"), self.Owner, self.Entity:GetPos(), 256, 65)
+	util.BlastDamage(self:GetNWEntity("FlamethrowerDamageInflictor"), self.Owner, self.Entity:GetPos(), 256, 35)
 	for k, v in pairs( ents.GetAll() ) do
 		if v:GetPos():Distance(self:GetPos()) < 128 then
 			v:Ignite(5) 

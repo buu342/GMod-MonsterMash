@@ -8,8 +8,13 @@ local models = {
     "models/monstermash/witch_final.mdl",
     "models/monstermash/headless_horseman_final.mdl",
     "models/monstermash/stein_final.mdl",
+    "models/monstermash/bride_final.mdl",
     "models/monstermash/mummy_final.mdl",
-    "models/monstermash/bloody_mary_final.mdl"
+    "models/monstermash/bloody_mary_final.mdl",
+    "models/monstermash/invisible_man_final.mdl",
+    "models/monstermash/mad_scientist_final.mdl",
+    "models/monstermash/banshee_final.mdl",
+    "models/monstermash/zombie_final.mdl",
 }
 
 function GM:PlayerInitialSpawn( ply )
@@ -33,6 +38,13 @@ function GM:PlayerInitialSpawn( ply )
 	
 	ply:SetNWString("Throwable","")
 	ply:SetNWInt("lastcost_Throwable",0)
+    
+	ply:SetNWInt("MM_MedalsEarned", 0)
+    ply:SetNWInt("buffcost", 0)
+    ply:SetNWString("NextApplyBuff", "")
+    ply:SetNWInt("NextApplyBuffCost", 0)
+    
+    ply:SetNWEntity("LastKiller", NULL)
 	
     ply:SetNWString("plymdl", table.Random(models))
     ply:SetNWInt("plyskn", math.random(5))
@@ -46,6 +58,18 @@ function GM:PlayerInitialSpawn( ply )
 	ply:ConCommand( "mm_menu" )
     ply:SetModel( ply:GetNWString("plymdl") )
     ply:SetSkin(ply:GetNWInt("plyskn"))
+    
+    SetGlobalVariable("MapRoundCount", GetGlobalVariable("MapRoundCount"))
+    SetGlobalVariable("ForceGame_Over", GetGlobalVariable("ForceGame_Over"))
+    SetGlobalVariable("Game_Over", GetGlobalVariable("Game_Over"))
+    SetGlobalVariable("Winner", GetGlobalVariable("Winner"))
+    SetGlobalVariable("WackyRound_Extra", GetGlobalVariable("WackyRound_Extra"))
+    SetGlobalVariable("RoundsToWacky", GetGlobalVariable("RoundsToWacky"))
+    SetGlobalVariable("WackyRound_COOP", GetGlobalVariable("WackyRound_COOP"))
+    SetGlobalVariable("WackyRound_COOPOther", GetGlobalVariable("WackyRound_COOPOther"))
+    SetGlobalVariable("WackyRound_Event", GetGlobalVariable("WackyRound_Event"))
+    SetGlobalVariable("RoundStartTimer", GetGlobalVariable("RoundStartTimer"))
+    SetGlobalVariable("RoundTime", GetGlobalVariable("RoundTime"))
 end
 
 function GM:PlayerSpawn( ply )
@@ -55,6 +79,11 @@ function GM:PlayerSpawn( ply )
 	if GetGlobalVariable("RoundsToWacky") != 0 && ply:Team() != 2 then
         ply:SetTeam(1)
     end
+    
+    if ply:GetNWString("buff") != "" then
+        ply:SetNWInt("MM_MedalsEarned", 0)
+    end
+    ply:SetNWString("buff", "")
     
     ply:SetNWInt("LegMissing", 0)
 	ply:SetNWInt("ArmMissing", 0)
@@ -108,7 +137,9 @@ function GM:PlayerSpawn( ply )
     ply:ShouldDropWeapon( true )
 	ply:SetNWInt("SpawnTime",CurTime()+0.2)
 	ply:SetNWFloat("HealTime",CurTime())
-	ply:GodEnable()
+    if GetConVar("mm_spawnprotect"):GetInt() == 1 then
+        ply:GodEnable()
+    end
 	ply:SetMaterial( "", true ) 
 	
 	if ply:GetNWString("Buff") == "armor" then
@@ -116,6 +147,8 @@ function GM:PlayerSpawn( ply )
 	else
 		ply:SetBloodColor( BLOOD_COLOR_RED )
 	end
+    ply:SetColor(Color(255, 255, 255, 255))
+    ply:SetNWBool("MM_UsingInvisibility", false)
     
     if ply:Team() == 1 || ply:Team() == 3 then
 
@@ -130,6 +163,11 @@ function GM:PlayerSpawn( ply )
 		end
 		if ply:GetNWString("Throwable") != "" then
             ply:Give(ply:GetNWString("Throwable"))
+		end
+        if ply:GetNWString("NextApplyBuff") != ply:GetNWString("buff_ready") then
+            ply:SetNWInt("MM_MedalsEarned", 0)
+            ply:SetNWInt("buffcost", ply:GetNWString("NextApplyBuffCost"))
+            ply:SetNWString("buff_ready", ply:GetNWString("NextApplyBuff"))
 		end
         ply.UsingRandomLoadout = false
         if ply:GetNWString("Primary") == "" && ply:GetNWString("Handgun") == "" && ply:GetNWString("Melee") == "" && ply:GetNWString("Throwable") == "" then
@@ -147,6 +185,12 @@ function GM:PlayerSpawn( ply )
                     ply:Give(MonsterMash_Weapons[category][rand].entity)
                     budget = budget - MonsterMash_Weapons[category][rand].cost
                 end
+                
+                category = "buff"
+                num = #MonsterMash_Weapons[category]
+                rand = math.random(2, num)
+                ply:SetNWString("NextApplyBuff", MonsterMash_Weapons[category][rand].entity)
+                ply:SetNWInt("NextApplyBuffCost", MonsterMash_Weapons[category][rand].cost)
                 
                 category = "handgun"
                 num = #MonsterMash_Weapons[category]
@@ -207,6 +251,11 @@ function GM:PlayerSpawn( ply )
     ply:SetNWEntity("MM_BleedInflictor", nil)
 
 	ply:SetNWInt("LastHitgroupMelee", 0)
+    if IsValid(ply:GetActiveWeapon()) then
+        ply:SetNWString("LastWeapon", ply:GetActiveWeapon():GetClass())
+    else
+        ply:SetNWString("LastWeapon", "")
+    end
 	ply:SetNWFloat("NextHop", 0)
     ply:SetNWFloat("mm_musketpistol_recharge", 0) 
     ply:SetNWFloat("mm_musketpistol", 0)
@@ -214,6 +263,7 @@ function GM:PlayerSpawn( ply )
     ply:SetNWFloat("mm_web_recharge", 0)
     ply:SetNWFloat("mm_acid_recharge", 0)
     ply:SetNWFloat("mm_pumpkinnade_recharge", 0)
+    ply:SetNWFloat("MM_FlamingArrow", 0)
     ply:SetNWFloat("mm_cleaver_recharge", 0)
     ply:SetNWFloat("mm_gorejar_recharge", 0)
     ply:SetNWFloat("mm_stake_recharge", 0)
@@ -230,10 +280,12 @@ function GM:PlayerSpawn( ply )
 	ply:SetNWFloat("MM_AcidTime", 0)
 	ply:SetNWEntity("MM_AcidOwner", NULL)
     ply:SetNWEntity("MM_AcidInflictor", NULL)
+    ply:SetNWFloat("MeleeAttackAim", 0)
     ply:SetNWEntity("MM_Assister", NULL)
     ply:SetNWEntity("MM_AssisterInflictor", NULL)
     ply:SetNWFloat("MM_FireDuration", 0)
     ply:SetNWInt("MM_FireDamage", 0)
+    ply:SetNWInt("MM_KillsInLife", 0)
     ply:SetNWEntity("MM_FireOwner", NULL)
     ply:SetNWEntity("MM_FireInflictor", NULL)
     ply:SetNWFloat("Sticky", 0)
@@ -243,7 +295,7 @@ function GM:PlayerSpawn( ply )
     ply:SetNWFloat("MM_Concussion",0)
     ply:SetNWInt("LegMissing", 0)
 	ply:SetNWInt("ArmMissing", 0)
-    ply:SetNWFloat("DiveCooldown", 0)
+    ply:SetNWFloat("DiveCooldown", 5)
     if ply:GetNWInt("NumberShowingMedals") != 0 then
         ply:SetNWFloat("ShowMedal1", CurTime()+3)
         ply:SetNWFloat("ShowMedal2", CurTime()+3)
@@ -257,11 +309,13 @@ function GM:PlayerSpawn( ply )
         ply:SetNWString("ShowMedalType2", "")
         ply:SetNWString("ShowMedalType3", "")
     end
+    
     ply:SetNWBool("KillFromBackstab", false)
     ply:SetNWBool("DamagedSelf", false)
     ply:SetNWBool("DamagedOther", false)
     ply:SetNWEntity("DamagedPlayer", NULL)
     ply:SetNWFloat("DamagedFrame", 0)
+    ply:SetNWBool("DiedFromFire", false)
     
     // Wacky Round Manipulation
     if GetGlobalVariable("RoundsToWacky") == 0 && ply:Team() != 5 then
@@ -281,6 +335,35 @@ function GM:PlayerSpawn( ply )
             end
         elseif GetGlobalVariable("WackyRound_Event") == 1 then
             ply:SetTeam(3)
+        elseif GetGlobalVariable("WackyRound_Event") == 2 then
+            ply:StripWeapons()
+            ply:Give("mm_skull")
+            ply:Give("mm_candlestick")
+            ply:SelectWeapon("mm_skull")
+        elseif GetGlobalVariable("WackyRound_Event") == 6 then
+            ply:StripWeapons()
+            ply:Give("mm_candlestick")
+            
+            local num 
+            local rand 
+            
+            num = #MonsterMash_Weapons["melee"]
+            rand = math.random(2, num)
+            ply:Give(MonsterMash_Weapons["melee"][rand].entity)
+            
+            num = #MonsterMash_Weapons["handgun"]
+            rand = math.random(2, num)
+            ply:Give(MonsterMash_Weapons["handgun"][rand].entity)
+            
+            num = #MonsterMash_Weapons["primary"]
+            rand = math.random(2, num)
+            ply:Give(MonsterMash_Weapons["primary"][rand].entity)
+            ply:SelectWeapon(MonsterMash_Weapons["primary"][rand].entity)
+            
+            num = #MonsterMash_Weapons["throwable"]
+            rand = math.random(2, num)
+            ply:Give(MonsterMash_Weapons["throwable"][rand].entity)
+            
         end
     end
 end
@@ -303,6 +386,7 @@ if ( CLIENT ) then return end
 
 local function PlayerCanPickupWeapon( ply, weap )
 	if GetGlobalVariable("RoundStartTimer") > CurTime() then return end
+	if GetGlobalVariable("WackyRound_Event") == 6 && (GetGlobalVariable("RoundTime") > CurTime()) then return end
     
     if ( weap:GetClass() == "mm_headbutt" ) then
 		return ( weap:GetClass() == "mm_headbutt" )
@@ -317,8 +401,15 @@ local function PlayerCanPickupWeapon( ply, weap )
     if ( weap:GetClass() == "mm_revolver") then
 		return ( weap:GetClass() == "mm_revolver" )
 	end
+    
+    if ( weap:GetClass() == "mm_toiletpaper") then
+		return ( weap:GetClass() == "mm_toiletpaper" )
+	end
 	if ( weap:GetClass() == "mm_skull") then
-		return ( weap:GetClass() == "mm_skull" )
+        if ply:HasWeapon("mm_skull") then
+            ply:SetNWFloat("mm_skull_recharge", CurTime()-1)
+        end
+        return ( weap:GetClass() == "mm_skull" )
     else
 		if ( CurTime() <= ( ply.UseWeaponSpawn or 0 ) ) then return end
 		if ( !ply:KeyDown( IN_USE ) ) then return false end

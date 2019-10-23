@@ -9,7 +9,7 @@ SWEP.Instructions = ""
 
 SWEP.Category = "Monster Mash"
 
-SWEP.Spawnable= true
+SWEP.Spawnable= false
 SWEP.AdminSpawnable= true
 SWEP.AdminOnly = false
 
@@ -146,6 +146,7 @@ function SWEP:Think()
         end
         self.Owner:EmitSound("weapons/healing/nom.wav", 75, 100, 0.5, CHAN_VOICE2)
 		if SERVER then
+            self.Owner:SelectWeapon(self.Owner:GetNWString("LastWeapon"))
 			self:Remove()
 		end
 	end

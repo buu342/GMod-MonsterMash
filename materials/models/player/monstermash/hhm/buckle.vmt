@@ -1,0 +1,8 @@
+vertexlitgeneric
+{
+$baseTexture "models\player\monstermash\hhm\hhm_body"
+$translucent 1
+$nocull 1
+
+
+}

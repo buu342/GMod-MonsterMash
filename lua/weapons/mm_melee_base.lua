@@ -1,4 +1,4 @@
-/*---------------------------------
+    /*---------------------------------
 Created with buu342s Swep Creator
 ---------------------------------*/
 
@@ -68,6 +68,7 @@ SWEP.MissSound = Sound("crowbar/iceaxe_swing1.wav")
 
 SWEP.WalkSpeed = 220
 SWEP.DefaultWalkSpeed = 220
+SWEP.ChargeSpeed = 400
 
 SWEP.CrouchPos = Vector(-1,-1,.5) -- Moves the gun when you crouch
 
@@ -92,6 +93,8 @@ SWEP.BleedChance		= 0
 SWEP.DismemberChance	= 0
 SWEP.CanAssassinate		= true
 
+SWEP.OriginalDamage     = 0
+
 function SWEP:SetupDataTables()
     self:NetworkVar("Float",0,"Faketimer")
 	self:NetworkVar("Float",1,"Faketimer2")
@@ -100,6 +103,7 @@ end
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
+    self.OriginalDamage = self.Primary.Damage
 end
 
 function SWEP:Deploy()
@@ -120,6 +124,7 @@ function SWEP:PrimaryAttack()
 	self:SetFaketimer2(CurTime() + self.TimeToHit/2)
     self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
     self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+    self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
     if self.Owner:GetNWInt("LegMissing") == 3 then
         self.Owner:SetWalkSpeed(1)
         self.Owner:SetRunSpeed(1)
@@ -131,14 +136,66 @@ function SWEP:Think()
     if self.Owner:GetNWInt("LegMissing") == 3 then
         self.Owner:SetWalkSpeed(85)
         self.Owner:SetRunSpeed(85)
+    elseif self.Owner:GetNWFloat("MM_Charge") > CurTime() then
+        self.Owner:SetWalkSpeed(self.ChargeSpeed)
+        self.Owner:SetRunSpeed(self.ChargeSpeed)
+        
+        local tr = util.TraceHull( {
+            start = self.Owner:GetShootPos(),
+            endpos = self.Owner:GetShootPos() + ( Vector(self.Owner:GetAimVector().x, self.Owner:GetAimVector().y, 0) * 64 ),
+            filter = self.Owner,
+            mins = Vector( -10, -10, -10 ),
+            maxs = Vector( 10, 10, 10 ),
+            mask = MASK_SHOT_HULL
+        } )
+        if tr && tr.Hit && tr.Entity:IsPlayer() then
+            self.Owner:SetNWFloat("MM_Charge", CurTime())
+            self.Owner:SetVelocity(self.Owner:GetAimVector(), 0)
+            if SERVER then
+                self.Owner:EmitSound("physics/body/body_medium_impact_hard" .. math.random(1, 6) .. ".wav", math.Rand(80, 100), math.Rand(90, 120)) 
+                tr.Entity:TakeDamage( 5, self.Owner, self )
+                local shake = ents.Create( "env_shake" )
+                shake:SetOwner(self.Owner)
+                shake:SetPos( tr.HitPos )
+                shake:SetKeyValue( "amplitude", "2500" )
+                shake:SetKeyValue( "radius", "100" )
+                shake:SetKeyValue( "duration", "0.5" )
+                shake:SetKeyValue( "frequency", "255" )
+                shake:SetKeyValue( "spawnflags", "4" )	
+                shake:Spawn()
+                shake:Activate()
+                shake:Fire( "StartShake", "", 0 )
+            end
+        end
     else
         self.Owner:SetWalkSpeed(self.WalkSpeed)
         self.Owner:SetRunSpeed(self.WalkSpeed)
+    end
+    if self.Owner:GetNWFloat("MM_Charge")+0.5 > CurTime() then
+        self.Primary.Damage = self.OriginalDamage * 1.2
+    else
+        self.Primary.Damage = self.OriginalDamage
     end
     self:DamageStuff()
 	self:LegsDismembered()
     self:DoOtherStuff()
 end
+
+local CMoveData = FindMetaTable( "CMoveData" )
+
+function CMoveData:RemoveKeys( keys )
+	-- Using bitwise operations to clear the key bits.
+	local newbuttons = bit.band( self:GetButtons(), bit.bnot( keys ) )
+	self:SetButtons( newbuttons )
+end
+
+hook.Add( "SetupMove", "Drowning:HandleWaterInLungs", function( ply, mv, cmd )
+	if (ply:GetNWFloat("MM_Charge") > CurTime()) && ply:GetActiveWeapon().Base == "mm_melee_base" then
+        if mv:KeyDown( IN_DUCK ) then
+            mv:RemoveKeys( IN_DUCK )
+        end
+	end
+end )
 
 function SWEP:DoOtherStuff()
 
@@ -157,8 +214,8 @@ function SWEP:Backstab()
             start = self.Owner:GetShootPos(),
             endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 150,
             filter = self.Owner,
-            mins = Vector( -10, -10, -8 ),
-            maxs = Vector( 10, 10, 8 ),
+            mins = Vector( -20, -20, -16 ),
+            maxs = Vector( 20, 20, 16 ),
             mask = MASK_SHOT_HULL
         } )
     end
@@ -168,6 +225,29 @@ function SWEP:Backstab()
         return true
     else
         return false
+    end
+end
+
+function SWEP:SecondaryAttack()
+    if self.Owner:GetNWInt("LegMissing") != 0 then return end
+    if self.Owner:GetNWFloat("DiveCooldown") >= 5 then
+        self.Owner:SetNWFloat("DiveCooldown", 0)
+        self.Owner:SetNWFloat("MM_Charge", CurTime() + 1)
+    end
+end
+
+hook.Add("CreateMove", "CM", function(cmd)
+    if (LocalPlayer():GetNWFloat("MM_Charge") > CurTime()) && LocalPlayer():GetActiveWeapon().Base == "mm_melee_base" then
+        cmd:SetForwardMove( LocalPlayer():GetActiveWeapon().ChargeSpeed )
+        cmd:SetSideMove( 0 )
+    end
+end)
+
+function SWEP:AdjustMouseSensitivity()
+    if (self.Owner:GetNWFloat("MM_Charge") > CurTime()) then
+        return 0.2
+    else
+        return 1
     end
 end
 
@@ -220,8 +300,16 @@ function SWEP:DamageStuff()
             dmginfo:SetInflictor( self )
 			dmginfo:SetDamage( self.Primary.Damage )
 			if tr.Entity:IsPlayer() && (math.Rand(0,1)*100 < self.ConcussChance || (self.ConcussChance != 0 && self:Backstab())) then
+                if (self:Backstab() && self:GetClass() != "mm_candlestick" && GetConVar("mm_assassination"):GetInt() == 1) then
+                    dmginfo:SetDamage( self.Primary.Damage*10 )
+                end
 				dmginfo:SetDamageType(DMG_SLASH)
 			end
+            
+            if tr.Entity:IsPlayer() && self:Backstab() && self:GetClass() == "mm_chainsaw" then
+                dmginfo:SetDamage( self.Primary.Damage*10 )
+			end
+            
             dmginfo:SetDamageForce( self.Owner:GetForward() * 5 )
             if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:GetClass() == "sent_skellington" || tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0  )) && IsFirstTimePredicted() then
 				tr.Entity:SetNWInt("LastHitgroupMelee", tr.HitGroup)
@@ -300,13 +388,6 @@ function SWEP:MeleeDecal( trace, decal )
 		end 
 	end
 end 
-
-function SWEP:SecondaryAttack()
-/*
-	self.Owner:SetNWBool("DoingTauntCamera", true)
-	timer.Simple(3, function() self.Owner:SetNWBool("DoingTauntCamera", false) end)
-*/
-end
 
 function SWEP:Holster()
 	if IsValid(self) && IsValid(self.Owner) then 
@@ -416,6 +497,10 @@ if CLIENT then
 			
 		TestVectorAngleTarget = TestVectorAngleTarget + Vector(math.cos(BreatTime) / mynum2, (math.cos(BreatTime / 2) / mynum2),0)
         
+        if (self.Owner:GetNWFloat("MM_Charge") > CurTime()) then 
+            TestVectorAngleTarget = TestVectorAngleTarget - Vector(20*math.sin((self.Owner:GetNWFloat("MM_Charge") - CurTime())*3.14159),0,0)
+        end
+        
 		if self.Owner:KeyDown(IN_DUCK) then
 			if CrouchAng < 1 then
 				CrouchAng = CrouchAng + 0.01
@@ -467,21 +552,17 @@ function CalcMoveForce(ply)
 	return MoveForce
 end
 
-function IronIdleMove(cmd)
-        local ply = LocalPlayer()
-        local weapon = ply:GetActiveWeapon()
-        if !IsValid(ply) then return end
-        if weapon.Base == "weapon_buu_base2" && weapon:GetBuu_Ironsights() then
-                local ang = cmd:GetViewAngles()
- 
-                local ft = FrameTime()
-                local BreatTime = RealTime() * weapon.IronsightMoveIntensity
-                local MoveForce = CalcMoveForce(ply)
-                       
-                ang.pitch = ang.pitch + math.cos(BreatTime) / MoveForce
-                ang.yaw = ang.yaw + math.cos(BreatTime /2) / MoveForce
-                if !IsValid(weapon) then return end
-                cmd:SetViewAngles(ang) 
-        end
+local function CalcViewCharge( ply, pos, angles, fov )
+    if (ply:GetNWFloat("MM_Charge") > CurTime()) then 
+        local view = {}
+
+        view.origin = pos
+        view.angles = angles + Angle(10*math.sin((ply:GetNWFloat("MM_Charge") - CurTime())*(3.14159)),0,0)
+        view.fov = fov
+        view.drawviewer = false
+
+        return view
+    end
 end
-hook.Add ("CreateMove", "BuuIronIdleMove", IronIdleMove)
+
+hook.Add( "CalcView", "CalcViewCharge", CalcViewCharge )

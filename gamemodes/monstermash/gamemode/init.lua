@@ -1,18 +1,18 @@
-AddCSLuaFile( "cl_init.lua" )
+AddCSLuaFile( "globals.lua" )
 AddCSLuaFile( "shared.lua" )
-AddCSLuaFile( "Menu/weapon_descriptions.lua" )
+AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "Menu/cl_menu.lua" )
-AddCSLuaFile( "Menu/cl_menu_old.lua" )  
+AddCSLuaFile( "Menu/cl_menu_old.lua" )
 AddCSLuaFile( "Music/cl_music.lua" )
 AddCSLuaFile( "Flinch/cl_flinch.lua")
-AddCSLuaFile( "HUD/cl_hud.lua" )
+AddCSLuaFile( "HUD/cl_hud.lua" ) 
 AddCSLuaFile( "HUD/cl_deathnotices.lua" )
 AddCSLuaFile( "HUD/cl_scoreboard.lua" )
 AddCSLuaFile( "Admin/adminlist.lua" )
 AddCSLuaFile( "Admin/playerkick.lua" )
-AddCSLuaFile( "Spawning/spookyspawn.lua" )
-AddCSLuaFile( "globals.lua" )
-
+AddCSLuaFile( "Spawning/spookyspawn.lua" ) 
+AddCSLuaFile( "Menu/weapon_descriptions.lua" )
+ 
 include( 'shared.lua' )
 include( 'Admin/adminlist.lua' )
 include( 'Admin/playerkick.lua' )
@@ -24,30 +24,41 @@ include( 'Gore/ragdollblood.lua' )
 include( 'Health/sv_health.lua' )
 include( 'Gore/limbremoval.lua' )
 include( 'Rounds/sv_kill_limit.lua' )
+include( 'Buff/sv_buff.lua' )
 
 util.AddNetworkString( "ServerDoingTauntCamera" )
 
 net.Receive("ServerDoingTauntCamera", function(len, ply)
 	ply:SetNWBool("DoingTauntCamera", true)
 	ply:SetCycle(0)
-	timer.Simple(3, function() ply:SetNWBool("DoingTauntCamera", false) end)
+    if (GetConVar( "mm_wackytaunts" ):GetInt() == 1) then
+        ply:EmitSound("gameplay/cancer.mp3")
+        timer.Simple(6.25, function() ply:SetNWBool("DoingTauntCamera", false) end)
+    else
+        timer.Simple(3, function() ply:SetNWBool("DoingTauntCamera", false) end)
+    end
 end)
 
 local models = {
-"models/monstermash/deer_haunter_final.mdl",
-"models/monstermash/vampire_final.mdl",
-"models/monstermash/nosferatu_final.mdl",
-"models/monstermash/guest_final.mdl",
-"models/monstermash/scarecrow_final.mdl",
-"models/monstermash/skeleton_final.mdl",
-"models/monstermash/witch_final.mdl",
-"models/monstermash/headless_horseman_final.mdl",
-"models/monstermash/stein_final.mdl",
-"models/monstermash/mummy_final.mdl",
-"models/monstermash/bloody_mary_final.mdl"
+    "models/monstermash/deer_haunter_final.mdl",
+    "models/monstermash/vampire_final.mdl",
+    "models/monstermash/nosferatu_final.mdl",
+    "models/monstermash/guest_final.mdl",
+    "models/monstermash/scarecrow_final.mdl",
+    "models/monstermash/skeleton_final.mdl",
+    "models/monstermash/witch_final.mdl",
+    "models/monstermash/headless_horseman_final.mdl",
+    "models/monstermash/stein_final.mdl",
+    "models/monstermash/mummy_final.mdl",
+    "models/monstermash/bloody_mary_final.mdl",
+    "models/monstermash/invisible_man_final.mdl",
+    "models/monstermash/mad_scientist_final.mdl",
+    "models/monstermash/banshee_final.mdl"
 }
 
 util.AddNetworkString( "ResetLimbs" )
+util.AddNetworkString( "RedScreenBlood" )
+util.AddNetworkString( "YellowScreenBlood" )
 
 local meta = FindMetaTable("Entity");
 
@@ -107,6 +118,9 @@ net.Receive("MMSkin", setskin)
 util.AddNetworkString("MM_Wep_Melee")
 function MM_Wep_Melee(len,client)
     if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == client then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 6 then return end
+
 	if IsValid(client) then
 		local wep = net.ReadString()
 		local cost = net.ReadFloat()
@@ -132,6 +146,8 @@ net.Receive("MM_Wep_Melee", MM_Wep_Melee)
 util.AddNetworkString("MM_Wep_Handgun")
 function MM_Wep_Handgun(len,client)
     if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == client then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 6 then return end
 	if IsValid(client) then
 		local wep = net.ReadString()
 		local cost = net.ReadFloat()
@@ -157,6 +173,8 @@ net.Receive("MM_Wep_Handgun", MM_Wep_Handgun)
 util.AddNetworkString("MM_Wep_Primary")
 function MM_Wep_Primary(len,client)
     if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == client then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 6 then return end
 	if IsValid(client) then
 		local wep = net.ReadString()
 		local cost = net.ReadFloat()
@@ -182,6 +200,8 @@ net.Receive("MM_Wep_Primary", MM_Wep_Primary)
 util.AddNetworkString("MM_Wep_Throwable")
 function MM_Wep_Throwable(len,client)
     if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == client then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 6 then return end
 	if IsValid(client) then
 		local wep = net.ReadString()
 		local cost = net.ReadFloat()
@@ -207,27 +227,33 @@ net.Receive("MM_Wep_Throwable", MM_Wep_Throwable)
 util.AddNetworkString("MM_Wep_Buff")
 function MM_Wep_Buff(len,client)
     if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == client then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then return end
+
 	if IsValid(client) then
 		local wep = net.ReadString()
 		local cost = net.ReadFloat()
-        client:SetNWString("Buff",wep)
-		client:SetNWInt("gold",client:GetNWInt("gold")-cost+client:GetNWInt("lastcost_Buff"))
-		client:SetNWInt("lastcost_Buff",cost)
-		if GetGlobalVariable("RoundStartTimer") > CurTime() then
-			local weptbl = client:GetWeapons()
-			for k, v in pairs( weptbl ) do 
-				if v:GetSlot() == 0 then
-					v:Remove()
-				end
-				if wep != "" then
-					client:Give(wep,false)
-					client:SelectWeapon(wep)
-				end
-			end
+        client:SetNWString("NextApplyBuff", wep)
+        client:SetNWInt("NextApplyBuffCost", cost)
+        if GetGlobalVariable("RoundStartTimer") > CurTime() then
+            client:SetNWInt("buffcost", client:GetNWString("NextApplyBuffCost"))
+            client:SetNWString("buff_ready", client:GetNWString("NextApplyBuff"))
 		end
 	end
 end
 net.Receive("MM_Wep_Buff", MM_Wep_Buff)
+
+util.AddNetworkString("MM_Apply_Buff")
+function MM_Apply_Buff(len,client)
+    if GetGlobalVariable("WackyRound_Event") == 0 && GetGlobalVariable("WackyRound_COOPOther") == client then return end
+	if IsValid(client) then
+        client:SetNWInt("MM_MedalsEarned", 0)
+        client:SetNWString("buff", client:GetNWString("buff_ready"))
+        if client:GetNWString("buff") == "armor" then
+            client:SetBloodColor( BLOOD_COLOR_MECH )
+        end
+	end
+end
+net.Receive("MM_Apply_Buff", MM_Apply_Buff)
 
 util.AddNetworkString("MM_SelectWeapon")
 function MM_SelectWeapon(len,client)
@@ -242,7 +268,7 @@ util.AddNetworkString("MM_SelectWeaponOpen")
 function MM_SelectWeaponOpen(len,client)
 	if IsValid(client) then
 		local wep = net.ReadEntity()
-		if IsValid(client) && client:GetActiveWeapon() != nil && client:GetActiveWeapon():GetClass() != nil && wep != nil && wep:GetClass() != nil && client:GetActiveWeapon():GetClass() != wep:GetClass() then
+		if IsValid(client) && client:GetActiveWeapon() != NULL && client:GetActiveWeapon():GetClass() != NULL && wep != NULL && wep:GetClass() != NULL && client:GetActiveWeapon():GetClass() != wep:GetClass() then
 		client:SetNWFloat("WeaponSelectOpen",CurTime()+1.1)
 		end
 	end
@@ -274,6 +300,9 @@ local NextSkelly = 0
 local SkellySpawnCount = 0
 hook.Add("Think", "Spooked", function()
 	for k, v in pairs( ents.FindByClass("player") ) do
+        if IsValid(v:GetActiveWeapon()) && v:GetActiveWeapon():GetClass() != v:GetNWString("LastWeapon") && v:GetActiveWeapon():GetClass() != "mm_heal" then
+            v:SetNWString("LastWeapon", v:GetActiveWeapon():GetClass())
+        end
 		if v:GetNWFloat("MM_FireDuration") < CurTime() && v:GetNWBool("FireSoundOn") == true then
 			v:SetNWBool("FireSoundOn", false)
 			v.sound:Stop()
@@ -316,7 +345,7 @@ hook.Add("Think", "Spooked", function()
 			v:Freeze( false )
 		end
         if v:GetNWFloat("HealthRegen") < CurTime() then
-            v:SetHealth(math.Clamp(v:Health() + 1, 0, v:GetMaxHealth()))
+            v:SetHealth(math.Clamp(v:Health() + GetConVar("mm_healthregenamount"):GetInt(), 0, v:GetMaxHealth()))
             v:SetNWFloat("HealthRegen", CurTime()+GetConVar("mm_healthregentime"):GetInt())
         end
 		if IsValid(v) && v:HasGodMode() && v:GetNWFloat("DivingLeft") < CurTime() && v:GetNWFloat("DivingRight") < CurTime() then
@@ -362,6 +391,9 @@ hook.Add("Think", "Spooked", function()
         if v:GetNWFloat("mm_skull_recharge") < CurTime() && v:HasWeapon("mm_skull") && v:GetWeapon("mm_skull"):Clip1() == 0 then
 			v:GetWeapon("mm_skull"):SetClip1( 1 )
 		end
+        if v:GetNWFloat("mm_tp_recharge") < CurTime() && v:HasWeapon("mm_toiletpaper") && v:GetWeapon("mm_toiletpaper"):Clip1() == 0 then
+			v:GetWeapon("mm_toiletpaper"):SetClip1( 1 )
+		end
 		if v:GetNWFloat("MM_BleedTime") < CurTime() && v:GetNWInt("MM_BleedDamage") >= 1 && v:Team() != 3 then
 			if v:Health()-v:GetNWInt("MM_BleedDamage") <= 0 then
                 v:SetNWBool("DiedFromBleed", true)
@@ -389,12 +421,14 @@ hook.Add("Think", "Spooked", function()
 			end
 		end
 		
-		if v:GetNWFloat("MM_FireDuration") > CurTime() && v:Team() != 3  then
+		if v:GetNWFloat("MM_FireDuration") > CurTime() && v:Team() != 3 then
 			if v:GetNWFloat("MM_FireTime") < CurTime() then
-				if v:Health()-v:GetNWInt("MM_FireDamage") <= 0 then
-					v:TakeDamage(v:GetNWInt("MM_FireDamage"),v:GetNWEntity("MM_FireOwner"),v:GetNWEntity("MM_FireInflictor"))
+				if v:Health()-v:GetNWInt("MM_FireDamage") <= 0 && v:GetNWFloat("MM_FireDuration") != 0 then
+                    v:SetNWBool("DiedFromFire", true)
+					v:TakeDamage(v:GetNWInt("MM_FireDamage"), v:GetNWEntity("MM_FireOwner"), v:GetNWEntity("MM_FireInflictor"))
 					v:SetNWInt("MM_FireDamage", 0)
 					v:SetNWFloat("MM_FireTime", 0)
+                    v:SetNWFloat("MM_FireDuration", 0)
 				else
 					v:TakeDamage(v:GetNWInt("MM_FireDamage"),v:GetNWEntity("MM_FireOwner"),v:GetNWEntity("MM_FireInflictor"))
 					v:SetNWFloat("MM_FireTime", CurTime()+0.5)
@@ -405,7 +439,13 @@ hook.Add("Think", "Spooked", function()
 			end
 		end
 		
-		if v:GetNWFloat("Acidied") > CurTime() && v:Team() != 3  then
+     	if IsValid(v) && v:KeyDown(IN_ATTACK2) && IsValid(v:GetActiveWeapon()) && v:GetActiveWeapon() != nil && v:GetActiveWeapon():GetClass() == "mm_repeater" && v:GetActiveWeapon():GetNextPrimaryFire() < CurTime() && v:GetActiveWeapon():Clip1() >= 3 then
+        
+        else
+            v:SetFOV( 0, 0.01 )
+        end
+        
+        if v:GetNWFloat("Acidied") > CurTime() && v:Team() != 3  then
 			if v:GetNWFloat("MM_AcidTime") < CurTime() then
 				if v:Health()-v:GetNWInt("MM_AcidDamage") <= 0 then
 					v:TakeDamage(v:GetNWInt("MM_AcidDamage"),v:GetNWEntity("MM_AcidOwner"),v:GetNWEntity("MM_AcidInflictor"))
@@ -413,7 +453,7 @@ hook.Add("Think", "Spooked", function()
 					v:SetNWFloat("MM_AcidTime", 0)
 				else
 					v:TakeDamage(v:GetNWInt("MM_AcidDamage"),v:GetNWEntity("MM_AcidOwner"),v:GetNWEntity("MM_AcidInflictor"))
-					v:SetNWFloat("MM_AcidTime", CurTime()+0.5)
+					v:SetNWFloat("MM_AcidTime", CurTime()+0.375)
 				end
 				if IsValid(v) && v:Alive() && IsValid(v:GetNWEntity("MM_AcidOwner")) && v:GetNWEntity("MM_AcidOwner") != nil then
 					v:GetNWEntity("MM_AcidOwner"):ConCommand("play gameplay/hit_sound.wav")
@@ -427,7 +467,7 @@ hook.Add("Think", "Spooked", function()
             if v:GetNWFloat("NextDiveSound") <= CurTime() then
                 v:SetNWFloat("NextDiveSound", CurTime() + 0.2)
                 if SERVER then
-                    v:EmitSound("npc/combine_soldier/gear"..math.random(1, 6)..".wav", math.Rand(80, 100), math.Rand(90, 120))
+                    v:EmitSound("gameplay/roll"..math.random(1, 5)..".wav", math.Rand(80, 100), math.Rand(90, 120))
                 end		
             end
             v:GodEnable()
@@ -438,7 +478,7 @@ hook.Add("Think", "Spooked", function()
             if v:GetNWFloat("NextDiveSound") <= CurTime() then
                 v:SetNWFloat("NextDiveSound", CurTime() + 0.2)
                 if SERVER then
-                    v:EmitSound("npc/combine_soldier/gear"..math.random(1, 6)..".wav", math.Rand(80, 100), math.Rand(90, 120))
+                    v:EmitSound("gameplay/roll"..math.random(1, 5)..".wav", math.Rand(80, 100), math.Rand(90, 120))
                 end		
             end
             v:GodEnable()
@@ -455,6 +495,10 @@ hook.Add("Think", "Spooked", function()
         // Extinguish dead/spectators
         if v:IsOnFire() && (v:Team() == 2 || v:Team() == 5) then
            v:Extinguish()
+        end
+        
+        if v:GetNWFloat("DiveCooldown") < 5 then
+            v:SetNWFloat("DiveCooldown", v:GetNWFloat("DiveCooldown") + 0.02)
         end
     end
     
@@ -484,7 +528,7 @@ hook.Add("Think", "Spooked", function()
             NextSkelly = CurTime() + 5
         elseif NextSkelly < CurTime() then
             SkellySpawnCount = SkellySpawnCount + 1
-            NextSkelly = CurTime() + 3
+            NextSkelly = CurTime() + 2
             local spawns = ents.FindByClass( "info_player_start" )
             local random_entry = table.Random(spawns)
             
@@ -508,6 +552,48 @@ hook.Add("Think", "Spooked", function()
         ent = ents.FindByClass( "sent_skellington" )
         for i=1, #ent do
             ent[i]:TakeDamage(1337, NULL, NULL)
+        end
+    end
+    
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 5 then
+        if GetGlobalVariable("WackyRound_Extra") < CurTime() then
+            if game.GetTimeScale() == 1 then
+                game.SetTimeScale( 0.33 )
+                SetGlobalVariable("WackyRound_Extra", CurTime() + math.random(2, 4))
+            else
+                game.SetTimeScale( 1 )
+                SetGlobalVariable("WackyRound_Extra", CurTime() + math.random(8, 12))
+            end
+        end
+    end
+    
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 6 then
+        if GetGlobalVariable("WackyRound_Extra") < CurTime() then
+            for k, v in pairs( player.GetAll() ) do
+                v:StripWeapons()
+                v:Give("mm_candlestick")
+                
+                local num 
+                local rand 
+                
+                num = #MonsterMash_Weapons["melee"]
+                rand = math.random(2, num)
+                v:Give(MonsterMash_Weapons["melee"][rand].entity)
+                
+                num = #MonsterMash_Weapons["handgun"]
+                rand = math.random(2, num)
+                v:Give(MonsterMash_Weapons["handgun"][rand].entity)
+                
+                num = #MonsterMash_Weapons["primary"]
+                rand = math.random(2, num)
+                v:Give(MonsterMash_Weapons["primary"][rand].entity)
+                v:SelectWeapon(MonsterMash_Weapons["primary"][rand].entity)
+                
+                num = #MonsterMash_Weapons["throwable"]
+                rand = math.random(2, num)
+                v:Give(MonsterMash_Weapons["throwable"][rand].entity)
+            end
+            SetGlobalVariable("WackyRound_Extra", CurTime() + 10)
         end
     end
 end)
@@ -536,28 +622,52 @@ end
 
 function AddMedal(ply, type)
     if GetConVar("mm_medals"):GetInt() == 0 then return end
+    if GetGlobalVariable("RoundsToWacky") == 0 && GetGlobalVariable("WackyRound_Event") == 2 then return end
     if !ply:IsPlayer() then return end
     CalculateMedalStuff(ply, type)
     
-    ply:ConCommand("play ui/bell1.wav")
+    local currkills = ply:GetNWInt("killcounter")
+    local currmedals = ply:GetNWInt("MM_MedalsEarned")
     
-    if     type == "gib"                then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
-    elseif type == "behead"             then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 25)
-    elseif type == "1hitkill"           then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
-    elseif type == "killwhileconcussed" then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 20)
-    elseif type == "killwhilelimbless"  then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 20)
-    elseif type == "killwhilebleeding"  then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
-    elseif type == "neardeath"          then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
-    elseif type == "longrange"          then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
-    elseif type == "backstab"           then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 25)
-    elseif type == "post_mortem"        then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
-    elseif type == "concuss"            then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10) ply:SetNWInt("LastScore", 10)
-    elseif type == "dismember"          then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 15) ply:SetNWInt("LastScore", 15)
-    elseif type == "random"             then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 5)
-    elseif type == "immobilized"        then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 5)
-    elseif type == "honorabledeath"     then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 5)
-    elseif type == "youtried"           then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 5)
-    elseif type == "bleed"              then ply:SetNWInt("killcounter", ply:GetNWInt("killcounter") + 10)
+    if currmedals < ply:GetNWInt("buffcost") && ply:GetNWInt("buff") == "" then
+        ply:SetNWInt("MM_MedalsEarned", currmedals + 1)
+    end 
+    
+    if (currmedals+1 == ply:GetNWInt("buffcost")) then
+        timer.Simple(0.1, function() if !IsValid(ply) then return end ply:ConCommand("play ui/bell_toll.wav") end)
+    else
+        ply:ConCommand("play ui/bell1.wav")
+    end
+    
+    if     type == "gib"                then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "behead"             then ply:SetNWInt("killcounter", currkills + 25)
+    elseif type == "1hitkill"           then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "killwhileconcussed" then ply:SetNWInt("killcounter", currkills + 20)
+    elseif type == "killwhilelimbless"  then ply:SetNWInt("killcounter", currkills + 20)
+    elseif type == "killwhilebleeding"  then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "neardeath"          then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "longrange"          then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "backstab"           then ply:SetNWInt("killcounter", currkills + 25)
+    elseif type == "post_mortem"        then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "concuss"            then ply:SetNWInt("killcounter", currkills + 10) ply:SetNWInt("LastScore", 10)
+    elseif type == "dismember"          then ply:SetNWInt("killcounter", currkills + 10) ply:SetNWInt("LastScore", 10)
+    elseif type == "random"             then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "immobilized"        then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "youtried"           then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "bleed"              then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "tp"                 then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "killstreak"         then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "fire"               then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "taunt"              then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "taunt_killed"       then ply:SetNWInt("killcounter", currkills + 15)
+    elseif type == "melee_duel"         then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "melee_guns"         then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "revenge"            then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "dash"               then ply:SetNWInt("killcounter", currkills + 10)
+    elseif type == "dash_kill"          then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "assisted_suicide"   then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "while_tripping"     then ply:SetNWInt("killcounter", currkills + 5)
+    elseif type == "killwhilegorejar"   then ply:SetNWInt("killcounter", currkills + 5)
     end
 end
 

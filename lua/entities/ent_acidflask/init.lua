@@ -79,7 +79,13 @@ function ENT:Explode(data)
         effectdata4:SetStart( self:GetPos() ) 
         effectdata4:SetOrigin( self:GetPos() )
         effectdata4:SetScale( 1 )
-        util.Effect( "acidflask_explosion", effectdata4 )
+        util.Effect( "acidflask_explosion", effectdata4 )		
+        
+        local effectdata4 = EffectData()
+        effectdata4:SetStart( self:GetPos() ) 
+        effectdata4:SetOrigin( self:GetPos() )
+        effectdata4:SetScale( 1 )
+        util.Effect( "VortDispel", effectdata4 )
             
         local shake = ents.Create("env_shake")
         shake:SetOwner(self.Owner)
@@ -97,7 +103,7 @@ function ENT:Explode(data)
 			if v:GetPos():Distance(self:GetPos()) < 256 && self:Visible(v)  then
 				if !v:HasGodMode() then
 					v:SetNWFloat("Acidied",CurTime()+7.5)
-                    if v:GetPos():Distance(self:GetPos()) <= 48  then
+                    if v:GetPos():Distance(self:GetPos()) <= 64  then
                         v:SetNWInt("MM_AcidDamage", 9)
                     else
                         v:SetNWInt("MM_AcidDamage", 5)

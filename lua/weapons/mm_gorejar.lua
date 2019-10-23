@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_gorejar"
 SWEP.Cost = 15
+SWEP.Points = 0
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
 
 /*---------------------------------
 Created with buu342s Swep Creator

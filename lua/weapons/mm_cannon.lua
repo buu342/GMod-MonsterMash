@@ -1,5 +1,11 @@
 SWEP.SelectIcon = "vgui/entities/mm_cannon"
 SWEP.Cost = 70
+SWEP.Points = 10
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairSize = 96
+SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
+SWEP.CrosshairChargeSize = 96
 
 game.AddAmmoType( { 
  name = "ammo_cannon",
@@ -129,7 +135,7 @@ function SWEP:Think()
 		if self:GetGun_Charge() >= 5000 then
 			self:SetGun_Charge(5000)
 		else
-			self:SetGun_Charge(self:GetGun_Charge()+50)
+			self:SetGun_Charge(self:GetGun_Charge()+45)
 		end
 	elseif self.Owner:KeyDown(IN_ATTACK) && self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:OnGround() then
 		self:Reload()
@@ -159,6 +165,8 @@ function SWEP:Think()
 			grenade:SetPos(pos)
 			grenade:SetAngles(Angle(math.random(1, 100), math.random(1, 100), math.random(1, 100)))
 			grenade:SetOwner(self.Owner)
+			grenade.Owner = self.Owner
+			grenade.Inflictor = self
 			grenade:Spawn()
 			grenade:Activate()
 			 
@@ -173,6 +181,15 @@ function SWEP:Think()
 		self.Owner:ViewPunch( Angle( rnda,rndb,rnda ) ) 
 		self:SetGun_Charge(0)
 	end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
+    end
+    
 	if CLIENT then
 
 		if !self.Owner:IsOnGround() then
@@ -227,7 +244,7 @@ function SWEP:Reload()
         self:SendWeaponAnim(ACT_VM_HOLSTER)
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self:GetPrimaryAmmoType())
 		self:EmitSound("weapons/deploy.wav",75,100,1,CHAN_ITEM)
-		timer.Simple(0.2,function() if !IsValid(self) then return end self:EmitSound("weapons/cannon/reload.wav") end)
+		timer.Simple(1,function() if !IsValid(self) then return end self:EmitSound("weapons/cannon/reload.wav") end)
         self:SetShield_Reloading(true)
 		self:SetGun_FakeTimer2(CurTime()+0.5)
         if self.Owner:GetNWInt("LegMissing") == 3 then
@@ -237,6 +254,6 @@ function SWEP:Reload()
             self.Owner:SetWalkSpeed(self.ReloadSpeed)
             self.Owner:SetRunSpeed(self.ReloadSpeed)
         end
-        self:SetGun_Reload(CurTime()+1)
+        self:SetGun_Reload(CurTime()+2.5)
 	end
 end

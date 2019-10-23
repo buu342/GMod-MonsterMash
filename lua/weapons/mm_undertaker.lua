@@ -1,5 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_undertaker"
-SWEP.Cost = 35
+SWEP.Cost = 30
+SWEP.Points = 25
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_thompson" )
 
 game.AddAmmoType( { 
  name = "ammo_thompson",

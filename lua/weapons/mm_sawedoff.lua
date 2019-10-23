@@ -1,6 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_sawedoff"
 SWEP.Cost = 30
+SWEP.Points = 40
 
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 game.AddAmmoType( { 
  name = "ammo_shotgun",

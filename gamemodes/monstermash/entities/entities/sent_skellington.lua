@@ -14,14 +14,18 @@ ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
 
 ENT.HP = 60
 
+ENT.Master = nil
+
 function ENT:SetupDataTables()
 
 	self:NetworkVar( "Float", 0, "CoolDown")
 	self:NetworkVar( "Float", 1, "ChaseSoundCoolDown" )
 	self:NetworkVar( "Float", 2, "HP")
+	self:NetworkVar( "Float", 3, "Lifetime")
 	self:NetworkVar( "String", 0, "State")
 	self:NetworkVar( "Int", 0, "CountFrame")
 	self:NetworkVar( "Bool", 0, "FireEffect")
+	self:NetworkVar( "Entity", 0, "Master")
 
 end
 
@@ -38,12 +42,12 @@ function ENT:SpawnFunction( ply, tr, ClassName )
 
 end
 
-function FindNearestPlayer( pos, range )
+function ENT:FindNearestPlayer( pos, range )
 	
-	local nearestply = nil
+	local nearestply = nil  
     
     for i, ply in pairs( player.GetAll()) do
-        if ply:Team() != 3 then continue end
+        if (ply:Team() != 3 && ply:Team() != 1) || ply == self:GetMaster() then continue end
 		local distance = pos:Distance( ply:GetPos() )
         if( distance <= range ) && ply:Alive() then
 
@@ -69,14 +73,28 @@ function ENT:Initialize()
 	self:SetModel( "models/hunter/misc/sphere175x175.mdl" )
 	self:RebuildPhysics()
 	self:DrawShadow( false )
+    
+    timer.Simple(0, function()
+        self:SetMaster(self.Master)
+        if self:GetMaster() != nil then
+            self:SetOwner(self.Master)
+            self.Owner = self.Master
+            self:SetLifetime(CurTime()+60)
+        end
+    end)
 	
 end
 
 function ENT:Think()
 
 	self:NextThink( CurTime() + 0.001 )
-	local ply = FindNearestPlayer(self:GetPos(), 4096)
-	
+    
+    if self:GetMaster() != nil && self:GetLifetime() < CurTime() && SERVER then
+        self:Remove()
+        return
+    end
+    
+	local ply = self:FindNearestPlayer(self:GetPos(), 4096)
 	if GetConVar("ai_disabled"):GetInt() == 1 || (ply == nil && self:GetState() == "Chase") then 
 		self:SetState("Idle")
 	end
@@ -86,18 +104,18 @@ function ENT:Think()
 		if self:GetState() == "Dying" then
 			self:EmitSound("death/clickityclack2.wav", 75, 100, 1, CHAN_VOICE)
 			local giblist = {
-			"models/monstermash/gibs/head_skull.mdl",
-			"models/monstermash/gibs/sk_gib_1.mdl",
-			"models/monstermash/gibs/sk_gib_2.mdl",
-			"models/monstermash/gibs/sk_gib_3.mdl",
-			"models/monstermash/gibs/sk_gib_4.mdl",
-			"models/monstermash/gibs/sk_gib_5.mdl",
-			"models/monstermash/gibs/sk_gib_6.mdl",
-			"models/monstermash/gibs/sk_gib_8.mdl",
-			"models/monstermash/gibs/sk_gib_9.mdl",
-			"models/monstermash/gibs/sk_gib_10.mdl",
-			"models/monstermash/gibs/sk_gib_11.mdl",
-			"models/monstermash/gibs/sk_gib_12.mdl",
+                "models/monstermash/gibs/head_skull.mdl",
+                "models/monstermash/gibs/sk_gib_1.mdl",
+                "models/monstermash/gibs/sk_gib_2.mdl",
+                "models/monstermash/gibs/sk_gib_3.mdl",
+                "models/monstermash/gibs/sk_gib_4.mdl",
+                "models/monstermash/gibs/sk_gib_5.mdl",
+                "models/monstermash/gibs/sk_gib_6.mdl",
+                "models/monstermash/gibs/sk_gib_8.mdl",
+                "models/monstermash/gibs/sk_gib_9.mdl",
+                "models/monstermash/gibs/sk_gib_10.mdl",
+                "models/monstermash/gibs/sk_gib_11.mdl",
+                "models/monstermash/gibs/sk_gib_12.mdl",
 			}
 			for i=1, 11 do
 				local ent2 = ents.Create("prop_physics")
@@ -177,7 +195,7 @@ function ENT:RebuildPhysics( )
 end
 
 function ENT:PhysicsCollide( data, physobj )
-	if data.HitEntity:GetClass() == "player" && self:GetState() == "Chase" then
+	if data.HitEntity:GetClass() == "player" && data.HitEntity != self:GetMaster() && self:GetState() == "Chase" then
 		physobj:SetVelocity(Vector(0,0,0))
 		self:SetState("Attack1")
 		data.HitEntity:TakeDamage(140, self, self)
@@ -243,6 +261,11 @@ function ENT:Draw()
 	lcolor.x = c.r * ( math.Clamp( lcolor.x, 0, 1 ) + 0.25 ) * 255
 	lcolor.y = c.g * ( math.Clamp( lcolor.y, 0, 1 ) + 0.25 ) * 255
 	lcolor.z = c.b * ( math.Clamp( lcolor.z, 0, 1 ) + 0.25 ) * 255
+    
+    if LocalPlayer() == self:GetMaster() then
+        lcolor.x = 0
+        lcolor.z = 0
+    end
 	
 	local width = mat:Width()/3
 	local height = mat:Height()/3

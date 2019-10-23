@@ -1,45 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_colt"
-SWEP.Cost = 20
+SWEP.Cost = 25
+SWEP.Points = 40
 
-local soundData = {
-    name   = "Weapon_Beretta.ClipIn" ,
-    channel  = CHAN_ITEM,
-    volume   = 0.7,
-    soundlevel  = 100,
-    pitchstart  = 100,
-    pitchend  = 100,
-    sound   = "weapons/colt/colt_magin.wav"
-}
-sound.Add(soundData)
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_revolver" )
 
-local soundData = {
-    name   = "Weapon_Beretta.SlideRelease" ,
-    channel  = CHAN_ITEM,
-    volume   = 0.7,
-    soundlevel  = 100,
-    pitchstart  = 100,
-    pitchend  = 100,
-    sound   = "weapons/colt/colt_slide.wav"
-}
-sound.Add(soundData)
-
-local soundData = {
-    name   = "Weapon_Beretta.ClipOut" ,
-    channel  = CHAN_ITEM,
-    volume   = 0.7,
-    soundlevel  = 100,
-    pitchstart  = 100,
-    pitchend  = 100,
-    sound   = "weapons/colt/colt_magout.wav"
-}
-sound.Add(soundData)
-
-game.AddAmmoType( { 
- name = "ammo_colt",
- dmgtype = DMG_BULLET,
- tracer = TRACER_LINE,
- force = 2000
-} )
 
 /*---------------------------------
 Created with buu342s Swep Creator
@@ -98,6 +62,9 @@ SWEP.Secondary.ClipSize = 0
 SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
+
+SWEP.UseDistance = true
+SWEP.ShootDistance = 896
 
 function SWEP:ShootEffects()
 

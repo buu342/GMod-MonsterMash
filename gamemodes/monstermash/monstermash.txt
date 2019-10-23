@@ -17,63 +17,32 @@
 			"default"	"0"
 		}
 
+
 		2
 		{
-			"name"		"mm_shootslow"
-			"text"		"Slowdown on Shoot"
+			"name"		"mm_wackytaunts"
+			"text"		"Wacky Taunts"
 			"type"		"CheckBox"
-			"default"	"1"
+			"default"	"0"
 		}
 
 		3
 		{
-			"name"		"mm_kill_limit"
+			"name"		"mm_point_limit"
 			"text"		"Point Limit"
 			"type"		"Numeric"
-			"default"	"3"
+			"default"	"500"
 		}
 
 		4
 		{
-			"name"		"mm_cleanup_time"
-			"text"		"Cleanup time (seconds)"
-			"type"		"Numeric"
-			"default"	"20"
-		}
-
-		5
-		{
 			"name"		"mm_spawnprotect"
-			"text"		"Spawin Protection (seconds)"
-			"type"		"Numeric"
+			"text"		"Spawin Protection"
+			"type"		"CheckBox"
 			"default"	"1"
 		}
 
-		6
-		{
-			"name"		"mm_aimrange"
-			"text"		"Aim Assist Range"
-			"type"		"Numeric"
-			"default"	"1000"
-		}
-
-		7
-		{
-			"name"		"mm_aimsize"
-			"text"		"Aim Assist Size"
-			"type"		"Numeric"
-			"default"	"20"
-		}
-
-		8
-		{
-			"name"		"mm_aimspeed"
-			"text"		"Aim Assist Speed"
-			"type"		"Numeric"
-			"default"	"3"
-		}
-
-		9
+		5
 		{
 			"name"		"mm_buy_time"
 			"text"		"Buy time (seconds)"
@@ -81,7 +50,7 @@
 			"default"	"15"
 		}
 
-		10
+		6
 		{
 			"name"		"mm_wackyfrequency"
 			"text"		"Wacky Round frequency"
@@ -89,7 +58,7 @@
 			"default"	"3"
 		}
 
-		11
+		7
 		{
 			"name"		"mm_budget"
 			"text"		"Budget"
@@ -97,20 +66,53 @@
 			"default"	"100"
 		}
 
-		12
+		8
 		{
 			"name"		"mm_healthregentime"
 			"text"		"Health regen time"
 			"type"		"Numeric"
-			"default"	"2"
+			"default"	"5"
+		}
+
+
+		9
+		{
+			"name"		"mm_healthregenamount"
+			"text"		"Health regen amount"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+
+		10
+		{
+			"name"		"mm_medals"
+			"text"		"Use Medals"
+			"type"		"Numeric"
+			"default"	"1"
+		}
+
+		11
+		{
+			"name"		"mm_roundtimer"
+			"text"		"Round Timer"
+			"type"		"Numeric"
+			"default"	"360"
+		}
+
+		12
+		{
+			"name"		"mm_cleanup_time"
+			"text"		"Cleanup Time"
+			"type"		"Numeric"
+			"default"	"20"
 		}
 
 		13
 		{
-			"name"		"mm_medals"
-			"text"		"Medals"
+			"name"		"mm_maxrounds"
+			"text"		"Rounds to map change"
 			"type"		"Numeric"
-			"default"	"1"
+			"default"	"10"
 		}
 	}
 }

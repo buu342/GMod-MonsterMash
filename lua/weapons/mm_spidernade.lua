@@ -1,5 +1,9 @@
 SWEP.SelectIcon = "vgui/entities/mm_spidernade"
 SWEP.Cost = 20
+SWEP.Points = 40
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
 
 /*---------------------------------
 Created with buu342s Swep Creator

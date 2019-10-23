@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_hook"
 SWEP.Cost = 15
+SWEP.Points = 75
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -86,8 +87,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end
@@ -116,6 +117,9 @@ function SWEP:DamageStuff()
             end
 			if tr.Entity:IsPlayer() && (math.Rand(0,1)*100 < self.ConcussChance) then
 				dmginfo:SetDamageType(DMG_SLASH)
+                if (self:Backstab() && self:GetClass() != "mm_candlestick" && GetConVar("mm_assassination"):GetInt() == 1) then
+                    dmginfo:SetDamage( self.Primary.Damage*10 )
+                end
 			end
             dmginfo:SetDamageForce( self.Owner:GetForward() * 5 )
             if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:GetClass() == "sent_skellington" || tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0  )) && IsFirstTimePredicted() then

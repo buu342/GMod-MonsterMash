@@ -1,5 +1,13 @@
 MusicList = {
     {
+        name = "2 SPOOKY 4 U",
+        author = "Griffin Lewis",
+        startingsong = "",
+        song = "sound/music/2Spooky4U.ogg",
+        dur_starting = 0,
+        dur_song = 184.935,
+    },
+    {
         name = "Danse Macabre",
         author = "Camille Saint-saëns",
         startingsong = "",
@@ -8,12 +16,36 @@ MusicList = {
         dur_song = 425.205,
     },
     {
+        name = "Goosebumps Theme (Cover)",
+        author = "Samuel Fu",
+        startingsong = "",
+        song = "sound/music/Goosebumps.ogg",
+        dur_starting = 0,
+        dur_song = 61.621,
+    },    
+    {
+        name = "Grim Grinning Ghosts",
+        author = "Xavier Atencio",
+        startingsong = "",
+        song = "sound/music/GrimGrinningGhosts.ogg",
+        dur_starting = 0,
+        dur_song = 59.720,
+    },
+    {
         name = "Halloween Theme",
         author = "John Carpenter",
         startingsong = "",
         song = "sound/music/Halloween.ogg",
         dur_starting = 0,
         dur_song = 165.325,
+    },
+    {
+        name = "Haunted House",
+        author = "Chris Kevin",
+        startingsong = "",
+        song = "sound/music/HauntedHouse.ogg",
+        dur_starting = 0,
+        dur_song = 125.032,
     },
     {
         name = "Majin Castle Part 1",
@@ -40,12 +72,12 @@ MusicList = {
         dur_song = 184.98,
     },
     {
-        name = "Ruin Sentinels",
-        author = "Yuka Kitamura",
-        startingsong = "sound/music/RuinSentinels-1.ogg",
-        song = "sound/music/RuinSentinels-2.ogg",
-        dur_starting = 5.451,
-        dur_song = 157.714,
+        name = "Party Ghouls",
+        author = "Mat Clark",
+        startingsong = "",
+        song = "sound/music/PartyGhoul.ogg",
+        dur_starting = 0,
+        dur_song = 229.303,
     },
     {
         name = "Spooky Scary Skeletons (Eurobeat)",
@@ -56,12 +88,12 @@ MusicList = {
         dur_song = 109.374,
     },
     {
-        name = "Theme from Friday the 13th Part 3",
-        author = "Harry Manfredini",
+        name = "Spooky Scary Skeletons (Piano)",
+        author = "grande1899",
         startingsong = "",
-        song = "sound/music/F13Part3.ogg",
+        song = "sound/music/SpookyScaryPiano.ogg",
         dur_starting = 0,
-        dur_song = 165.972,
+        dur_song = 134.441,
     },
     {
         name = "The Great Doot Doot Sneak",
@@ -71,13 +103,29 @@ MusicList = {
         dur_starting = 0,
         dur_song = 124.01,
     },
+    {
+        name = "Theme from Friday the 13th Part 3",
+        author = "Harry Manfredini",
+        startingsong = "",
+        song = "sound/music/F13Part3.ogg",
+        dur_starting = 0,
+        dur_song = 165.972,
+    },       
+    {
+        name = "Thriller (Cover)",
+        author = "Halloween Sound Machine",
+        startingsong = "",
+        song = "sound/music/Thriller.ogg",
+        dur_starting = 0,
+        dur_song = 344.436,
+    },    
 }
 
 function MusicPlay(ply, args, dointro)
     if ply.Music then
         MusicStop(ply)
     end
-    if !ply.Music && args[1] != nil && args[1] <= tostring(#MusicList) && args[1] >= "1" then
+    if !ply.Music && args[1] != nil && tonumber(args[1]) <= #MusicList && tonumber(args[1]) >= 1 then
         ply.MusicIndex = tonumber(args[1])
         if MusicList[ply.MusicIndex].startingsong != "" && dointro then
             sound.PlayFile( MusicList[ply.MusicIndex].startingsong, "", function(station, num, err)
@@ -131,6 +179,10 @@ function MusicThink(ply)
             sng = string.Replace(sng, "sound/", "")
             util.PrecacheSound( sng )
         end
+    end
+    
+    if !file.Exists( MusicList[1].song, "GAME" ) then
+        return 
     end
     
     // Wacky round music    

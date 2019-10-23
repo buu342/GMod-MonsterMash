@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+"$baseTexture" "models/weapons/monstermash/minigun/invisible"
+"$no_draw" "1"
+}

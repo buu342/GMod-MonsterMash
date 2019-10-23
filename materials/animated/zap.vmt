@@ -1,0 +1,16 @@
+"UnlitGeneric"
+{
+	"$additive" "1"
+	"$basetexture" "animated/zap"
+	"$translucent" "1"
+	// "$alpha" "0.75"
+	"Proxies"
+	{
+		"AnimatedTexture"
+		{
+			"animatedtexturevar" "$basetexture"
+			"animatedtextureframenumvar" "$frame"
+			"animatedtextureframerate" 16
+		}
+	}
+}

@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_battleaxe"
 SWEP.Cost = 50
+SWEP.Points = 20
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -38,7 +39,7 @@ SWEP.DrawAmmo			= false
 SWEP.DrawCrosshair		= true
 
 SWEP.TimeToHit = 0.5
-SWEP.Reach = 75
+SWEP.Reach = 80
 SWEP.HitSound1 = Sound("weapons/axe/hit1.wav")
 SWEP.HitSound2 = Sound("weapons/axe/hit2.wav")
 SWEP.HitSound3 = Sound("weapons/axe/hit3.wav")

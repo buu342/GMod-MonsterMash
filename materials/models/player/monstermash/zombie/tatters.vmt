@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\player\monstermash\zombie\tatters"
+	"$nocull" "1"
+	"$model" "1"
+	"$halflambert" 1
+"$alphatest" 1 
+		"$translucent" 1
+}

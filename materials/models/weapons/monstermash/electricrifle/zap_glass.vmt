@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models\weapons\monstermash\electricrifle\zap_glass"
+	"$translucent"	"1"
+	"$selfillum" "1"
+}

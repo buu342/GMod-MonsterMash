@@ -1,6 +1,8 @@
 SWEP.SelectIcon = "vgui/entities/mm_shield"
-SWEP.Cost = 25
+SWEP.Cost = 20
+SWEP.Points = 40
 
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_revolver" )
 
 /*---------------------------------
 Created with buu342s Swep Creator
@@ -59,6 +61,9 @@ SWEP.Secondary.ClipSize = 0
 SWEP.Secondary.DefaultClip = 0
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
+
+SWEP.UseDistance = true
+SWEP.ShootDistance = 1152
 
 SWEP.CrouchPos = Vector(-1,-1,.5) -- Moves the gun when you crouch
 
@@ -173,6 +178,14 @@ function SWEP:Think()
 	else
 		self.Owner:GetViewModel():SetSkin(0)
 	end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
+    end
 
 	if self.Owner:GetNWInt("LegMissing") == 3 then
         self.Owner:SetWalkSpeed(85)
@@ -212,7 +225,7 @@ function SWEP:Think()
 		
 		if SERVER && !self.Shield && self:GetGun_ShieldTimer() < CurTime() then
 			local Ent = ents.Create("prop_physics")
-			Ent:SetModel("models/props_doors/door03_slotted_left.mdl")
+			Ent:SetModel("models/weapons/monstermash/shield_physics.mdl")
 			Ent:SetOwner(self.Owner)
 			Ent:Spawn()
 			Ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
@@ -250,11 +263,11 @@ function SWEP:Think()
 			local hand
 			hand = self.Owner:GetAttachment(self.Owner:LookupAttachment("anim_attachment_rh"))
 
-			offset = hand.Ang:Right() * 20 + hand.Ang:Forward() * 20 + hand.Ang:Up() * 0
+			offset = hand.Ang:Right() * 0 + hand.Ang:Forward() * 0 + hand.Ang:Up() * 0
 
 			hand.Ang:RotateAroundAxis(hand.Ang:Right(), 0)
-			hand.Ang:RotateAroundAxis(hand.Ang:Forward(), -5)
-			hand.Ang:RotateAroundAxis(hand.Ang:Up(), 0)
+			hand.Ang:RotateAroundAxis(hand.Ang:Forward(), 0)
+			hand.Ang:RotateAroundAxis(hand.Ang:Up(), -90)
 
             self.Shield:SetPos(hand.Pos + offset)
             self.Shield:SetAngles(hand.Ang)

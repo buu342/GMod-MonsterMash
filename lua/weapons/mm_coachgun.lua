@@ -1,5 +1,10 @@
 SWEP.SelectIcon = "vgui/entities/mm_coachgun"
 SWEP.Cost = 60
+SWEP.Points = 10
+
+SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairSize = 88
+
 
 game.AddAmmoType( { 
  name = "ammo_shotgun",
@@ -57,7 +62,7 @@ SWEP.Primary.DefaultClip = 2
 SWEP.Primary.Spread = 1.2
 SWEP.Primary.NumberofShots = 14
 SWEP.Primary.Automatic = false
-SWEP.Primary.Recoil = 3
+SWEP.Primary.Recoil = 10
 SWEP.Primary.Delay = 0.5
 SWEP.Primary.Force = 2
 SWEP.DrawCrosshair = false
@@ -70,3 +75,29 @@ SWEP.IsPistol = false
 
 SWEP.UseDistance = true
 SWEP.ShootDistance = 384
+
+function SWEP:ShootEffects()
+
+	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
+	self.Owner:MuzzleFlash()
+	self.Owner:SetAnimation( PLAYER_ATTACK1 )
+    
+    local viewvector = self.Owner:EyeAngles():Forward()
+    
+    local effectdata = EffectData()
+    effectdata:SetOrigin(self.Owner:GetPos())
+    effectdata:SetScale( 128 )
+    util.Effect( "ThumperDust", effectdata )
+	
+	if SERVER then
+		local effectdata = EffectData()
+		local pos = self.Owner:GetShootPos()
+		pos = pos + self.Owner:GetForward() * 45
+		pos = pos + self.Owner:GetRight() * 2
+		pos = pos + self.Owner:GetUp() * -20
+		effectdata:SetOrigin(pos)
+		effectdata:SetAttachment( self:LookupAttachment("muzzle") )
+		util.Effect( "mm_muzzle", effectdata )
+	end
+
+end

@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models\weapons\monstermash\flaregun\flaregun"
+	"$nocull"	"1"
+}

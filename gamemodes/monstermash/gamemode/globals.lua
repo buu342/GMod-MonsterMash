@@ -7,19 +7,22 @@ players took fall damage, effectively ending the rounds early. Why? God
 knows. Jesus christ, I had to write this bloody file at 3AM, the day 
 BEFORE release.
 SetGlobalInt, Float, or whatever. Go to hell, in that nice secluded spot
-where my my hopes and dreams are at.
+where all my hopes and dreams are at.
 -----------------------------------------------------------------------*/
 
-GAMEMODEGLOBAL_MapRoundCount = 0
-GAMEMODEGLOBAL_ForceGame_Over = false
-GAMEMODEGLOBAL_Game_Over = false
-GAMEMODEGLOBAL_Winner = ""
-GAMEMODEGLOBAL_WackyRound_Extra = 0
-GAMEMODEGLOBAL_RoundsToWacky = GetConVar("mm_wackyfrequency"):GetInt()
-GAMEMODEGLOBAL_WackyRound_COOP = false
-GAMEMODEGLOBAL_WackyRound_COOPOther = nil
-GAMEMODEGLOBAL_WackyRound_Event = -1
-GAMEMODEGLOBAL_RoundStartTimer = 0
+/*
+    GAMEMODEGLOBAL_MapRoundCount = 0
+    GAMEMODEGLOBAL_ForceGame_Over = false
+    GAMEMODEGLOBAL_Game_Over = false
+    GAMEMODEGLOBAL_Winner = ""
+    GAMEMODEGLOBAL_WackyRound_Extra = 0
+    GAMEMODEGLOBAL_RoundsToWacky = 5
+    GAMEMODEGLOBAL_WackyRound_COOP = false
+    GAMEMODEGLOBAL_WackyRound_COOPOther = nil
+    GAMEMODEGLOBAL_WackyRound_Event = -1
+    GAMEMODEGLOBAL_RoundStartTimer = 0
+    GAMEMODEGLOBAL_RoundTime = 0
+*/
 
 if SERVER then
     util.AddNetworkString("GAMEMODEGLOBAL_MapRoundCount")
@@ -32,6 +35,7 @@ if SERVER then
     util.AddNetworkString("GAMEMODEGLOBAL_WackyRound_COOPOther")
     util.AddNetworkString("GAMEMODEGLOBAL_WackyRound_Event")
     util.AddNetworkString("GAMEMODEGLOBAL_RoundStartTimer")
+    util.AddNetworkString("GAMEMODEGLOBAL_RoundTime")
 end
 
 function SetGlobalVariable(var, value)
@@ -42,7 +46,6 @@ function SetGlobalVariable(var, value)
             if SERVER then return end
         end
         net.Start("GAMEMODEGLOBAL_"..var)
-
         if var == "MapRoundCount" then
             net.WriteInt(value, 32)
             GAMEMODEGLOBAL_MapRoundCount = value
@@ -73,6 +76,9 @@ function SetGlobalVariable(var, value)
         elseif var == "RoundStartTimer" then
             net.WriteFloat(value)
             GAMEMODEGLOBAL_RoundStartTimer = value
+        elseif var == "RoundTime" then
+            net.WriteFloat(value)
+            GAMEMODEGLOBAL_RoundTime = value
         end
         
         if i == 1 then 
@@ -104,6 +110,8 @@ function GetGlobalVariable(var)
         return GAMEMODEGLOBAL_WackyRound_Event
     elseif var == "RoundStartTimer" then
         return GAMEMODEGLOBAL_RoundStartTimer
+    elseif var == "RoundTime" then
+        return GAMEMODEGLOBAL_RoundTime
     end
 end
 
@@ -156,3 +164,8 @@ net.Receive("GAMEMODEGLOBAL_RoundStartTimer", function(len, ply)
     val = net.ReadFloat()
     GAMEMODEGLOBAL_RoundStartTimer = val
 end)
+
+net.Receive("GAMEMODEGLOBAL_RoundTime", function(len, ply)
+    val = net.ReadFloat()
+    GAMEMODEGLOBAL_RoundTime = val
+end) 

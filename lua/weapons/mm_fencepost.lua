@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_fencepost"
 SWEP.Cost = 20
+SWEP.Points = 40
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -58,24 +59,13 @@ function SWEP:PrimaryAttack()
     self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
     self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+    self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
     self:SetHoldType("knife")
     if self.Owner:GetNWInt("LegMissing") == 3 then
         self.Owner:SetWalkSpeed(1)
         self.Owner:SetRunSpeed(1)
     end
     timer.Simple(0.4,function() if !IsValid(self.Weapon) then return end self:SetHoldType("melee2") end)
-end
-
-function SWEP:Think()
-    if self.Owner:GetNWInt("LegMissing") == 3 then
-        self.Owner:SetWalkSpeed(85)
-        self.Owner:SetRunSpeed(85)
-    else
-        self.Owner:SetWalkSpeed(self.WalkSpeed)
-        self.Owner:SetRunSpeed(self.WalkSpeed)
-    end
-    self:DamageStuff()
-	self:LegsDismembered()
 end
 
 function SWEP:DamageStuff()
@@ -103,8 +93,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end
@@ -130,6 +120,9 @@ function SWEP:DamageStuff()
             dmginfo:SetDamageForce( self.Owner:GetForward() * 5 )
 			if tr.Entity:IsPlayer() && math.Rand(0,1)*100 < self.ConcussChance then
 				dmginfo:SetDamageType(DMG_SLASH)
+                if (self:Backstab() && self:GetClass() != "mm_candlestick" && GetConVar("mm_assassination"):GetInt() == 1) then
+                    dmginfo:SetDamage( self.Primary.Damage*10 )
+                end
 			end
             if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:GetClass() == "sent_skellington" || tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0  )) && IsFirstTimePredicted() then
                 if self:Backstab() && tr.Entity:Health() - dmginfo:GetDamage() <= 0 then

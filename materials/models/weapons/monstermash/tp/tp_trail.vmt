@@ -1,0 +1,4 @@
+VertexLitGeneric
+{
+$baseTexture "models\weapons\monstermash\tp\tp_trail"
+}

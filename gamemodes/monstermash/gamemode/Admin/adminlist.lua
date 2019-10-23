@@ -13,3 +13,7 @@ admins = {
 aborter = {
     "STEAM_0:1:43032837", // Taserman
 }
+
+edgelord = {
+    "STEAM_0:0:28144880", // Rex Impaler
+}

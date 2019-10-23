@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_scythe"
 SWEP.Cost = 40
+SWEP.Points = 20
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -56,7 +57,7 @@ SWEP.DismemberChance	= 100
 
 function SWEP:DamageStuff()
 
-		if self.Owner:GetNWFloat("LastKeyDown4") > CurTime() or self.Owner:GetNWFloat("LastKeyDown3") > CurTime() or self.Owner:GetNWFloat("LastKeyDown2") > CurTime() or self.Owner:GetNWFloat("LastKeyDown1") > CurTime() then return end
+    if self.Owner:GetNWFloat("LastKeyDown4") > CurTime() or self.Owner:GetNWFloat("LastKeyDown3") > CurTime() or self.Owner:GetNWFloat("LastKeyDown2") > CurTime() or self.Owner:GetNWFloat("LastKeyDown1") > CurTime() then return end
 	if  CurTime() > self:GetFaketimer2() && self:GetFaketimer2() > 0 then
 		self:SetFaketimer2(0)
         self.Weapon:EmitSound(self.MissSound)
@@ -80,8 +81,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end
@@ -110,6 +111,9 @@ function SWEP:DamageStuff()
 			if tr.Entity:IsPlayer() && math.Rand(0,1)*100 < self.ConcussChance then
 				dmginfo:SetDamageType(DMG_SLASH)
 			end
+            if (self:Backstab() && self:GetClass() != "mm_candlestick" && GetConVar("mm_assassination"):GetInt() == 1) then
+                dmginfo:SetDamage( self.Primary.Damage*10 )
+            end
             if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:GetClass() == "sent_skellington" || tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0  )) && IsFirstTimePredicted() then
                 if self:Backstab() && tr.Entity:Health() - dmginfo:GetDamage() <= 0 then
                     self.Owner:SetNWBool("KillFromBackstab", true)

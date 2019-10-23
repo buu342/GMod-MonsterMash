@@ -12,7 +12,7 @@ Initialize
 ---------------------------------------------------------*/
 function ENT:Initialize()
 
-    self.Entity:SetModel("models/props_junk/metal_paintcan001a.mdl")
+    self.Entity:SetModel("models/weapons/monstermash/demon.mdl")
 	
 	self.Entity:PhysicsInit( SOLID_VPHYSICS )
 	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
@@ -26,7 +26,6 @@ function ENT:Initialize()
 	end
     self.CanDamage = CurTime()+1
 	self.MyOwner = self.Owner
-	self.Entity:SetModel("models/Items/Flare.mdl")
 	self.RemoveEnt = CurTime() + 20
     self.LoopSound = CreateSound( self, "weapons/flaregun/burn.wav" ) 
     if self.LoopSound then
@@ -40,6 +39,9 @@ Explode
 ---------------------------------------------------------*/
 function ENT:OnRemove()
     if self.LoopSound then self.LoopSound:Stop() end
+    for k, v in pairs(player.GetAll()) do
+        v:SetFOV( 0, 0.1 )
+    end
 end
 	
 /*---------------------------------------------------------
@@ -53,6 +55,24 @@ end
 Touch
 ---------------------------------------------------------*/
 function ENT:Touch( ent )
+    if ent:GetClass() == "trigger_soundscape" then return end
+
+	if ent:IsNPC() or ent:IsPlayer() or ent:IsWorld() or ent:IsVehicle() or ent:IsValid() then
+        self:SetMoveType( MOVETYPE_NONE )
+        self:PhysicsInit( SOLID_NONE )
+        if !ent:IsWorld() then
+            self:SetParent(ent)
+        end
+    end
+end
+
+function ENT:PhysicsCollide( data, phys )
+	if data.HitEntity:IsWorld() then
+		phys:Wake()  
+		phys:EnableGravity(false) 
+		self:SetMoveType( MOVETYPE_NONE )
+		self:PhysicsInit( SOLID_NONE )
+	end
 end
 
 function ENT:Think()
@@ -64,13 +84,18 @@ function ENT:Think()
     //end
     if self.CanDamage < CurTime() then
         for k, v in pairs(player.GetAll()) do
-            if v:GetPos():Distance(self:GetPos()) < 128 && self:Visible(v) && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
+            if v:GetPos():Distance(self:GetPos()) < 256 && self:Visible(v) && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
                 if !v:HasGodMode() then
                     v:SetNWFloat("MM_FireDuration", CurTime() + 1)
 
-                    v:SetNWInt("MM_FireDamage", 3)
+                    v:SetNWInt("MM_FireDamage", 5)
                     v:SetNWEntity("MM_FireOwner", self.Owner)
                     v:SetNWEntity("MM_FireInflictor", self:GetNWEntity("FlamethrowerDamageInflictor"))
+                    v:SetNWFloat("MM_Hallucinate", CurTime() + 1)
+                    v:SetDSP( 13, false )
+                    if self:GetParent() == v && !v:Alive() then
+                        self:SetParent(nil)
+                    end
                 end
             end
         end

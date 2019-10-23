@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/player/monstermash/sleeves/sleeve_scientist"
+	
+	"$phong" "1"
+	"$phongexponent" "5"
+	"$phongboost" "0.5"
+	"$phongfresnelranges" "[0.05 0.3 0.7]"
+}

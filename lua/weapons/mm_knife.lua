@@ -1,5 +1,6 @@
 SWEP.SelectIcon = "vgui/entities/mm_knife"
 SWEP.Cost = 10
+SWEP.Points = 75
 
 SWEP.Contact 		= ""
 SWEP.Author			= ""
@@ -11,7 +12,6 @@ SWEP.ViewModelFOV 		= 54
 SWEP.ViewModel			= "models/weapons/monstermash/v_knife.mdl"
 SWEP.WorldModel			= "models/weapons/monstermash/w_knife.mdl"
 SWEP.HoldType 			= "knife"
-
 
 SWEP.FiresUnderwater = true
 SWEP.Base					= "mm_melee_base"
@@ -51,7 +51,7 @@ function SWEP:PrimaryAttack()
 	if self:GetNextPrimaryFire() > CurTime() then return end
     self.Weapon:EmitSound(self.MissSound)
     self:SetFaketimer(CurTime() + self.TimeToHit)
-    
+    self.Owner:SetNWFloat("MeleeAttackAim", CurTime() +1)
     if self.Owner:GetNWInt("LegMissing") == 3 then
         self.Owner:SetWalkSpeed(1)
         self.Owner:SetRunSpeed(1)
@@ -62,17 +62,8 @@ function SWEP:PrimaryAttack()
     self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 end
 
-function SWEP:Think()
-    self:DamageStuff()
+function SWEP:DoOtherStuff()
 	self.Owner:GetViewModel():SetPlaybackRate( 1.5 )
-    if self.Owner:GetNWInt("LegMissing") == 3 then
-        self.Owner:SetWalkSpeed(85)
-        self.Owner:SetRunSpeed(85)
-    else
-        self.Owner:SetWalkSpeed(self.WalkSpeed)
-        self.Owner:SetRunSpeed(self.WalkSpeed)
-    end
-	self:LegsDismembered()
 end
 
 function SWEP:Backstab()
@@ -119,8 +110,8 @@ function SWEP:DamageStuff()
                 start = self.Owner:GetShootPos(),
                 endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
                 filter = self.Owner,
-                mins = Vector( -10, -10, -8 ),
-                maxs = Vector( 10, 10, 8 ),
+                mins = Vector( -20, -20, -16 ),
+                maxs = Vector( 20, 20, 16 ),
                 mask = MASK_SHOT_HULL
             } )
         end
@@ -144,12 +135,15 @@ function SWEP:DamageStuff()
             dmginfo:SetInflictor( self )
 			if self:Backstab() then
 				self.Weapon:SendWeaponAnim( ACT_VM_HITKILL )
-				dmginfo:SetDamage( self.Primary.Damage )
+				dmginfo:SetDamage( self.Primary.Damage*2 )
 			else
 				dmginfo:SetDamage( self.Primary.Damage )
 			end
 			if tr.Entity:IsPlayer() && math.Rand(0,1)*100 < self.ConcussChance then
 				dmginfo:SetDamageType(DMG_SLASH)
+                if (self:Backstab() && self:GetClass() != "mm_candlestick" && GetConVar("mm_assassination"):GetInt() == 1) then
+                    dmginfo:SetDamage( self.Primary.Damage*10 )
+                end
 			end
             dmginfo:SetDamageForce( self.Owner:GetForward() * 5 )
             if ( SERVER && IsValid( tr.Entity ) && ( tr.Entity:GetClass() == "sent_skellington" || tr.Entity:IsNPC() || tr.Entity:IsPlayer() || tr.Entity:Health() > 0  )) && IsFirstTimePredicted() then

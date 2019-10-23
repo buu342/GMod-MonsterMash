@@ -87,7 +87,7 @@ function SWEP:Initialize()
 		self.LandTime = 0
 	end
     util.PrecacheSound(self.Primary.Sound) 
-        self:SetWeaponHoldType( self.HoldType )
+    self:SetWeaponHoldType( self.HoldType )
 end 
 
 function SWEP:Deploy()
@@ -187,9 +187,19 @@ function SWEP:Think()
             self:SetHoldType("ar2")
 		elseif self.Owner:GetActiveWeapon():GetClass() == "mm_coachgun" then
             self:SetHoldType("shotgun")
+        elseif self.Owner:GetActiveWeapon():GetClass() == "mm_minigun" then
+            self:SetHoldType("crossbow")
         else
             self:SetHoldType("rpg")
         end
+    end
+    
+    if self:GetNextPrimaryFire() < CurTime() && self.Weapon:Clip1() == 0 && self.Owner:GetNWInt("MM_AutoReload") == 1 && self:GetGun_FakeTimer2() < CurTime() && self:GetGun_FakeTimer2() == 0 then
+        self:Reload()
+    end
+    
+    if self:GetGun_FakeTimer2() < CurTime() then
+        self:SetGun_FakeTimer2(0)
     end
 	
 	if CLIENT then
@@ -241,10 +251,10 @@ function SWEP:PrimaryAttack()
             bullet.Spread = Vector( self.Primary.Spread * 0.1 , self.Primary.Spread * 0.1, 0)*(1+bool_to_number(self:GetGun_MessWithArmStuff()))
 		end
         bullet.Tracer = 1
+		bullet.TracerName = self.TracerThing
 		if self.UseDistance then
 			bullet.Distance = self.ShootDistance
 		end
-		bullet.TraceName = self.TracerThing
 		bullet.Force = self.Primary.Force 
 		bullet.Damage = self.Primary.Damage 
 		bullet.AmmoType = self.Primary.Ammo 
@@ -462,11 +472,13 @@ if CLIENT then
                         1 arm reload
         --------------------------------------------*/
 		
-        if (self.Owner:GetNWInt("ArmMissing") > 0 && self:GetGun_FakeTimer2() > CurTime() && ((self:GetGun_FakeTimer2()-CurTime())/(self.Owner:GetViewModel():SequenceDuration()*(1/self.Owner:GetViewModel():GetPlaybackRate()))) > 0.1)  || ((self:GetClass() == "mm_pumpshotgun" || self:GetClass() == "mm_repeater") && self:GetMM_Reloading()  && self.Owner:GetNWInt("ArmMissing") != 0) then
-            TestVectorTarget = TestVectorTarget + Vector(50,0,0)
-            TestVectorAngleTarget = TestVectorAngleTarget + Vector(-90,0,0)
-        elseif self.Owner:GetNWInt("ArmMissing") > 0 && self:GetGun_FakeTimer2() > CurTime() && ((self:GetGun_FakeTimer2()-CurTime())/(self.Owner:GetViewModel():SequenceDuration()*(1/self.Owner:GetViewModel():GetPlaybackRate()))) <= 0.1 then
-            TestVectorAngleTarget = TestVectorAngleTarget + Vector(5,0,0)
+        if self:GetClass() != "mm_wand" then
+            if (self.Owner:GetNWInt("ArmMissing") > 0 && self:GetGun_FakeTimer2() > CurTime() && ((self:GetGun_FakeTimer2()-CurTime())/(self.Owner:GetViewModel():SequenceDuration()*(1/self.Owner:GetViewModel():GetPlaybackRate()))) > 0.1)  || ((self:GetClass() == "mm_pumpshotgun" || self:GetClass() == "mm_repeater") && self:GetMM_Reloading()  && self.Owner:GetNWInt("ArmMissing") != 0) then
+                TestVectorTarget = TestVectorTarget + Vector(50,0,0)
+                TestVectorAngleTarget = TestVectorAngleTarget + Vector(-90,0,0)
+            elseif self.Owner:GetNWInt("ArmMissing") > 0 && self:GetGun_FakeTimer2() > CurTime() && ((self:GetGun_FakeTimer2()-CurTime())/(self.Owner:GetViewModel():SequenceDuration()*(1/self.Owner:GetViewModel():GetPlaybackRate()))) <= 0.1 then
+                TestVectorAngleTarget = TestVectorAngleTarget + Vector(5,0,0)
+            end
         end
 		
 		/*--------------------------------------------

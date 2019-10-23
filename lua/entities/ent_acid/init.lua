@@ -75,7 +75,9 @@ function ENT:Think()
     for k, v in pairs(player.GetAll()) do
         if v:GetPos():Distance(self:GetPos()) < self:GetModelScale()*100 && v:GetPos().z > self:GetPos().z-5 && v:GetPos().z < self:GetPos().z+10 && self:Visible(v) && v:GetNWFloat("DivingRight") < CurTime() && v:GetNWFloat("DivingLeft") < CurTime() then
             if !v:HasGodMode() then
-                v:SetNWFloat("Acidied",CurTime()+7.5)
+                if v:GetNWFloat("Acidied")-CurTime() < 1 then
+                    v:SetNWFloat("Acidied",CurTime()+1)
+                end
                 if v:GetNWInt("MM_AcidDamage") != 9 then
                     v:SetNWInt("MM_AcidDamage", 5)
                 end

@@ -71,7 +71,7 @@ Touch
 function ENT:Touch( ent )
     if ent:GetClass() == "trigger_soundscape" then return end
 	if ent:IsValid() then
-		local damage = 25
+		local damage = 30
         self.NotStuck = false
         self:SetNetworkedBool("HitAlready", true)
         self:SetParent(ent)

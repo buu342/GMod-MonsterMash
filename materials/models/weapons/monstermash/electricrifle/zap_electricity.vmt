@@ -1,0 +1,17 @@
+"UnlitGeneric"
+{
+"$baseTexture" "models/weapons/monstermash/electricrifle/zap_electricity"
+"$surfaceprop" "Default"
+"selfillum" "1"
+"$translucent" "1"
+$nocull 1
+"Proxies"
+{
+"AnimatedTexture"
+{
+"animatedTextureVar" "$basetexture"
+"animatedTextureFrameNumVar" "$frame"
+"animatedTextureFrameRate" "24"
+}
+}
+}
