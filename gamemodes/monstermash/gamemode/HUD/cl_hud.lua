@@ -564,7 +564,7 @@ function hud()
 					surface.SetDrawColor( 255, 255, 255, 255 )
 				end
 
-				surface.SetMaterial( Material( weapon.CrosshairMaterial ) ) local size = 40*(1+bool_to_number(LocalPlayer():GetActiveWeapon():GetGun_MessWithArmStuff()))
+				surface.SetMaterial( weapon.CrosshairMaterial ) local size = 40*(1+bool_to_number(LocalPlayer():GetActiveWeapon():GetGun_MessWithArmStuff()))
 				surface.DrawTexturedRect( (ScrW()/2) - (size/2), (ScrH()/2)-(size/2), size,size )
 			end		
             if LocalPlayer():GetActiveWeapon():GetClass() == "mm_crossbow" || LocalPlayer():GetActiveWeapon():GetClass() == "mm_sawblade" || LocalPlayer():GetActiveWeapon():GetClass() == "mm_flaregun" then
