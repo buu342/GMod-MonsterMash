@@ -31,11 +31,11 @@ function ENT:Initialize()
 		phys:EnableGravity(true) 
 	end
 	
-    timer.Simple(1, function() self:Remove() end)
+    timer.Simple(2, function() self:Remove() end)
 end
 
 function ENT:Think()
-    for k, v in pairs(ents.FindInSphere(self:GetPos(), 196)) do
+    for k, v in pairs(ents.FindInSphere(self:GetPos(), 256)) do
         local ent = v
         local entlist = {
             "ent_acidflask",

@@ -12,7 +12,7 @@ end
 
 function EFFECT:Think( )
 	self.MySize = self.MySize + 0.5
-    if self.MySize > 10 then
+    if self.MySize > 13 then
         self:Remove()
     end
 	return true	

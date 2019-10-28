@@ -82,6 +82,7 @@ function ENT:Touch( ent )
 				local damage = speed * 0.03
 				ent:TakeDamage(damage , self:GetNWEntity("OriginalOwner"), self.Inflictor)
 				ent:EmitSound("weapons/fx/rics/arrow_impact_flesh"..math.random(2,4)..".wav")
+                ent:SetNWInt("Dismember", 1)
                 self:SetOwner(ent)
 			end
             return false 
