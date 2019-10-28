@@ -675,7 +675,7 @@ function ImplementWeapons()
     AddWeaponList("throwable", 
         {
             entity          = wep,
-            description     = "This weapons has a 100% concuss chance and is consumed upon throwing. It must recharge before it can be used again, or it can be retrieved from the ground by pressing the USE key.",
+            description     = "This weapon has a 100% concuss chance and is consumed upon throwing. It must recharge before it can be used again, or it can be retrieved from the ground by pressing the USE key.",
             chargeup        = false,
             points          = weapons.Get(wep).Points,
             cost            = weapons.Get(wep).Cost,
@@ -778,7 +778,7 @@ function ImplementWeapons()
         {
             entity          = wep,
             cost            = 4,
-            description     = "Activate to temporarily fly away.",
+            description     = "Activate to temporarily fly away. Uses stamina.",
             icon            = "vgui/hud/buffs/broom.png",
             name            = "Broom",
         }
@@ -800,7 +800,7 @@ function ImplementWeapons()
         {
             entity          = wep,
             cost            = 6,
-            description     = "Activate to become temporarily invisible.",
+            description     = "Activate to become temporarily invisible. Uses stamina.",
             icon            = "vgui/hud/buffs/invisible.png",
             name            = "Invisibility",
         }

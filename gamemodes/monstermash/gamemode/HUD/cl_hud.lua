@@ -489,6 +489,7 @@ local deathhintnum = 1
 local lowtimewarn = false
 
 local skellies = {}
+local bats = {}
 local skeletonfly = {
     Material( "animated/skeleton1.png" ),
     Material( "animated/skeleton2.png" ),
@@ -499,6 +500,7 @@ local skeletonfly = {
     Material( "animated/skeleton7.png" ),
     Material( "animated/skeleton8.png" )
 }
+local batstext = Material( "animated/bat" )
 
 function hud()
     local scale_width 	= 1600
@@ -1112,7 +1114,7 @@ function hud()
             end
             draw.SimpleTextOutlined( LocalPlayer():GetNWInt("killcounter"), "TheDefaultSettings", ScrW()-16-40, ScrH()-76, Color(255,255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
             if LocalPlayer():GetNWString("Buff") != "" then
-                draw.SimpleTextOutlined( LocalPlayer():GetNWInt("buffcost").."/"..LocalPlayer():GetNWInt("buffcost"), "TheDefaultSettings", ScrW()-16-40, ScrH()-86+5, Color(96,96,96,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
+                draw.SimpleTextOutlined( LocalPlayer():GetNWInt("buffcost").."/"..LocalPlayer():GetNWInt("buffcost"), "TheDefaultSettings", ScrW()-16-40, ScrH()-86+50, Color(96,96,96,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
             else
                 local sin = 255
                 if (LocalPlayer():GetNWInt("MM_MedalsEarned") == LocalPlayer():GetNWInt("buffcost")) && LocalPlayer():GetNWInt("buffcost") != 0 then
@@ -1245,8 +1247,57 @@ function hud()
 	
 	//{
 	
-	if LocalPlayer():GetNWFloat("Spooked") > CurTime() then
-		surface.SetDrawColor( 255, 255, 255, (LocalPlayer():GetNWFloat("Spooked") - CurTime())*255 )
+	if LocalPlayer():GetNWFloat("Spooked") > CurTime() && LocalPlayer():GetNWFloat("Spooked_Bats") > CurTime() then
+        local numbats = 6
+        local size = 1024
+        local size2 = size/2
+        local actvel = 2
+        local framespeed = 0.1
+        
+        if table.Count( bats ) != numbats then
+            table.Empty(bats)
+            for i=1, numbats do
+                local skelly = {
+                    x = math.random(0, ScrW()),
+                    y = math.random(0, ScrH()),
+                    vel = Vector(math.Rand(-7, 7), math.Rand(-7, 7), 0),
+                    col = Color(math.random(0, 255), math.random(0, 255), math.random(0, 255), math.random(0, 255))
+                }
+                table.insert(bats, skelly)
+            end
+        end
+        
+        for i=1, numbats do            
+            bats[i].x = bats[i].x + bats[i].vel.x*actvel
+            bats[i].y = bats[i].y + bats[i].vel.y*actvel
+            
+            surface.SetDrawColor( bats[i].col.r, bats[i].col.g, bats[i].col.b, math.abs(math.sin(CurTime()+(bats[i].col.a/255)*6.28318))*255 )
+            surface.SetMaterial( batstext )
+            surface.DrawTexturedRect( bats[i].x-size2, bats[i].y-size2, size, size )
+            
+            if bats[i].x-size2/4 < 0 then
+                bats[i].x = size2/4
+                bats[i].vel.x = -bats[i].vel.x
+                bats[i].col = Color(math.random(0, 255), math.random(0, 255), math.random(0, 255), 255)
+            end
+            if bats[i].x+size2/4 > ScrW() then
+                bats[i].x = ScrW()-size2/4
+                bats[i].vel.x = -bats[i].vel.x
+                bats[i].col = Color(math.random(0, 255), math.random(0, 255), math.random(0, 255), 255)
+            end
+            if bats[i].y-size2/4 < 0 then
+                bats[i].y = size2/4
+                bats[i].vel.y = -bats[i].vel.y
+                bats[i].col = Color(math.random(0, 255), math.random(0, 255), math.random(0, 255), 255)
+            end
+            if bats[i].y+size2/4 > ScrH() then
+                bats[i].y = ScrH()-size2/4
+                bats[i].vel.y = -bats[i].vel.y
+                bats[i].col = Color(math.random(0, 255), math.random(0, 255), math.random(0, 255), 255)
+            end
+        end
+	elseif LocalPlayer():GetNWFloat("Spooked") > CurTime() then
+        surface.SetDrawColor( 255, 255, 255, (LocalPlayer():GetNWFloat("Spooked") - CurTime())*255 )
 		if GetConVar("mm_pussymode"):GetInt() == 1 then
 			surface.SetMaterial( mat_screamy3 )
 		elseif LocalPlayer():GetNWInt("SpookType") == 1 then

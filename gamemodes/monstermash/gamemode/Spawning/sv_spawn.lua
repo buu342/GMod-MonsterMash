@@ -327,7 +327,7 @@ function GM:PlayerSpawn( ply )
                 ply:Give("mm_stick")
                 ply:SetTeam(4)
                 ply:SetBloodColor( BLOOD_COLOR_MECH )
-                //ply:SetNWString("buff", "armor")
+                ply:SetNWString("buff", "armor")
                 ply:SetMaxHealth(#team.GetPlayers(3)*200)
                 ply:SetHealth(#team.GetPlayers(3)*200)
             else

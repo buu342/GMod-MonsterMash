@@ -1,9 +1,11 @@
 function DoRoundEndStuff()
     game.SetTimeScale( 0.4 )
     SetGlobalVariable("MapRoundCount", GetGlobalVariable("MapRoundCount")+1)
+    
     timer.Simple(2,function() 
         game.SetTimeScale( 1 )
     end)
+    
     timer.Simple(5,function() 
     
         local RoundTime = GetConVar("mm_roundtimer"):GetInt()
@@ -53,6 +55,8 @@ function DoRoundEndStuff()
         else
             game.SetTimeScale( 1 )
             SetGlobalVariable("RoundStartTimer", CurTime()+GetConVar("mm_buy_time"):GetInt())
+            RunConsoleCommand("gmod_admin_cleanup")
+            SetGlobalVariable("Game_Over", false)
             for k, v in pairs( ents.FindByClass("player") ) do
                 if IsValid(v) then
                     if v:Team() != 2 then
@@ -66,8 +70,6 @@ function DoRoundEndStuff()
                     timer.Simple(GetConVar("mm_buy_time"):GetInt(),function() if !IsValid(v) then return end v:Freeze( false ) SetGlobalVariable("RoundStartTimer", 0) SetGlobalVariable("RoundTime", CurTime() + RoundTime) end)
                 end
             end
-            RunConsoleCommand("gmod_admin_cleanup")
-            SetGlobalVariable("Game_Over", false)
         end
     end)
 end
@@ -93,6 +95,13 @@ function GM:Think()
         if playerscores[k] == max_val then
             max_num = max_num + 1
         end
+    end
+    
+    if GetGlobalVariable("RoundTime") < CurTime() && !GetGlobalVariable("Game_Over") && player.GetCount() == 0 then
+        if GetGlobalVariable("Game_Over") == false then
+            SetGlobalVariable("ForceGame_Over", true)
+        end
+        SetGlobalVariable("Game_Over", true)
     end
     
     if GetGlobalVariable("ForceGame_Over") then

@@ -9,22 +9,13 @@ function BuffsThink()
             for j, l in pairs(player.GetAll()) do
                 if l:GetPos():Distance(v:GetPos()) < 256 then
                     if l != v && !l:HasGodMode() && l:Alive() && l:GetNWFloat("DivingRight") < CurTime() && l:GetNWFloat("DivingLeft") < CurTime() then
-                        if l:GetInfoNum( "mm_pussymode", 0 ) == 1 then
-                            l:ConCommand("play gameplay/halloween_boo1.mp3")
-                        else
-                            local chance = math.random(1,4)
-                            l:SetNWInt("SpookType",chance)
-                            if chance == 1 then
-                                l:ConCommand("play death/creeper.wav")
-                            else
-                                l:ConCommand("play npc/stalker/go_alert2a.wav")
-                            end
-                        end
+                        l:ConCommand("play gameplay/bats.wav")
                         l:SetNWFloat("MM_BleedTime", CurTime() + 1)
                         l:SetNWInt("MM_BleedDamage", 7)
                         l:SetNWEntity("MM_BleedOwner", v)
                         l:SetNWEntity("MM_BleedInflictor", v)
-                        l:SetNWFloat("Spooked",CurTime()+2.5)
+                        l:SetNWFloat("Spooked", CurTime()+2.5)
+                        l:SetNWFloat("Spooked_Bats", CurTime()+2.5)
                         l:SetNWFloat("MM_Assister", v)
                         l:SetNWEntity("MM_AssisterInflictor", v)
                         timer.Simple(2.5, function() if !IsValid(v) then return end l:SetNWEntity("MM_Assister", NULL) l:SetNWString("MM_AssisterInflictor", "suicide") end)
