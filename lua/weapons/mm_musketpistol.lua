@@ -225,8 +225,10 @@ end
 
 hook.Add("StartCommand", "DisableCrouchWithMusket", function( ply, cmd )
 
-    if IsValid(ply) && ply:Alive() && IsValid(ply:GetActiveWeapon()) && ply:GetActiveWeapon() != nil && ply:GetActiveWeapon():GetClass() == "mm_musketpistol" && ply:GetActiveWeapon():GetDuelGun_Charge() != 0 then
-        cmd:RemoveKey(IN_DUCK)
+    if IsValid(ply) && ply:Alive() && IsValid(ply:GetActiveWeapon()) && ply:GetActiveWeapon() != nil && ply:GetActiveWeapon():GetClass() == "mm_musketpistol" then
+        if ply:GetActiveWeapon():GetDuelGun_Charge() != nil && ply:GetActiveWeapon():GetDuelGun_Charge() != 0 then
+            cmd:RemoveKey(IN_DUCK)
+        end
     end
 
 end)
