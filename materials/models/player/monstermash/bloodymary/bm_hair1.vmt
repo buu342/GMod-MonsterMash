@@ -3,4 +3,5 @@
 	"$basetexture" "models/player/monstermash/bloodymary/bm_hair1"
 	"$halflambert" "1"
 	"$nocull" "1"
+$translucent 1
 }

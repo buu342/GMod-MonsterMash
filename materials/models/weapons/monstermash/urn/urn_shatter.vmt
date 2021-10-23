@@ -1,0 +1,9 @@
+LightmappedGeneric
+{
+$basetexture "models\weapons\monstermash\urn\urn_shatter"
+$decal 1
+$vertexcolor 1
+$vertexalpha 1
+$translucent 1
+$decalscale 0.25
+}

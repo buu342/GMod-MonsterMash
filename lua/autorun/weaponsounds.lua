@@ -1,4 +1,48 @@
 local soundData = {
+    name   = "Weapon_MMCannon.Reload" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/cannon/reload.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Melter.ClipOut" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/melter/melter_magout.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Melter.ClipIn" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/melter/melter_magin.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Melter.Boltback" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/melter/melter_boltback.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
     name   = "Weapon_Beretta.ClipIn" ,
     channel  = CHAN_ITEM,
     volume   = 0.7,
@@ -35,7 +79,6 @@ game.AddAmmoType( {
  name = "ammo_colt",
  dmgtype = DMG_BULLET,
  tracer = TRACER_LINE,
- force = 2000
 } )
 
 local soundData = {
@@ -210,7 +253,7 @@ local soundData = {
     soundlevel  = 100,
     pitchstart  = 100,
     pitchend  = 100,
-    sound   = "physics/wood/wood_strain4.wav"
+    sound   = "weapons/undertaker/undertaker_magin.wav"
 }
 sound.Add(soundData)
 
@@ -221,7 +264,7 @@ local soundData = {
     soundlevel  = 100,
     pitchstart  = 100,
     pitchend  = 100,
-    sound   = "weapons/thompson/thompson_magin.wav"
+    sound   = "weapons/undertaker/undertaker_magout.wav"
 }
 sound.Add(soundData)
 
@@ -575,4 +618,15 @@ local soundData = {
     pitchend  = 100,
     sound   = "weapons/shockrifle/shockrifle_insert.wav"
 }
-sound.Add(soundData)    
+sound.Add(soundData)  
+
+local soundData = {
+    name   = "Weapon_pnade.PinPull" ,
+    channel  = CHAN_WEAPON,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "physics/flesh/flesh_squishy_impact_hard1.wav"
+}
+sound.Add(soundData)  

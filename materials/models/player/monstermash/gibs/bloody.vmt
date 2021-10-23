@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/player/monstermash/gibs/bloody"
+	"$translucent" "1"
+}

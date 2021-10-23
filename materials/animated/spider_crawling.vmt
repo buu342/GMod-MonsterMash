@@ -1,0 +1,15 @@
+UnlitGeneric
+{
+	$basetexture "animated/spider_crawling"
+	$alphatest 1
+
+	"Proxies"
+	{
+		 "AnimatedTexture"
+		{
+		"animatedTextureVar" "$basetexture"
+		"animatedTextureFrameNumVar" "$frame"
+		"animatedTextureFrameRate" "24"
+		}
+        }
+}

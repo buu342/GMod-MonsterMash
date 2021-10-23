@@ -1,0 +1,7 @@
+"UnLitGeneric"
+{
+	"$basetexture"	"models/weapons/monstermash/acid/goop_card"
+	"$translucent"	"1"
+	"$selfillum" 	"1"
+	"$decal" 		"1"
+}

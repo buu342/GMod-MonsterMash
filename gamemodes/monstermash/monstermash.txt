@@ -1,32 +1,40 @@
 "monstermash"
 {
-	"base"		"base"
-	"title"		"Monster Mash"
-	"maps"		"^mm_"
-	"menusystem"	"1"
+	"base"		 "base"
+	"title"		 "Monster Mash"
+	"maps"		 "^mm_"
+	"menusystem" "1"
+	"category"	 "pvp"
+    "workshopid" "1541525700"
 
 	"settings"
 	{
 
-
 		1
 		{
-			"name"		"mm_OrgasmicDeathSounds"
-			"text"		"Secret Orgasm Mode"
-			"type"		"CheckBox"
-			"default"	"0"
+			"name"		"mm_buytime"
+			"text"		"Buy Time"
+			"type"		"Numeric"
+			"default"	"5"
 		}
-
 
 		2
 		{
-			"name"		"mm_wackytaunts"
-			"text"		"Wacky Taunts"
-			"type"		"CheckBox"
-			"default"	"0"
+			"name"		"mm_roundtime"
+			"text"		"Round Time"
+			"type"		"Numeric"
+			"default"	"360"
 		}
 
 		3
+		{
+			"name"		"mm_endtime"
+			"text"		"Round Ending Time"
+			"type"		"Numeric"
+			"default"	"5"
+		}
+
+		4
 		{
 			"name"		"mm_point_limit"
 			"text"		"Point Limit"
@@ -34,26 +42,18 @@
 			"default"	"500"
 		}
 
-		4
-		{
-			"name"		"mm_spawnprotect"
-			"text"		"Spawin Protection"
-			"type"		"CheckBox"
-			"default"	"1"
-		}
-
 		5
 		{
-			"name"		"mm_buy_time"
-			"text"		"Buy time (seconds)"
+			"name"		"mm_maxrounds"
+			"text"		"Max Rounds"
 			"type"		"Numeric"
-			"default"	"15"
+			"default"	"10"
 		}
 
 		6
 		{
 			"name"		"mm_wackyfrequency"
-			"text"		"Wacky Round frequency"
+			"text"		"Wacky Round Frequency"
 			"type"		"Numeric"
 			"default"	"3"
 		}
@@ -61,45 +61,12 @@
 		7
 		{
 			"name"		"mm_budget"
-			"text"		"Budget"
+			"text"		"Gold Limit"
 			"type"		"Numeric"
 			"default"	"100"
 		}
 
 		8
-		{
-			"name"		"mm_healthregentime"
-			"text"		"Health regen time"
-			"type"		"Numeric"
-			"default"	"5"
-		}
-
-
-		9
-		{
-			"name"		"mm_healthregenamount"
-			"text"		"Health regen amount"
-			"type"		"Numeric"
-			"default"	"3"
-		}
-
-		10
-		{
-			"name"		"mm_medals"
-			"text"		"Use Medals"
-			"type"		"Numeric"
-			"default"	"1"
-		}
-
-		11
-		{
-			"name"		"mm_roundtimer"
-			"text"		"Round Timer"
-			"type"		"Numeric"
-			"default"	"360"
-		}
-
-		12
 		{
 			"name"		"mm_cleanup_time"
 			"text"		"Cleanup Time"
@@ -107,12 +74,77 @@
 			"default"	"20"
 		}
 
+		9
+		{
+			"name"		"mm_healthregen_time"
+			"text"		"Health Regen Time"
+			"type"		"Numeric"
+			"default"	"5"
+		}
+
+		10
+		{
+			"name"		"mm_healthregen_amount"
+			"text"		"Health Regen Amount"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+
+		11
+		{
+			"name"		"mm_spawnprotect"
+			"text"		"Spawn Protection"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+
+		12
+		{
+			"name"		"mm_ludicrousgibs"
+			"text"		"Ludicrous Gibs Mode"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+
 		13
 		{
-			"name"		"mm_maxrounds"
-			"text"		"Rounds to map change"
-			"type"		"Numeric"
-			"default"	"10"
+			"name"		"mm_orgasmicdeathsounds"
+			"text"		"Orgasmic Death Sounds"
+			"type"		"CheckBox"
+			"default"	"0"
 		}
+
+		14
+		{
+			"name"		"mm_orgasmicdeathsounds"
+			"text"		"Orgasmic Death Sounds"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+
+		15
+		{
+			"name"		"mm_tasermanmode"
+			"text"		"Tazerman Mode"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+
+		16
+		{
+			"name"		"mm_wackytaunts"
+			"text"		"Wacky Taunts"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+
+		17
+		{
+			"name"		"mm_endofmonstermash"
+			"text"		"End of Monster Mash"
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+
 	}
 }

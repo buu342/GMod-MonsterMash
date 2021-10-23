@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/hud/tricks/skeleton_army"
+	"$translucent" "1"
+	$vertexcolor 1
+}

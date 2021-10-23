@@ -1,6 +1,6 @@
 "VertexLitGeneric"
 {
-	"$baseTexture" "models/player/monstermash/stein/stein_hands"
+	"$baseTexture" "models\player\monstermash\stein/stein_hands"
 	
 	"$phong" "1"
 	"$phongexponent" "5"

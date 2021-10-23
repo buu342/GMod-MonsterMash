@@ -1,11 +1,19 @@
-function ModelMenu( ply )
-    umsg.Start( "mm_menu", ply )
+hook.Add("ShowHelp", "MM_Menu", function(ply)
+    umsg.Start("mm_menu", ply)
     umsg.End()
-end
-hook.Add("ShowHelp", "MyHook", ModelMenu)
+end)
 
-function ModelMenu2( ply )
-    umsg.Start( "mm_menu2", ply )
+hook.Add("ShowTeam", "MM_MenuCharacter", function(ply)
+    umsg.Start("mm_character", ply)
     umsg.End()
-end
-hook.Add("ShowTeam", "MyHook", ModelMenu2)
+end)
+
+hook.Add("ShowSpare1", "MM_MenuLoadout", function(ply)
+    umsg.Start("mm_loadout", ply)
+    umsg.End()
+end)
+
+hook.Add("ShowSpare2", "MM_MenuOptions", function(ply)
+    umsg.Start("mm_options", ply)
+    umsg.End()
+end)

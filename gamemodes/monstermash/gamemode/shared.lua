@@ -1,183 +1,118 @@
-GM.Name 	= "Monster Mash"
-GM.Author 	= "People"
-GM.Email 	= "N/A"
-GM.Website 	= "N/A"
+GM.Name = "Monster Mash"
+GM.Author = "Buu342"
+GM.Email = "buu342@hotmail.com"
+GM.Website = "N/A"
 
-team.SetUp( 1, "Monsters", Color( 255, 140, 0, 255 ) )
-team.SetUp( 2, "Spectators", Color( 0, 0, 0, 255 ) )
-team.SetUp( 3, "COOP-Monsters", Color( 0, 255, 0, 255 ) )
-team.SetUp( 4, "COOP-Other", Color( 194,120,194, 255 ) )
-team.SetUp( 5, "COOP-Dead", Color( 0, 0, 0, 255 ) )
+include( "sh_constants.lua" )
+include( "Admin/sh_playerkick.lua" )
+include( "Characters/sh_characters.lua" )
+include( "Menu/sh_weapondescriptions.lua" )
+include( "Player/sh_mmplayer.lua" )
+include( "Rounds/sh_rounds.lua" )
+include( "Rounds/sh_wackyrounds.lua" )
+include( "Stats/sh_playerstats.lua" )
+include( "Stats/sh_treats.lua" )
 
-include( 'globals.lua' )
-include( 'player_class/mm_player.lua' )
-include( 'Menu/weapon_descriptions.lua' )
-include( 'Spawning/spookyspawn.lua' )
+CreateConVar("mm_orgasmicdeathsounds", "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_tasermanmode",        "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_ludicrousgibs",       "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_budget",              "100", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_point_limit",         "500", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_wackyfrequency",      "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_healthregen_time",    "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_healthregen_amount",  "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_wackytaunts",         "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_buytime",             "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_roundtime",           "360", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_endtime",             "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_spawnprotect",        "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_cleanup_time",        "20",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_maxrounds",           "10",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_endofmonstermash",    "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 
-CreateConVar( "mm_OrgasmicDeathSounds", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_budget", "100", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_point_limit", "500", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_aimsize", "20", FCVAR_REPLICATED + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_aimrange", "1000", FCVAR_REPLICATED + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_aimspeed", "3", FCVAR_REPLICATED + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_tasermanmode", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_ludicrousgibs", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_wackyfrequency", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_healthregentime", "5", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_healthregenamount", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_medals", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_wackytaunts", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_roundtimer", "360", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_assassination", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_spawnprotect", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_cleanup_time", "20", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
-CreateConVar( "mm_maxrounds", "10", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED + FCVAR_UNREGISTERED)
+team.SetUp(TEAM_SPECT,     "Spectators",    Color(0, 0, 0, 255))
+team.SetUp(TEAM_MONST,     "Monsters",      Color(255, 140, 0, 255))
+team.SetUp(TEAM_COOPMONST, "COOP-Monsters", Color(0, 255, 0, 255))
+team.SetUp(TEAM_COOPOTHER, "COOP-Other",    Color(194, 120, 194, 255))
+team.SetUp(TEAM_COOPDEAD,  "COOP-Dead",     Color(0, 0, 0, 255))
+
+local count = 0
+local function cacheit(str)
+    util.PrecacheModel(str)
+    //print("Precached "..str)
+    count = count+1
+end
+
+function GM:PrecacheEverything()
+    print("Precaching stuff, hold on...")
+    
+        local mode = ""
+        if file.Exists("models/monstermash/deer_haunter_final.mdl", "WORKSHOP") then
+            mode = "WORKSHOP"
+            print("Precaching from Workshop...")
+        elseif file.Exists("models/monstermash/deer_haunter_final.mdl", "GAME") then
+            mode = "GAME"
+            print("Precaching from game folder...")
+        else
+            print("Unable to find models. Something isn't right...")
+            return
+        end
+    
+        // Precache characters
+        local files, directories = file.Find("models/monstermash/*.mdl", mode)
+        for k, v in pairs(files) do
+            cacheit("models/monstermash/"..v)
+        end
+        
+        // Precache gibs
+        local files, directories = file.Find("models/monstermash/gibs/*.mdl", mode)
+        for k, v in pairs(files) do
+            cacheit("models/monstermash/"..v)
+        end
+    
+        // Precache weapons
+        local files, directories = file.Find("models/weapons/monstermash/*.mdl", mode)
+        for k, v in pairs(files) do
+            cacheit("models/weapons/monstermash/"..v)
+        end
+        
+        // Precache c_arms
+        cacheit("models/c_models/c_arms_banshee.mdl")
+        cacheit("models/c_models/c_arms_bm.mdl")
+        cacheit("models/c_models/c_arms_deer.mdl")
+        cacheit("models/c_models/c_arms_guest.mdl")
+        cacheit("models/c_models/c_arms_hhm.mdl")
+        cacheit("models/c_models/c_arms_invisibleman.mdl")
+        cacheit("models/c_models/c_arms_mummy.mdl")
+        cacheit("models/c_models/c_arms_nosferatu.mdl")
+        cacheit("models/c_models/c_arms_scarecrow.mdl")
+        cacheit("models/c_models/c_arms_scientist.mdl")
+        cacheit("models/c_models/c_arms_skeleton.mdl")
+        cacheit("models/c_models/c_arms_vampire.mdl")
+        cacheit("models/c_models/c_arms_witch.mdl")
+        cacheit("models/c_models/c_arms_zombie.mdl")
+        
+        // Precache extra
+        cacheit("models/misc/gravestone.mdl")
+        cacheit("models/player/cancer.mdl")
+        cacheit("models/player/kirito.mdl")
+        cacheit("models/player/sdk_player_shared.mdl")
+
+    print("Done! Precached "..count.." models")
+end
 
 function GM:Initialize()
-
-	self.BaseClass.Initialize( self )
-    ImplementWeapons()
-    SetGlobalVariable("MapRoundCount", 0)
-    SetGlobalVariable("ForceGame_Over", false)
-    SetGlobalVariable("Game_Over", false)
-    SetGlobalVariable("Winner", "")
-    SetGlobalVariable("WackyRound_Extra", 0)
-    SetGlobalVariable("RoundsToWacky", GetConVar("mm_wackyfrequency"):GetInt())
-    SetGlobalVariable("WackyRound_COOP", false)
-    SetGlobalVariable("WackyRound_COOPOther", nil)
-    SetGlobalVariable("WackyRound_Event", -1)
-    SetGlobalVariable("RoundStartTimer", 0)
-    SetGlobalVariable("RoundTime", CurTime() + GetConVar("mm_roundtimer"):GetInt())
+    // Initialize the gamemode
+    self:PrecacheEverything()
+    self:InitializeRounds()
     
+    // Initialize player stats
+    self.PlayerStats = {}
+    if !file.Exists("monstermash", "DATA") then
+        file.CreateDir("monstermash")
+    end
 end
 
-hook.Add("KeyPress", "DoubleJump", function(pl, k)
-	if pl:GetNWString("Buff") == "double_jump" then
-		if not pl or not pl:IsValid() or k~=2 then
-			return
-		end
-			
-		if not pl.Jumps or pl:IsOnGround() then
-			pl.Jumps=0
-		end
-		
-		if pl.Jumps==1 then return end
-		
-		pl.Jumps = pl.Jumps + 1
-		if pl.Jumps==1 then
-			local ang = pl:GetAngles()
-			local forward, right = ang:Forward(), ang:Right()
-			
-			local vel = -1 * pl:GetVelocity() -- Nullify current velocity
-			vel = vel + Vector(0, 0, 400) -- Add vertical force
-			
-			local spd = pl:GetMaxSpeed()
-			
-			if pl:KeyDown(IN_FORWARD) then
-				vel = vel + forward * spd
-			elseif pl:KeyDown(IN_BACK) then
-				vel = vel - forward * spd
-			end
-			
-			if pl:KeyDown(IN_MOVERIGHT) then
-				vel = vel + right * spd
-			elseif pl:KeyDown(IN_MOVELEFT) then
-				vel = vel - right * spd
-			end
-			
-			pl:SetVelocity(vel)
-		end
-	end
-end)
-
-net.Receive( "DoLeftDive", function( len, ply )
-    local v = net.ReadEntity()
-    v:AnimRestartMainSequence()
-    v:SetCycle(0.17)
-    v:Freeze(true)
-    v:SetNWFloat("DiveCooldown", 0)
-    v:SetNWFloat("DivingLeft", CurTime()+0.5)
-end )
-
-net.Receive( "DoRightDive", function( len, ply )
-    local v = net.ReadEntity()
-    v:AnimRestartMainSequence()
-    v:SetCycle(0)
-    v:Freeze(true)
-    v:SetNWFloat("DiveCooldown", 0)
-    v:SetNWFloat("DivingRight", CurTime()+0.5)
-end )
-
-function GM:UpdateAnimation( ply, velocity, maxseqgroundspeed )
-
-	local len = velocity:Length()
-	local movement = 1.0
-
-	if ( len > 0.2 ) then
-		movement = ( len / maxseqgroundspeed )
-	end
-
-	local rate = math.min( movement, 2 )
-
-	-- if we're under water we want to constantly be swimming..
-	if ( ply:WaterLevel() >= 2 ) then
-		rate = math.max( rate, 0.5 )
-	elseif ( !ply:IsOnGround() && len >= 1000 ) then
-		rate = 0.1
-	end
-
-    if ply:GetNWFloat("DivingLeft") > CurTime() then
-        ply:SetPlaybackRate( 1 )
-    else
-        ply:SetPlaybackRate( rate )
-    end
-
-	if ( ply:InVehicle() ) then
-
-		local Vehicle = ply:GetVehicle()
-
-		-- We only need to do this clientside..
-		if ( CLIENT ) then
-			--
-			-- This is used for the 'rollercoaster' arms
-			--
-			local Velocity = Vehicle:GetVelocity()
-			local fwd = Vehicle:GetUp()
-			local dp = fwd:Dot( Vector( 0, 0, 1 ) )
-			local dp2 = fwd:Dot( Velocity )
-
-			ply:SetPoseParameter( "vertical_velocity", ( dp < 0 && dp || 0 ) + dp2 * 0.005 )
-
-			-- Pass the vehicles steer param down to the player
-			local steer = Vehicle:GetPoseParameter( "vehicle_steer" )
-			steer = steer * 2 - 1 -- convert from 0..1 to -1..1
-			if ( Vehicle:GetClass() == "prop_vehicle_prisoner_pod" ) then steer = 0 ply:SetPoseParameter( "aim_yaw", math.NormalizeAngle( ply:GetAimVector():Angle().y - Vehicle:GetAngles().y - 90 ) ) end
-			ply:SetPoseParameter( "vehicle_steer", steer )
-
-		end
-
-	end
-
-	if ( CLIENT ) then
-		GAMEMODE:GrabEarAnimation( ply )
-		GAMEMODE:MouthMoveAnimation( ply )
-	end
-
+function GM:Think()
+    self:UpdateRound()  
 end
-
-concommand.Add( "mm_rebuildweapons", function( ply )
-    if table.HasValue(admins, ply:SteamID()) && SERVER then
-        ImplementWeapons()
-        net.Start( "RebuildWeapons" )
-        net.Broadcast()
-    end
-end )
-
-net.Receive( "RebuildWeapons", function(len, pl)
-    ImplementWeapons()
-end )
-
-net.Receive("ResetLimbs", function(len, ply)
-    LocalPlayer():SetNWInt("LegMissing", 0)
-	LocalPlayer():SetNWInt("ArmMissing", 0)
-end)

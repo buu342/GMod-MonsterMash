@@ -1,6 +1,0 @@
-"VertexLitGeneric"
-{
-	"$baseTexture" "models\player\monstermash\vampire/vampire_bowtie"
-        	"$nocull" "1"
-
-}

@@ -1,7 +1,0 @@
-UnLitGeneric
-{
-$baseTexture "models\player\monstermash\hhm\hhm_insides"
-$nocull 1
-$model 1
-$selfillum 1
-}

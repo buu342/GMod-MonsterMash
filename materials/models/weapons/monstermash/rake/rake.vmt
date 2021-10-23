@@ -1,0 +1,31 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\monstermash\rake\rake"
+//        "$bumpmap" "models\weapons\halloween\rake\rake01_n"
+
+	"$phong" 1
+	"$phongexponent" 225
+	"$phongboost"	1
+	"$phongfresnelranges" "[0.05 0.4 0.9]"
+	"$phongtint" "[ 1 1 0.91 ]"
+
+$detail "models/infected/hunter/hunter_01_detail.vtf"
+$detailscale "1.75"
+$detailblendfactor .001 
+$detailblendmode 0
+$detailAmount 0
+Proxies
+{
+BloodyHands
+{
+resultVar $detailAmount
+}
+Equals
+{
+srcVar1 $detailAmount
+resultVar $detailblendfactor
+}
+
+
+}
+}

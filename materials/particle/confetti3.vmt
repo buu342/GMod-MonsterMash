@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "particle/confetti3"
+	"$alphatest" "1"
+}

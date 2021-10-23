@@ -1,0 +1,9 @@
+vertexlitgeneric
+{
+	"$Basetexture" "models/weapons/monstermash/webgrenade/webbing"
+    "$surfaceprop"    "melon"
+    "$alphatest"    "1"
+    "$alphatestreference"    "0.1"
+    "$model"    1
+    "$nocull" 1
+}

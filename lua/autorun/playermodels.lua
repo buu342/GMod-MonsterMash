@@ -114,3 +114,10 @@ list.Set( "PlayerOptionsModel", "MM Rex",			"models/monstermash/rex_final.mdl" )
 player_manager.AddValidModel( "MM Rex",			"models/monstermash/rex_final.mdl" )
 
 player_manager.AddValidHands( "MM Rex", "models/c_models/c_arms_rex.mdl", 0, "00000000" )
+
+-------------------------------------------------------------------------------------------
+
+list.Set( "PlayerOptionsModel", "MM Lagoon Creature",			"models/monstermash/cbl_final.mdl" )
+player_manager.AddValidModel( "MM Lagoon Creature",			"models/monstermash/cbl_final.mdl" )
+
+player_manager.AddValidHands( "MM Lagoon Creature", "models/c_models/c_arms_cbl.mdl", 0, "00000000" )

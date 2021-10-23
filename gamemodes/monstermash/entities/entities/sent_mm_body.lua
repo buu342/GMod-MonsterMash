@@ -6,18 +6,29 @@ ENT.Base = "base_gmodentity"
 ENT.AutomaticFrameAdvance = true
 ENT.Spawnable = false
 ENT.AdminSpawnable = false
-ENT.DoBlood = false
+ENT.Decapitated = false
+ENT.RagdollTime = 0
+ENT.BloodType = 0
+ENT.Electrocuted = false
+ENT.Acided = false
+ENT.Ignited = false
+ENT.Character = nil
+ENT.Ply = nil
+
+ENT.ZOrigin = 30
  
 function ENT:Initialize()
  
-    self:PhysicsInit( SOLID_VPHYSICS )      -- Make us work with physics,
-    self:SetMoveType( MOVETYPE_NONE )   -- after all, gmod is a physics
-    self:SetSolid( SOLID_VPHYSICS )         -- Toolbox
+    self:PhysicsInit( SOLID_VPHYSICS )
+    self:SetMoveType( MOVETYPE_NONE ) 
+    self:SetSolid( SOLID_VPHYSICS )   
 
     local phys = self:GetPhysicsObject()
     if (phys:IsValid()) then
         phys:Wake()
+        phys:EnableGravity( true )
     end
+    
 end
  
 function ENT:Use( activator, caller )
@@ -25,40 +36,76 @@ function ENT:Use( activator, caller )
 end
  
 function ENT:Think()
-    //print(self:GetNWFloat("Melting"))
-    //print(self:GetNWFloat("Time"))
-    if self.DoBlood == true then
-        local attachment = self:LookupBone("ValveBiped.Bip01_Head1")
-        local position, angles = self:GetBonePosition( attachment )
-        local effectdata = EffectData()
-        effectdata:SetOrigin( position )
-        effectdata:SetAngles( angles )
-        effectdata:SetFlags( 3 )
-        effectdata:SetScale( 4 )
-        effectdata:SetColor( 0 )
-        util.Effect( "bloodspray", effectdata )
+    if self.Decapitated == true then
+        if self.BloodType == BLOODTYPE_NORMAL then
+            local attachment = self:LookupBone("ValveBiped.Bip01_Head1")
+            local position, angles = self:GetBonePosition( attachment )
+            local effectdata = EffectData()
+            effectdata:SetOrigin( position )
+            effectdata:SetAngles( angles )
+            effectdata:SetFlags( 3 )
+            effectdata:SetScale( 4 )
+            effectdata:SetColor( 0 )
+            util.Effect( "bloodspray", effectdata )
+        end
+        self:SetBodygroup(1, self:GetBodygroup( 1 ))
     end
-    self:SetPlaybackRate(1)
-    self:NextThink(CurTime())
     
-    if CurTime() > self:GetNWFloat("Time") && self:GetNWFloat("Time") != 0 && SERVER then
+    if self.RagdollTime != 0 then
+        self:SetPlaybackRate(1)
+        self:NextThink(CurTime())
+    end
+    
+    if SERVER && self.RagdollTime < CurTime() then
         local ent = ents.Create("prop_ragdoll")
         ent:SetPos(self:GetPos()+Vector(0,0,10))
         ent:SetAngles(self:GetAngles())
-        ent:SetModel(self:GetModel())
+        if self.Electrocuted || self.Acided then
+            ent:SetModel(self.Character.gib_skeleton)
+        else
+            ent:SetModel(self:GetModel())
+        end
         ent:SetSkin(self:GetSkin())
-        ent:SetMaterial(self:GetMaterial())
+        if !self.Electrocuted then
+            ent:SetMaterial(self:GetMaterial())
+        end
         ent:Spawn()
-        ent:SetBodygroup(1,self:GetBodygroup( 1 ))
-		ent:SetBodygroup(2,self:GetBodygroup( 2 ))
-		ent:SetBodygroup(3,self:GetBodygroup( 3 ))
-		ent:SetBodygroup(4,self:GetBodygroup( 4 ))
+		ent:Activate()
+        ent:SetBodygroup(GIBGROUP_HEAD, self:GetBodygroup( GIBGROUP_HEAD ))
+		ent:SetBodygroup(GIBGROUP_ARMS, self:GetBodygroup( GIBGROUP_ARMS ))
+		ent:SetBodygroup(GIBGROUP_LEGS, self:GetBodygroup( GIBGROUP_LEGS ))
+		ent:SetBodygroup(GIBGROUP_STAKE, self:GetBodygroup( GIBGROUP_STAKE ))
         ent:SetCollisionGroup(COLLISION_GROUP_WEAPON or COLLISION_GROUP_DEBRIS_TRIGGER)
+        if self.Electrocuted then
+            timer.Create(tostring(ent), 0.1, 40, function()
+                if !IsValid(ent) then return end
+                local attachment = ent:LookupBone("ValveBiped.Bip01_Spine2")
+                local position, angles = ent:GetBonePosition( attachment )
+                local effectdata = EffectData()
+                effectdata:SetOrigin( position )
+                util.Effect( "corpse_smoke", effectdata )
+            end)
+        end
+        if self.Ignited then
+            timer.Create("CorpseSmoke"..tostring(ent), 0.1, 120, function()
+                if !IsValid(ent) then return end
+                local attachment = ent:LookupBone("ValveBiped.Bip01_Spine2")
+                local position, angles = ent:GetBonePosition( attachment )
+                local effectdata = EffectData()
+                effectdata:SetOrigin( position )
+                util.Effect( "mm_corpse_smoke", effectdata )
+            end)
+        end
         timer.Simple(10,function() if IsValid(ent) then ent:Remove() end end)
         if not ent:IsValid() then return end
         local plyvel = self:GetVelocity()
        
-        for i = 1, ent:GetPhysicsObjectCount() do
+        if self.Ply != nil && !self.Ply:Alive() then
+            self.Ply:SpectateEntity(ent)
+            self.Ply:Spectate(OBS_MODE_CHASE)
+        end
+       
+        for i = 0, ent:GetPhysicsObjectCount()-1 do
             local bone = ent:GetPhysicsObjectNum(i)
             if bone and bone.IsValid and bone:IsValid() then
                 local bonepos, boneang = self:GetBonePosition(ent:TranslatePhysBoneToBone(i))
@@ -66,9 +113,7 @@ function ENT:Think()
                 bone:SetAngles(boneang)
             end
         end
-        self:Remove()
-    end
-    if (self:GetNWFloat("Melting") != 0 && self:GetNWFloat("Melting") < CurTime()) && SERVER then
+        
         self:Remove()
     end
     return true;

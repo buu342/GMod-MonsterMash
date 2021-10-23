@@ -1,0 +1,5 @@
+local haydecalmat = Material("models/player/monstermash/gibs/hay_splat")
+net.Receive("DoHayDecal", function()
+    local data = net.ReadTable()
+    util.DecalEx(haydecalmat, game.GetWorld(), data.HitPos, data.HitNormal, Color(255,255,255,255), 0.2, 0.2)
+end)

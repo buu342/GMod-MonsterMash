@@ -1,8 +1,18 @@
 "VertexLitGeneric"
 {
-	"$basetexture"	"models/weapons/monstermash/webgrenade/web"
+	"$basetexture"	"models/weapons/monstermash/webgrenade/web_pulse"
 	"$surfaceprop"	"melon"
 	"$translucent"	"1"
 	"$model"	1
 	"$nocull" 1
+
+"Proxies"
+{
+"AnimatedTexture"
+{
+"animatedTextureVar" "$basetexture"
+"animatedTextureFrameNumVar" "$frame"
+"animatedTextureFrameRate" "5"
+}
+}
 }

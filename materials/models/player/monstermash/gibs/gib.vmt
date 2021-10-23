@@ -11,4 +11,5 @@
 	//"$phongexponenttexture" "Models/zombie_fast/fast_zombie_phong"
 	//"$phongalbedotint" "1"										
 	"$phongfresnelranges"	"[.2 .6 1]"
+	"$nocull" "1"
 }

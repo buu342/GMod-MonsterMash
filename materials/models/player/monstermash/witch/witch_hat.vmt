@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	
-	"$baseTexture"	"models/player/monstermash/witch/witch_hat"
-	"$surfaceprop" "flesh"
-	"$nocull" 1
-}

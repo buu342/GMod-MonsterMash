@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/hud/hud_base"
+	"$alphatest" "1"
+}

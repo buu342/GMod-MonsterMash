@@ -1,0 +1,16 @@
+"UnlitGeneric"
+{
+"$baseTexture" "animated/zappy"
+"$surfaceprop" "Default"
+$additive 1
+"selfillum" "1"
+"Proxies"
+{
+"AnimatedTexture"
+{
+"animatedTextureVar" "$basetexture"
+"animatedTextureFrameNumVar" "$frame"
+"animatedTextureFrameRate" "12"
+}
+}
+}

@@ -1,7 +1,0 @@
-vertexlitgeneric
-{
-	$basetexture models\player\monstermash\witch\witch_shoe
-
-	$model 1
-
-}

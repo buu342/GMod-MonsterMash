@@ -1,0 +1,13 @@
+vertexlitgeneric
+{
+	"$Basetexture" "models/weapons/monstermash/sickle/sickle"
+
+
+	"$phong" 1
+	"$phongexponent" 225
+	"$phongboost"	1
+	"$phongfresnelranges" "[0.05 0.4 0.9]"
+	"$phongtint" "[ 1 1 0.91 ]"
+
+
+}

@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/player/monstermash/scarecrow/scarecrow_wrist_hay"
+	"$surfaceprop"	"default"
+	"$translucent"		1
+	"$model"	1
+}
