@@ -524,6 +524,33 @@ hook.Add("RenderScreenspaceEffects", "MM_EletrocutedHUD", function()
 	end
 end)
 
+local curangle = nil
+local lastangle = Angle(0,0,0)
+local nextanglechange = 0
+hook.Add( "CalcView", "MM_ElectrocutionView", function( ply, pos, angles, fov )
+    if (GetConVar("mm_deanimatorshake"):GetBool()) then
+        if LocalPlayer():HasStatusEffect(STATUS_ELECTROCUTED) || LocalPlayer():HasStatusEffect(STATUS_SELFELECTROCUTED) then
+            if (curangle == nil) then
+                curangle = angles
+            end
+            if (nextanglechange < CurTime()) then
+                lastangle = Angle(math.random(-5, 5), math.random(-5, 5), 0)
+                nextanglechange = CurTime()+0.03
+            end
+            curangle = LerpAngle(FrameTime()*10, curangle, angles+lastangle)
+            local view = {}
+            view.origin = pos
+            view.angles = curangle
+            view.fov = fov
+            return view
+            //self.Owner:ViewPunch(Angle(self:RandomRange(-2, 2), self:RandomRange(-2, 2), 0))
+        elseif (curangle != nil) then
+            curangle = nil
+        end
+    end
+end)
+
+
 
 /**************************************************************
                           Hallucination

@@ -185,11 +185,6 @@ function SWEP:RandomRange(val1, val2)
 end
 
 function SWEP:HandleExtraPunch()
-    if (GetConVar("mm_deanimatorshake"):GetInt() == 1) then
-        if self.Owner:HasStatusEffect(STATUS_ELECTROCUTED) || self.Owner:HasStatusEffect(STATUS_SELFELECTROCUTED) then
-            self.Owner:ViewPunch(Angle(self:RandomRange(-2, 2), self:RandomRange(-2, 2), 0))
-        end
-    end
 end
 
 function SWEP:HandleTimers()
