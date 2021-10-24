@@ -331,7 +331,7 @@ hook.Add("HUDPaint", "MM_HUD", function()
         if (LocalPlayer():Team() != TEAM_COOPMONST) then
             draw.SimpleTextOutlined(LocalPlayer():GetScore(), "MMDefaultFont", ScrW()-56*wratio, ScrH()-76*hratio, Color(255,255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
         else
-            draw.SimpleTextOutlined(team.GetPlayers(TEAM_COOPMONST), "MMDefaultFont", ScrW()-56*wratio, ScrH()-76*hratio, Color(255,255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
+            draw.SimpleTextOutlined(#team.GetPlayers(TEAM_COOPMONST), "MMDefaultFont", ScrW()-56*wratio, ScrH()-76*hratio, Color(255,255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
         end
         
         // Trick icon

@@ -117,12 +117,16 @@ function SWEP:Think()
     if self:GetMMBase_PrimeTime() < CurTime() && self:GetNextPrimaryFire() < CurTime() then
         if self.Owner:GetWeaponCooldown(self) > 0 then
             self:MM_SetAnimation( self.AnimDraw )
-            self.Owner:GetViewModel():SetPlaybackRate( 0 )
+            if IsValid(self.Owner:GetViewModel()) then
+                self.Owner:GetViewModel():SetPlaybackRate( 0 )
+            end
             self:SetClip1(0)
             return
         elseif self:Clip1() == 0 then
             self.Owner:SetWeaponCooldown(self, 0)
-            self.Owner:GetViewModel():SetPlaybackRate( 1 )
+            if IsValid(self.Owner:GetViewModel()) then
+                self.Owner:GetViewModel():SetPlaybackRate( 1 )
+            end
             self:MM_SetAnimation( self.AnimDraw )
             self:SetNextPrimaryFire(CurTime()+0.5)
             self:SetClip1(1)

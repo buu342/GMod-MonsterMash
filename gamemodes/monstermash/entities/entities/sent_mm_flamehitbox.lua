@@ -17,7 +17,7 @@ function ENT:Initialize()
     self:PhysicsInit( SOLID_VPHYSICS )
     self:SetMoveType( MOVETYPE_FLY )
     self:SetMoveCollide( MOVECOLLIDE_FLY_SLIDE )
-    self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
     
     if SERVER then
         self:SetTrigger( true )

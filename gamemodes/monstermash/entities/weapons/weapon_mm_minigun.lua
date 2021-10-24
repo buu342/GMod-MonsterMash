@@ -76,7 +76,7 @@ SWEP.EjectEffect = ""
 SWEP.GoreJarDelay = 8
 
 function SWEP:IsShooting()
-    return (self.Owner:KeyDown(IN_ATTACK) || self.Owner:KeyDown(IN_ATTACK2))
+    return (self.Owner != nil && IsValid(self.Owner) && (self.Owner:KeyDown(IN_ATTACK) || self.Owner:KeyDown(IN_ATTACK2)))
 end
 
 if (CLIENT) then

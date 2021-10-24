@@ -1,7 +1,7 @@
 /* And Then A Skeleton Popped Out! */
 
-hook.Add("DoPlayerDeath", "MM_SkeletonPoppedOutDeath", function(victim, inflictor, attacker)
-    if (GAMEMODE:GetWackyRound() == "And Then A Skeleton Popped Out!" && victim != attacker) then
+hook.Add("DoPlayerDeath", "MM_SkeletonPoppedOutDeath", function(victim, attacker, dmginfo)
+    if (GAMEMODE:GetWackyRound() == "And Then A Skeleton Popped Out!" && victim != attacker && IsValid(attacker)) then
         if (attacker:IsPlayer() && victim:HasKillFlag(KILL_GIB)) then
             local skel = ents.Create("sent_mm_jitterskull")
             skel:SetPos(victim:GetPos()+Vector(0, 0, 50))

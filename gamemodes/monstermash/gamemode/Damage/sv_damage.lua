@@ -48,7 +48,8 @@ function GM:ScalePlayerDamage( victim, hitgroup, dmginfo )
 end
 
 function GM:EntityTakeDamage( victim, dmginfo )
-    if !victim:IsPlayer() || victim:HasGodMode() then dmginfo:SetDamage(0) return end
+    if !victim:IsPlayer() then return end
+    if victim:HasGodMode() then dmginfo:SetDamage(0) return end
     if (victim:Team() == TEAM_COOPMONST && dmginfo:GetAttacker():IsPlayer() && victim != dmginfo:GetAttacker() && victim:Team() == dmginfo:GetAttacker():Team()) then dmginfo:SetDamage(0) return end
     if (victim:Team() == TEAM_COOPOTHER && dmginfo:GetAttacker():IsPlayer() && victim != dmginfo:GetAttacker() && victim:Team() == dmginfo:GetAttacker():Team()) then dmginfo:SetDamage(0) return end
     if (GetConVar("mm_tasermanmode"):GetBool() && victim:GetCharacterName() == "Deer Haunter") then dmginfo:SetDamage(0) return end
