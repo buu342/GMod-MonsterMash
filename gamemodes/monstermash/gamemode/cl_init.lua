@@ -23,7 +23,7 @@ CreateClientConVar( "mm_cleardecals", "60", true, false )
 CreateClientConVar( "mm_deanimatorshake", "1", true, false )
 CreateClientConVar( "mm_deathtips", "1", true, false )
 CreateClientConVar( "mm_autoreload", "1", true, false )
-CreateClientConVar( "mm_screenblood", "0", true, false )
+CreateClientConVar( "mm_screenblood", "1", true, false )
 
 function GM:PlayerConnect( name, ip )
     chat.AddText( Color( 255,105,0 ), name .. " has joined the mash.")

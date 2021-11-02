@@ -102,7 +102,7 @@ local adminoptions = {
     [15] = { text = "Orgasmic Death Sounds",       command = "mm_orgasmicdeathsounds", checkbox = true },
     [16] = { text = "Tazerman Mode",               command = "mm_tasermanmode", checkbox = true },
     [17] = { text = "Wacky Taunts",                command = "mm_wackytaunts", checkbox = true },
-    [17] = { text = "End of Monster Mash",         command = "mm_endofmonstermash", checkbox = true },
+    [18] = { text = "End of Monster Mash",         command = "mm_endofmonstermash", checkbox = true },
 }
 
 // Add the map's creator to the credits
@@ -893,12 +893,10 @@ function DrawAdmin(frame, w, h)
                 Checkbox:SetValue(GetConVar(v.command):GetBool())
                 function Checkbox:OnChange(value)
                     surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-                    if value == false then
-                        booltoint = 0
-                    else
-                        booltoint = 1
-                    end
-                    LocalPlayer():ConCommand(self.command.." "..booltoint)
+                    net.Start("MM_RequestAdminCVarChangeBool")
+                        net.WriteString(self.command)
+                        net.WriteBool(value)
+                    net.SendToServer()
                 end
             else
                 local Text = vgui.Create("DLabel", frame)
@@ -918,7 +916,10 @@ function DrawAdmin(frame, w, h)
                     if self.Different && !self:IsEditing() then
                         self.Different = false
                         surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-                        RunConsoleCommand(self.command, tostring(self:GetValue()))
+                        net.Start("MM_RequestAdminCVarChangeVal")
+                            net.WriteString(self.command)
+                            net.WriteInt(self:GetValue(), 32)
+                        net.SendToServer()
                     end
                 end
                 TextEntry.OnChange = function( self )

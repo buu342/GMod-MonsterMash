@@ -45,11 +45,13 @@ function ENT:FindNearestPlayer( pos, range )
 	
 	local nearestply = nil  
     
+    
     if (self:GetMaster() == TEAM_COOPMONST) then
         // Search for TEAM_COOPOTHER or other skellingtons
     else
         for i, ply in pairs( player.GetAll()) do
-            if ply:Team() == TEAM_SPECT || ply:Team() == TEAM_INVALID || ply == self:GetMaster() || (self:GetMaster() != nil && ply != self:GetMaster() && ply:Team() == self:GetMaster():Team() && GAMEMODE:InWackyMod() && GAMEMODE:WackyRoundData().mode != MODE_DEATHMATCH && GAMEMODE:WackyRoundData().mode != MODE_LMS) then 
+            if ply:Team() == TEAM_SPECT || ply:Team() == TEAM_INVALID || ply == self:GetMaster() || 
+                (IsValid(self:GetMaster()) && ply != self:GetMaster() && ply:Team() == self:GetMaster():Team() && GAMEMODE:InWackyRound() && GAMEMODE:WackyRoundData().mode != MODE_DEATHMATCH && GAMEMODE:WackyRoundData().mode != MODE_LMS) then 
             else
                 local distance = pos:Distance( ply:GetPos() )
                 if( distance <= range ) && ply:Alive() then

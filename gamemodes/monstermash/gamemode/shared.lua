@@ -12,6 +12,7 @@ include( "Rounds/sh_rounds.lua" )
 include( "Rounds/sh_wackyrounds.lua" )
 include( "Stats/sh_playerstats.lua" )
 include( "Stats/sh_treats.lua" )
+include( "Tricks/sh_tricks.lua" )
 
 CreateConVar("mm_orgasmicdeathsounds", "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_tasermanmode",        "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)

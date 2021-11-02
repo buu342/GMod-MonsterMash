@@ -74,9 +74,9 @@ hook.Add("PrePlayerDraw", "MM_InvisibleTrickPlayer", function(ply)
     if (ply:HasStatusEffect(STATUS_INVISIBLE)) then return true end
 end)
 
-hook.Add("PreDrawPlayerHands", "MM_InvisibleTrickHands", function(hands, vm, ply, wep)
-    if (ply:HasStatusEffect(STATUS_INVISIBLE)) then return true end
-end)
+function GM:PreDrawPlayerHands(hands, vm, ply, wep)
+   if (ply:HasStatusEffect(STATUS_INVISIBLE)) then return true end
+end
 
 GM.Tricks = {}
 GM.Tricks["broom"]         = { active = DoTrick_Broom }

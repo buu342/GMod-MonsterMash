@@ -285,17 +285,15 @@ hook.Add("HUDPaint", "MM_HUD_Concuss", function()
 end)
 
 hook.Add( "PostPlayerDraw" , "MM_ConcussSwirl" , function( ply )
-    if ply.ShowConcuss == nil then
-        ply.ShowConcuss = true
+    if ply.ConcussionTime == nil then
+        ply.ConcussionTime = 0
     end
     
-    if (ply:HasStatusEffect(STATUS_CONCUSS)) && ply.ShowConcuss == true then
+    if (ply:HasStatusEffect(STATUS_CONCUSS)) && ply.ConcussionTime < CurTime() then
         local effectdata = EffectData()
         effectdata:SetEntity( ply )
         util.Effect( "mm_concuss", effectdata )
-        ply.ShowConcuss = false
-    elseif ply.ShowConcuss == false then
-        ply.ShowConcuss = true
+        ply.ConcussionTime = CurTime() + ply:GetStatusEffectTime(STATUS_CONCUSS)
     end
 end)
 

@@ -10,6 +10,7 @@ local BloodTex = {
 local BloodEnt = {}
 
 net.Receive("MM_CreateScreenBlood", function(len, ply)
+    if !GetConVar("mm_screenblood"):GetBool() then return end
     local blood = {
         alpha = 255,
         tex = table.Random(BloodTex),
