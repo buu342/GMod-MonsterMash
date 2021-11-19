@@ -8,7 +8,7 @@ function GM:AddTreatDisplay(treatname)
     if SERVER then return end
 
     if lasttreatsound < CurTime() then
-        if ((LocalPlayer():GetWeaponTable()["Trick"] != "None" && LocalPlayer():GetTreatStack()+1 >= GAMEMODE.Weapons["Trick"][LocalPlayer():GetWeaponTable()["Trick"]].cost) || (GAMEMODE:InWackyRound() && GAMEMODE:WackyRoundData().instanttrick)) then
+        if ((LocalPlayer():GetWeaponTable()["Trick"] != "None" && LocalPlayer():GetTreatStack() >= GAMEMODE.Weapons["Trick"][LocalPlayer():GetWeaponTable()["Trick"]].cost) || (GAMEMODE:InWackyRound() && GAMEMODE:WackyRoundData().instanttrick)) then
             surface.PlaySound("gameplay/trick_ready.wav")
         else
             surface.PlaySound("ui/bell1.wav")

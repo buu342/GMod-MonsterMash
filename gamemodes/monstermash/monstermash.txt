@@ -5,7 +5,7 @@
 	"maps"		 "^mm_"
 	"menusystem" "1"
 	"category"	 "pvp"
-    "workshopid" "1541525700"
+	"workshopid" "1541525700"
 
 	"settings"
 	{
@@ -15,7 +15,7 @@
 			"name"		"mm_buytime"
 			"text"		"Buy Time"
 			"type"		"Numeric"
-			"default"	"5"
+			"default"	"15"
 		}
 
 		2

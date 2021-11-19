@@ -24,6 +24,8 @@ local SuicideMessages = {
     " had information on the Clinton family.",
     " lived in a society.",
     " decided to visit the Home For Infinite Losers.",
+    " was detained by the IRS for committing tax fraud.",
+    " went home to take a spooky dooky.",
 }
 
 local function AddKillFeed(killtable)
@@ -57,15 +59,17 @@ local function AddKillFeed(killtable)
     end
     
     // Skeletons
-    if killtable.attacker:GetClass() == "sent_mm_skellington" then
-        tbl.text = victimname.." did not expect the boner"
-        tbl.color = Color(178, 0, 255)
-    end
-    
-    // Jitterskull
-    if killtable.attacker:GetClass() == "sent_mm_jitterskull" then
-        tbl.text = victimname.." was eaten by the Jitterskull"
-        tbl.color = Color(178, 0, 255)
+    if (killtable.attacker != nil && IsValid(killtable.attacker)) then
+        if killtable.attacker:GetClass() == "sent_mm_skellington" then
+            tbl.text = victimname.." did not expect the boner"
+            tbl.color = Color(178, 0, 255)
+        end
+        
+        // Jitterskull
+        if killtable.attacker:GetClass() == "sent_mm_jitterskull" then
+            tbl.text = victimname.." was eaten by the Jitterskull"
+            tbl.color = Color(178, 0, 255)
+        end
     end
     
     if bit.band(killtable.killflags, KILL_BLEED) > 0 then

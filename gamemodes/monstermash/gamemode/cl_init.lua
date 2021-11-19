@@ -28,3 +28,7 @@ CreateClientConVar( "mm_screenblood", "1", true, false )
 function GM:PlayerConnect( name, ip )
     chat.AddText( Color( 255,105,0 ), name .. " has joined the mash.")
 end
+
+function GM:Think()
+    MusicThink()
+end

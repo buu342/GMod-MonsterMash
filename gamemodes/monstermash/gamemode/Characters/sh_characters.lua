@@ -518,8 +518,8 @@ GM.Characters = {
         taunt        = {"taunt_mm_persistence", "wos_fn_boneless"},
         origin       = "Creature from the Black Lagoon (1954)",
         trivia       = "Hiding in the depths of the jungle from the more evolved and sophisticated mankind, the \"gillman\" is known to become violent when threatened by intruders. He lurks within his swamp, living off the land unless provoked to pursue unsuspecting human women.",
-        loves        = "Pee pee poo poo",
-        hates        = "Pee pee poo poo",
+        loves        = "Mackin' on hoes.",
+        hates        = "Being fucking shot to death.",
         skins        = {
                             Color(90, 106, 120, 255),
                             Color(96, 108, 72, 255),

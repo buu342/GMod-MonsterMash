@@ -23,7 +23,7 @@ CreateConVar("mm_wackyfrequency",      "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCV
 CreateConVar("mm_healthregen_time",    "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_healthregen_amount",  "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_wackytaunts",         "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
-CreateConVar("mm_buytime",             "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_buytime",             "15",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_roundtime",           "360", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_endtime",             "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_spawnprotect",        "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)

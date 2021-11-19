@@ -1,181 +1,206 @@
-function MusicPlay(ply, args, dointro)
-    if ply.Music then
-        MusicStop(ply)
-    end
-    if !ply.Music && args[1] != nil && tonumber(args[1]) <= #MusicList && tonumber(args[1]) >= 1 then
-        ply.MusicIndex = tonumber(args[1])
-        if (ply.MusicVolume == nil) then
-            ply.MusicVolume = 1;
-        end
-        if MusicList[ply.MusicIndex].startingsong != "" && dointro then
-            sound.PlayFile( MusicList[ply.MusicIndex].startingsong, "", function(station, num, err)
-                if IsValid( station ) then 
-                    ply.Music = station
-                    ply.Music:Play()
-                    ply.Music:SetVolume(ply.MusicVolume, 0)
-                end
-            end)
-            ply.MusicStart = true
-            ply.MusicTimer = CurTime() + MusicList[ply.MusicIndex].dur_starting
-        else
-            sound.PlayFile( MusicList[ply.MusicIndex].song, "", function(station)
-                if IsValid( station ) then 
-                    ply.Music = station
-                    ply.Music:Play()
-                    ply.Music:SetVolume(ply.MusicVolume, 0)
-                end
-            end)
-            ply.MusicStart = false
-            ply.MusicTimer = CurTime() + MusicList[ply.MusicIndex].dur_song
-        end
-    end
-end
+local MUSFLAG_LOOP     = 0x01
+local MUSFLAG_SHUFFLE  = 0x02
+local MUSFLAG_AUTOPLAY = 0x04
 
-function MusicStop(ply)
-    if ply.Music then
-        ply.Music:Stop()
-        ply.Music = nil
-    end
-end
+local MUSSTATE_NONE   = 0
+local MUSSTATE_SONG   = 1
+local MUSSTATE_PAUSED = 2
 
-local lastroundstate = 0
-function MusicThink(ply)
-    // Set some starting variables
-    if !ply.MusicStarterPack then
-        ply.MusicStarterPack = true
-        ply.MusicVolume = 1
-        ply.MusicAutoNext = false
-        ply.MusicLoop = false
-        ply.MusicShuffle = false
-        ply.MusicIndex = 0
-        ply.MusicStart = false
-        ply.MusicPaused = false
-        ply.MusicRoundEnd = false
-        ply.MusicRoundStart = false
-        ply.MusicFadeout = false
-        ply.MusicListening = false
-        ply.MusicWackyPlaying = false
-        for i=1, #MusicList do
-            local sng = MusicList[i].song
-            sng = string.Replace(sng, "sound/", "")
-            util.PrecacheSound( sng )
-        end
-    end
+local currentSong = nil
+local currentEntry = nil
+local currentVolume = 1.0
+local currentState = MUSSTATE_NONE
+local currentFlags = 0
+local oldState = MUSSTATE_NONE
+
+function MusicPlay(args, dointro)
+    local song = args[1]
+    if (song == nil) then return end
+    song = tonumber(song)
     
-    if !file.Exists( MusicList[1].song, "GAME" ) then
+    // Ensure the music files exists
+    if song == 0 || !file.Exists( MusicList[song].song, "GAME" ) then
         return 
     end
     
-    // Wacky round music
-    /*
-    if GAMEMODE:GetRoundsToWacky() == 0 then
-        if GetGlobalVariable("WackyRound_Event") == 0 then
-            if ply == GetGlobalVariable("WackyRound_COOPOther") then return end
-            if !GetGlobalVariable("Game_Over") && !ply.MusicWackyPlaying then
-                ply.MusicWackyPlaying = true
-                sound.PlayFile( "sound/weapons/stick/BERSUCC.mp3", "", function(station, num, err)
-                    if IsValid( station ) then 
-                        ply.WackyMusic = station
-                        ply.WackyMusic:Play()
-                        ply.WackyMusic:SetVolume(0.01)
-                    end
-                end)
-            elseif !GetGlobalVariable("Game_Over") && ply.MusicWackyPlaying then
-                if GetGlobalVariable("WackyRound_COOPOther") == nil then return end
-                local dist = ply:GetPos():Distance(GetGlobalVariable("WackyRound_COOPOther"):GetPos())
-                if ply.WackyMusic then
-                    if dist < 1000 then
-                        ply.WackyMusic:SetVolume((1-dist/1024)*0.2)
-                    else
-                        ply.WackyMusic:SetVolume(0.01)
-                    end
-                end
-            end
-        end
-    elseif GetGlobalVariable("RoundsToWacky") != nil && GetGlobalVariable("RoundsToWacky") != 0 then
-        ply.MusicWackyPlaying = false
-        if ply.WackyMusic then
-            ply.WackyMusic:Stop()
-            ply.WackyMusic = nil
-        end
-    end
-    */
-    
-    // Replace music on round start/end
-    if (!ply.MusicPaused && GAMEMODE:GetRoundState() == GMSTATE_ENDING) then
-        if ply.Music then
-            MusicStop(ply)
-        end
-        ply.MusicPaused = true
-    elseif (ply.MusicPaused && GAMEMODE:GetRoundState() == GMSTATE_ROUND && lastroundstate == GMSTATE_BUYTIME) then
-        ply.MusicPaused = false
-        ply.MusicRoundEnd = false
-        ply.MusicRoundStart = false
-        if ply.MusicListening then
-            MusicPlay(ply, {tostring(ply.MusicIndex)}, true)
-        end
-    end 
-    
-    // Fade music out
-    if ply.Music && ply.MusicStart == false && ply.MusicLoop == false && ply.MusicListening && ply.MusicTimer != nil && ply.MusicTimer <= CurTime()+1 then
-        ply.Music:SetVolume(ply.MusicVolume*(ply.MusicTimer - CurTime()))
+    // Stop the current song
+    if (currentSong) then
+        MusicStop()
     end
     
-    // Handle music
-    if ply.Music && ply.MusicListening && ply.MusicTimer != nil && ply.MusicTimer <= CurTime() then
-        
-        if ply.MusicStart then                                              // If the song has an intro, do this
-            MusicStop(ply)  
-            MusicPlay(ply, {tostring(ply.MusicIndex)}, false)
-            ply.MusicStart = false
-        elseif ply.MusicAutoNext then                                       // If AutoNext, go to the next song
-            if ply.MusicShuffle then
-                local oldindex = ply.MusicIndex
-                while ply.MusicIndex == oldindex do
-                    ply.MusicIndex = math.random(1, #MusicList)
+    // Play the song
+    if (song != nil && song <= #MusicList) then
+        currentEntry = MusicList[song]
+        sound.PlayFile( currentEntry.song, "noblock", function(station, num, err)
+            if IsValid( station ) then 
+                currentSong = station
+                if (currentEntry.loopstart != nil && !dointro) then
+                    currentSong:SetTime(currentEntry.loopstart)
                 end
-            else
-                ply.MusicIndex = ply.MusicIndex + 1
-                if ply.MusicIndex > #MusicList then
-                    ply.MusicIndex = 1
+                if (GAMEMODE:GetRoundState() == GMSTATE_ROUND) then
+                    currentSong:Play()
                 end
+                currentSong:SetVolume(currentVolume, 0)
             end
-            MusicStop(ply)
-            MusicPlay(ply, {tostring(ply.MusicIndex)}, true)
-            ply:ChatPrint("Now playing "..MusicList[ply.MusicIndex].name.." by "..MusicList[ply.MusicIndex].author)
-        elseif ply.MusicLoop then                                           // If Loop, Loop the song (not playing the intro)
-            MusicStop(ply)
-            MusicPlay(ply, {tostring(ply.MusicIndex)}, false)
-        elseif ply.MusicShuffle then                                        // If Shuffle, pick the next random song
-            local oldindex = ply.MusicIndex
-            while ply.MusicIndex == oldindex do
-                ply.MusicIndex = math.random(1, #MusicList)
-            end
-            MusicStop(ply)
-            MusicPlay(ply, {tostring(ply.MusicIndex)}, true)
-            ply:ChatPrint("Now playing "..MusicList[ply.MusicIndex].name.." by "..MusicList[ply.MusicIndex].author)
-        else                                                                // Else, stop the music
-            MusicStop(ply)
-            ply.MusicListening = false
-        end
+        end)
+        LocalPlayer():ChatPrint("Now playing: "..currentEntry.name..", by "..currentEntry.author..".")
+        oldState = currentState
+        currentState = MUSSTATE_SONG
+    end
+end
 
+function MusicStop()
+    if (currentSong) then
+        currentSong:Stop()
+        currentSong = nil
+        currentEntry = nil
+        oldState = currentState
+        currentState = MUSSTATE_NONE
     end
-    lastroundstate = GAMEMODE:GetRoundState()
+end
+
+function MusicPause()
+    if (currentSong) then
+        currentSong:Pause()
+        oldState = currentState
+        currentState = MUSSTATE_PAUSED
+    end
+end
+
+function MusicThink()
+    if (currentSong == nil) then return end
+    
+    // Pause music during round endings/buy time
+    if (currentState != MUSSTATE_PAUSED && GAMEMODE:GetRoundState() == GMSTATE_ENDING) then
+        MusicPause()
+    elseif (currentState == MUSSTATE_PAUSED && GAMEMODE:GetRoundState() == GMSTATE_ROUND) then
+        currentState = oldState
+        currentSong:Play()
+        LocalPlayer():ChatPrint("Resuming: "..currentEntry.name..", by "..currentEntry.author..".")
+    end
+    
+    // Music finished
+    if (currentSong:GetTime()+0.01 >= currentSong:GetLength()) then
+    
+        // Loop music
+        if (MusicGetLooping()) then
+            if (currentEntry.loopstart != nil) then
+                currentSong:SetTime(currentEntry.loopstart)
+            else
+                currentSong:SetTime(0)
+            end
+            currentSong:Play()
+        else
+            local args = {}
+            if (MusicGetShuffle()) then // Shuffle
+                args[1] = math.random(1, #MusicList)
+                MusicPlay(args, true)
+            elseif (MusicGetAutoPlay()) then // Auto play
+                local curindex = 1
+                for k, v in ipairs(MusicList) do
+                    if (v == currentEntry) then
+                        curindex = k
+                        break
+                    end
+                end
+                args[1] = 1+((curindex)%(#MusicList))
+                MusicPlay(args, true)
+            else
+                MusicStop()
+            end
+        end
+    end
+end
+
+function MusicSetVolume(args)
+    if (currentSong) then
+        currentVolume = args
+        currentSong:SetVolume(currentVolume)
+    end
+end
+
+function MusicSetTime(args)
+    if (currentSong) then
+        currentSong:SetTime(args)
+    end
+end
+
+function MusicSetLooping(val)
+    if (val) then
+        currentFlags = bit.bor(currentFlags, MUSFLAG_LOOP)
+    else
+        currentFlags = bit.band(currentFlags, bit.bnot(MUSFLAG_LOOP))
+    end
+end
+
+function MusicSetShuffle(val)
+    if (val) then
+        currentFlags = bit.bor(currentFlags, MUSFLAG_SHUFFLE)
+    else
+        currentFlags = bit.band(currentFlags, bit.bnot(MUSFLAG_SHUFFLE))
+    end
+end
+
+function MusicSetAutoPlay(val)
+    if (val) then
+        currentFlags = bit.bor(currentFlags, MUSFLAG_AUTOPLAY)
+    else
+        currentFlags = bit.band(currentFlags, bit.bnot(MUSFLAG_AUTOPLAY))
+    end
+end
+
+function MusicGetCurrentSong()
+    return currentEntry
+end
+
+function MusicGetVolume()
+    return currentVolume
+end
+
+function MusicGetTime()
+    if (currentSong != nil) then
+        return currentSong:GetTime()
+    else
+        return 0
+    end
+end
+
+function MusicGetLength()
+    if (currentSong != nil) then
+        return currentSong:GetLength()
+    else
+        return 0
+    end
+end
+
+function MusicGetLooping()
+    return (bit.band(currentFlags, MUSFLAG_LOOP) == MUSFLAG_LOOP)
+end
+
+function MusicGetShuffle()
+    return (bit.band(currentFlags, MUSFLAG_SHUFFLE) == MUSFLAG_SHUFFLE)
+end
+
+function MusicGetAutoPlay()
+    return (bit.band(currentFlags, MUSFLAG_AUTOPLAY) == MUSFLAG_AUTOPLAY)
 end
 
 concommand.Add( "mm_musicplayerstart", function( ply, cmd, args )
-    MusicPlay(ply, args, true)
+    MusicPlay(args, true)
 end)
 
-concommand.Add( "mm_musicplayervolume", function( ply, cmd, args )
-    if args[1] != nil then
-        ply.MusicVolume = args[1]
-        if ply.Music then
-            ply.Music:SetVolume(ply.MusicVolume)
-        end
+concommand.Add( "mm_musicplayervolume", function( ply, cmd, args )    
+    if (args[1] != nil) then
+        MusicSetVolume(args)
+    end
+end)
+
+concommand.Add( "mm_musicplayerposition", function( ply, cmd, args )
+    if (args[1] != nil) then
+        MusicSetTime(args)
     end
 end)
 
 concommand.Add( "mm_musicplayerstop", function( ply )
-    MusicStop(ply)
+    MusicStop()
 end)

@@ -79,9 +79,9 @@ local optionslist = {
 local musicbuttons = {
     { text = "Start",     command = "mm_musicplayerstart" },
     { text = "Stop",      command = "mm_musicplayerstop" },
-    { text = "Auto",      command = "Check1" },
-    { text = "Loop",      command = "Check2" },
-    { text = "Shuffle",   command = "Check3" }
+    { text = "Auto" },
+    { text = "Loop" },
+    { text = "Shuffle" }
 }
 
 local adminoptions = {
@@ -775,6 +775,7 @@ function DrawOptions(frame, w, h)
     local x = w-350*wratio
     local y = h/16*(1-900/ScrH()) + 16*hratio
     local f = vgui.Create( "DPanel", frame)
+    local MusicTimeSlider = vgui.Create( "DNumSlider", frame )
     f:SetSize( 330*wratio, 300*hratio )
     f:SetPos(x,y)
     local MusicSelection = vgui.Create( "DListView", f )
@@ -785,8 +786,9 @@ function DrawOptions(frame, w, h)
     MusicSelection.musicselected = 0
     for i=1, #MusicList do
         MusicSelection:AddLine( MusicList[i].name, MusicList[i].author )
-        if LocalPlayer().Music && LocalPlayer().MusicIndex == i then
+        if MusicGetCurrentSong() == MusicList[i] then
             MusicSelection:SelectItem( MusicSelection:GetLine(i) )
+            MusicSelection.musicselected = i
         end
     end
     MusicSelection.OnRowSelected = function( lst, index, pnl )
@@ -808,69 +810,98 @@ function DrawOptions(frame, w, h)
         MusicButton:SetSize( 62*wratio, 16*hratio )
         function MusicButton:DoClick()
             surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-            if MusicButton.command == "Check1" then
-                LocalPlayer().MusicAutoNext = !LocalPlayer().MusicAutoNext
-                LocalPlayer().MusicLoop = false
-                LocalPlayer().MusicShuffle = false
-            elseif MusicButton.command == "Check2" then
-                LocalPlayer().MusicAutoNext = false
-                LocalPlayer().MusicLoop = !LocalPlayer().MusicLoop
-                LocalPlayer().MusicShuffle = false
-            elseif MusicButton.command == "Check3" then
-                LocalPlayer().MusicAutoNext = false
-                LocalPlayer().MusicShuffle = !LocalPlayer().MusicShuffle
-                LocalPlayer().MusicLoop = false
-            else
-                if MusicButton.Arg != " " then
-                    MusicButton.Arg = " "..tostring(MusicSelection.musicselected)
+            if self:GetText() == "Start" then
+                MusicPlay({MusicSelection.musicselected}, true)
+            elseif self:GetText() == "Stop" then
+                if (MusicGetCurrentSong() != nil) then
+                    LocalPlayer():ChatPrint("Stopping music")
                 end
-                if MusicButton.command == "mm_musicplayerstart" then
-                    LocalPlayer().MusicListening = true
-                elseif MusicButton.command == "mm_musicplayerstop" then
-                    LocalPlayer().MusicListening = false
-                end
-                LocalPlayer():ConCommand(MusicButton.command..MusicButton.Arg)
-                timer.Simple(0.1, function()
-                    if MusicButton == nil || LocalPlayer().MusicIndex == nil || MusicList[LocalPlayer().MusicIndex] != nil then return end
-                    if MusicButton.command == "mm_musicplayerstart" && LocalPlayer().MusicIndex != 0 then
-                        LocalPlayer():ChatPrint("Now playing "..MusicList[LocalPlayer().MusicIndex].name.." by "..MusicList[LocalPlayer().MusicIndex].author)
-                    elseif MusicButton.command == "mm_musicplayerstop" then
-                        LocalPlayer():ChatPrint("Stopping music")
-                    end
-                end)
+                MusicStop()
+            elseif self:GetText() == "Auto" then
+                MusicSetAutoPlay(!MusicGetAutoPlay())
+                MusicSetLooping(false)
+                MusicSetShuffle(false)
+            elseif self:GetText() == "Loop" then
+                MusicSetAutoPlay(false)
+                MusicSetLooping(!MusicGetLooping())
+                MusicSetShuffle(false)
+            elseif self:GetText() == "Shuffle" then
+                MusicSetAutoPlay(false)
+                MusicSetLooping(false)
+                MusicSetShuffle(!MusicGetShuffle())
             end
         end
         MusicButton.Paint = function(self, w, h)
             local arg
-            if MusicButton.command == "Check1" then
-                arg = LocalPlayer().MusicAutoNext
-            elseif MusicButton.command == "Check2" then
-                arg = LocalPlayer().MusicLoop
-            elseif MusicButton.command == "Check3" then
-                arg = LocalPlayer().MusicShuffle
-            elseif MusicButton.command == "mm_musicplayerstart" then
-                arg = IsValid(LocalPlayer().Music) 
+            if (self.command == nil) then
+                if self:GetText() == "Auto" then
+                    arg = MusicGetAutoPlay()
+                elseif self:GetText() == "Loop" then
+                    arg = MusicGetLooping()
+                elseif self:GetText() == "Shuffle" then
+                    arg = MusicGetShuffle()
+                end
+            elseif self.command == "mm_musicplayerstart" then
+                arg = MusicGetCurrentSong() != nil
             end        
             SimpleButtonPaintCheck(self, w, h, arg)
         end
         x = x + 67*wratio
     end
     
-    if !LocalPlayer().MusicVolume then
-        LocalPlayer().MusicVolume = 1
+    MusicTimeSlider:SetPos( w-600*wratio, y+hratio*8+308*hratio+16*hratio )
+    MusicTimeSlider:SetSize( 580*wratio, 32*hratio )
+    MusicTimeSlider:SetMin(0.01)
+    MusicTimeSlider:SetMax(MusicGetLength())
+    MusicTimeSlider:SetValue(MusicGetTime())
+    MusicTimeSlider:SetDecimals( 2 )
+    MusicTimeSlider:SetDark(true)
+    MusicTimeSlider.Scratch:SetZoom( 0 )
+    MusicTimeSlider.LastSong = nil
+    function MusicTimeSlider:OnValueChanged(num)
+        if self:IsEditing() then
+            MusicSetTime(num)
+        end
     end
+    function MusicTimeSlider:Think()
+        if (MusicGetCurrentSong() != nil && !self:IsEditing()) then
+            self:SetMax(MusicGetLength())
+            self:SetValue(MusicGetTime())
+        end
+        
+        // Music changed, update the selected track
+        if (self.LastSong != nil && self.LastSong != MusicGetCurrentSong()) then
+            for i=1, #MusicList do
+                if MusicGetCurrentSong() == MusicList[i] then
+                    MusicSelection:ClearSelection()
+                    MusicSelection:SelectItem( MusicSelection:GetLine(i) )
+                    MusicSelection.musicselected = i
+                    break
+                end
+            end
+        end
+        self.LastSong = MusicGetCurrentSong()
+    end
+    local SliderText = MusicTimeSlider:GetTextArea()
+    SliderText:SetTextColor(Color(0, 0, 0, 255))
+    SliderText:SetFont("MMCharacterDesc")
+    SliderText:SetEnabled(false)
+    SliderText:SetEditable(false)
+    SliderText:SetEnterAllowed(false)
+    
+    y = y+32
     local Slide = vgui.Create( "DNumSlider", frame )
     Slide:SetPos( w-350*wratio, y+hratio*8+308*hratio+16*hratio )
     Slide:SetSize( 330*wratio, 32*hratio )
     Slide:SetText( "Music Volume" )
     Slide:SetMin( 0.01 )
     Slide:SetMax( 1 )
-    Slide:SetValue(LocalPlayer().MusicVolume)
+    Slide:SetValue(MusicGetVolume())
     Slide:SetDecimals( 2 )
     Slide:SetDark(true)
     Slide.Label:SetFont("MMCharacterDesc")
     function Slide:OnValueChanged(num)
-        LocalPlayer():ConCommand("mm_musicplayervolume "..tostring(num))
+        MusicSetVolume(num)
     end
     local SliderText = Slide:GetTextArea()
     SliderText:SetTextColor(Color(0, 0, 0, 255))

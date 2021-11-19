@@ -6,7 +6,7 @@ SWEP.PrintName = "Chainsaw"
 SWEP.SelectIcon = Material("vgui/entities/mm_chainsaw")
 SWEP.Cost = 45
 SWEP.Points = 20
-SWEP.KillFeed = "%a rip and tore %v's guts."
+SWEP.KillFeed = "%a massacred %v."
 
 SWEP.Author = "Buu342"
 SWEP.Contact = "buu342@hotmail.com"

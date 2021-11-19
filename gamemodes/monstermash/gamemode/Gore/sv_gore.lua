@@ -105,7 +105,23 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
             if smallest != vicstring then
                 attacker = dmgtable[smallest].attacker
                 inflictor = dmgtable[smallest].inflictor
-            end   
+                attacker:GiveTreat("assisted_suicide")
+            end
+            
+            local thisplayerhit = {}
+            for k, v in pairs(player.GetAll()) do
+                if (v:Alive() && v:GetLastDamage().dmgtable != nil) then
+                    for a, b in pairs(v:GetLastDamage().dmgtable) do
+                        if (b.attacker == victim && b.time == CurTime()) then
+                            table.insert(thisplayerhit, v)
+                            break
+                        end
+                    end
+                end
+            end
+            if (#thisplayerhit > 0) then
+                victim:GiveTreat("youtried")
+            end
         end
     end
 
@@ -174,10 +190,10 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
             attacker:GiveTreat("revenge")
             attacker:SetLastKiller(nil)
         end
-        if (attacker:GetActiveWeapon().Base == "weapon_mm_basemelee" && victim:GetActiveWeapon().Base == "weapon_mm_basemelee") then
+        if (inflictor.Base == "weapon_mm_basemelee" && inflictor.Base == "weapon_mm_basemelee") then
             attacker:GiveTreat("melee_duel")
         end
-        if (attacker:GetActiveWeapon().Base == "weapon_mm_basemelee" && victim:GetActiveWeapon().Base == "weapon_mm_basegun") then
+        if (inflictor.Base == "weapon_mm_basemelee" && inflictor.Base == "weapon_mm_basegun") then
             attacker:GiveTreat("melee_guns")
         end
         for k, v in pairs (attacker.WeaponTemp) do
@@ -899,7 +915,6 @@ function ShowKiller( victim, weapon, killer )
 
 	if killer:GetClass() == "trigger_hurt" then return end
 	if killer:GetClass() == "env_fire" then return end
-
 	timer.Create( "Freeze", 1.5, 1, function()
         if !IsValid(killer) then return end
         if GAMEMODE:GetRoundState() == GMSTATE_BUYTIME then victim:SetNWEntity("MM_Killer", killer) return end

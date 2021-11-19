@@ -31,6 +31,9 @@ function GM:PlayerSpawn( ply )
         if (GAMEMODE:GetSuperPlayer() == ply) then
             ply:SetBloodColor( BLOOD_COLOR_MECH )
         end
+        if (GAMEMODE:GetRoundState() == GMSTATE_BUYTIME) then
+            ply:Freeze(true)
+        end
     end
 end
 

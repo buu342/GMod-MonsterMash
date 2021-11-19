@@ -13,7 +13,7 @@ ENT.DoDamage = true
 ENT.Retrievable = true
 
 function ENT:DoCollideThing(data, phys)
-    if data.HitEntity:IsPlayer() && data.HitEntity != self.Owner && data.HitEntity:HasStatusEffect(STATUS_SPAWNPROTECTED) then
-        self.Owner:GiveMedal("tp")
+    if data.HitEntity:IsPlayer() && data.HitEntity != self.Owner && !data.HitEntity:HasStatusEffect(STATUS_SPAWNPROTECTED) then
+        self.Owner:GiveTreat("tp")
     end
 end

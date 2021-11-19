@@ -111,7 +111,11 @@ function ENT:Think()
 		if self:GetState() == "Dying" || GAMEMODE:GetRoundState() == GMSTATE_ENDING then
 			self:EmitSound("death/clickityclack2.wav", 75, 100, 1, CHAN_VOICE)
 
-            // Spawn gibs here
+            local effectdata = EffectData()
+            effectdata:SetStart( self:GetPos() ) 
+            effectdata:SetOrigin( self:GetPos() )
+            effectdata:SetScale( 1 )
+            util.Effect( "gibs_skellington", effectdata )
 
 			self:Remove()
 		end
@@ -172,6 +176,7 @@ function ENT:RebuildPhysics( )
 	local size = 31
 	self:PhysicsInitSphere( size, "default_silent" )
 	self:SetCollisionBounds( Vector( -size, -size, -size ), Vector( size, size, size+32 ) )
+    //self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 
 	self:PhysWake()
 	
