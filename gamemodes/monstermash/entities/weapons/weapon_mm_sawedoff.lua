@@ -1,11 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Sawed-Off"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_sawedoff")
 SWEP.Cost = 30
-SWEP.Points = 40
+SWEP.Points = 25
 SWEP.KillFeed = "%a gave %v both barrels."
     
 SWEP.Author = "Buu342"
@@ -54,7 +54,7 @@ SWEP.HoldTypeAttack   = "pistol"
 SWEP.HoldTypeReload   = "pistol"
 SWEP.HoldTypeCrouch   = "pistol"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairSize = 128
 
 SWEP.ReloadOutTime = 0.2

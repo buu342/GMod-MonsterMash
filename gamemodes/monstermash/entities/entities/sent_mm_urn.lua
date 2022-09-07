@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.PrintName = "Haunted Urn"
 ENT.Type = "anim"
@@ -19,16 +19,16 @@ function ENT:ExplodeEffect()
     local i
     for i=1,1 do
         local effectdata2 = EffectData()
-        effectdata2:SetOrigin( self:GetPos() )
-        effectdata2:SetScale( 50 )
-        util.Effect( "ThumperDust", effectdata2 )
+        effectdata2:SetOrigin(self:GetPos())
+        effectdata2:SetScale(50)
+        util.Effect("ThumperDust", effectdata2)
     end    
 
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "mm_urn_explosion", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("mm_urn_explosion", effectdata4)
 end
 
 function ENT:OnRemove()
@@ -43,8 +43,8 @@ function ENT:OnRemove()
         }
         for i=1, #models do
             local gib = ents.CreateClientProp(models[i])
-            gib:SetPos( self:GetPos() )
-            gib:SetModel( models[i] )
+            gib:SetPos(self:GetPos())
+            gib:SetModel(models[i])
             gib:Spawn()
             gib:SetVelocity((VectorRand()+Vector(0,0,100))*100)
             gib:Activate()
@@ -54,7 +54,7 @@ function ENT:OnRemove()
         local traceinfo = {start = startp, endpos = startp - Vector(0,0,50), filter = self, mask = MASK_SOLID_BRUSHONLY}
         local trace = util.TraceLine(traceinfo)
         if (trace.Entity:IsWorld()) then
-            util.DecalEx( floordecal, trace.Entity, trace.HitPos, trace.HitNormal, Color(255, 255, 255, 255), 1, 1 )
+            util.DecalEx(floordecal, trace.Entity, trace.HitPos, trace.HitNormal, Color(255, 255, 255, 255), 1, 1)
         end
     end
 end

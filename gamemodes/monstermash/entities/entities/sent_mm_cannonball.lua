@@ -1,14 +1,15 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.Type = "anim"
 ENT.Base = "sent_mm_thrownbase"
 ENT.Mdl = "models/weapons/monstermash/cannonball.mdl"
 ENT.ExplodeRadius = 200
-ENT.Damage = 140
 ENT.ExplodeSound = {Sound("weapons/cannon/explosion1.wav"), Sound("weapons/cannon/explosion2.wav")}
 ENT.ExplodeOnImpact = true
 ENT.ContinuousEffect = "mm_smoketrail"
+
+ENT.DamageType = DMG_BLAST
 
 function ENT:ExplodeEffect()
     local explo = ents.Create("env_explosion")
@@ -21,25 +22,25 @@ function ENT:ExplodeEffect()
     local i
     for i=1,10 do
         local effectdata2 = EffectData()
-        effectdata2:SetOrigin( self:GetPos() )
-        effectdata2:SetScale( 24 )
-        util.Effect( "ThumperDust", effectdata2 )
+        effectdata2:SetOrigin(self:GetPos())
+        effectdata2:SetScale(24)
+        util.Effect("ThumperDust", effectdata2)
     end    
     
     local effectdata5 = EffectData()
-    effectdata5:SetOrigin( self:GetPos() )
-    util.Effect( "Fireball_Explosion", effectdata5 ) 
+    effectdata5:SetOrigin(self:GetPos())
+    util.Effect("Fireball_Explosion", effectdata5) 
         
     local effectdata3 = EffectData()
-    effectdata3:SetOrigin( self:GetPos() )
-    effectdata3:SetScale( 1 )
-    util.Effect( "ManhackSparks", effectdata3 )
+    effectdata3:SetOrigin(self:GetPos())
+    effectdata3:SetScale(1)
+    util.Effect("ManhackSparks", effectdata3)
         
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "HelicopterMegaBomb", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("HelicopterMegaBomb", effectdata4)
         
     local shake = ents.Create("env_shake")
     shake:SetOwner(self.Owner)

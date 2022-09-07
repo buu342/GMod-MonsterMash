@@ -1,16 +1,16 @@
-function EFFECT:Init( data )
-	self:SetRenderMode( RENDERMODE_TRANSALPHA )
+function EFFECT:Init(data)
+	self:SetRenderMode(RENDERMODE_TRANSALPHA)
 	self.Position = data:GetOrigin()
 	local Pos = self.Position
 	local Norm = Vector(0,0,1)
 	
 	Pos = Pos + Norm * 2
 	
-	local emitter = ParticleEmitter( Pos )
+	local emitter = ParticleEmitter(Pos)
 	self.MySize = 0
 end
 
-function EFFECT:Think( )
+function EFFECT:Think()
 	self.MySize = self.MySize + 0.5
     if self.MySize > 13 then
         self:Remove()

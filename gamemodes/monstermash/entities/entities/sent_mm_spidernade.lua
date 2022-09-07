@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.PrintName = "Spider grenade"
 ENT.Type = "anim"
@@ -18,8 +18,8 @@ ENT.ApplyEffectDuration = 4
 
 function ENT:ExplodeEffect()
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "mm_spidernade_explosion", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("mm_spidernade_explosion", effectdata4)
 end

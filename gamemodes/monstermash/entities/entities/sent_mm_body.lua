@@ -19,36 +19,43 @@ ENT.ZOrigin = 30
  
 function ENT:Initialize()
  
-    self:PhysicsInit( SOLID_VPHYSICS )
-    self:SetMoveType( MOVETYPE_NONE ) 
-    self:SetSolid( SOLID_VPHYSICS )   
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_NONE) 
+    self:SetSolid(SOLID_VPHYSICS)   
 
     local phys = self:GetPhysicsObject()
     if (phys:IsValid()) then
         phys:Wake()
-        phys:EnableGravity( true )
+        phys:EnableGravity(true)
     end
     
 end
  
-function ENT:Use( activator, caller )
+function ENT:Use(activator, caller)
     return
+end
+
+function KillTimer(name)
+    if timer.Exists(name) then
+        timer.Stop(name)
+        timer.Remove(name)
+    end
 end
  
 function ENT:Think()
     if self.Decapitated == true then
         if self.BloodType == BLOODTYPE_NORMAL then
             local attachment = self:LookupBone("ValveBiped.Bip01_Head1")
-            local position, angles = self:GetBonePosition( attachment )
+            local position, angles = self:GetBonePosition(attachment)
             local effectdata = EffectData()
-            effectdata:SetOrigin( position )
-            effectdata:SetAngles( angles )
-            effectdata:SetFlags( 3 )
-            effectdata:SetScale( 4 )
-            effectdata:SetColor( 0 )
-            util.Effect( "bloodspray", effectdata )
+            effectdata:SetOrigin(position)
+            effectdata:SetAngles(angles)
+            effectdata:SetFlags(3)
+            effectdata:SetScale(4)
+            effectdata:SetColor(0)
+            util.Effect("bloodspray", effectdata)
         end
-        self:SetBodygroup(1, self:GetBodygroup( 1 ))
+        self:SetBodygroup(1, self:GetBodygroup(1))
     end
     
     if self.RagdollTime != 0 then
@@ -71,39 +78,49 @@ function ENT:Think()
         end
         ent:Spawn()
 		ent:Activate()
-        ent:SetBodygroup(GIBGROUP_HEAD, self:GetBodygroup( GIBGROUP_HEAD ))
-		ent:SetBodygroup(GIBGROUP_ARMS, self:GetBodygroup( GIBGROUP_ARMS ))
-		ent:SetBodygroup(GIBGROUP_LEGS, self:GetBodygroup( GIBGROUP_LEGS ))
-		ent:SetBodygroup(GIBGROUP_STAKE, self:GetBodygroup( GIBGROUP_STAKE ))
+        ent:SetBodygroup(GIBGROUP_HEAD, self:GetBodygroup(GIBGROUP_HEAD))
+		ent:SetBodygroup(GIBGROUP_ARMS, self:GetBodygroup(GIBGROUP_ARMS))
+		ent:SetBodygroup(GIBGROUP_LEGS, self:GetBodygroup(GIBGROUP_LEGS))
+		ent:SetBodygroup(GIBGROUP_STAKE, self:GetBodygroup(GIBGROUP_STAKE))
         ent:SetCollisionGroup(COLLISION_GROUP_WEAPON or COLLISION_GROUP_DEBRIS_TRIGGER)
         if self.Electrocuted then
             timer.Create(tostring(ent), 0.1, 40, function()
                 if !IsValid(ent) then return end
                 local attachment = ent:LookupBone("ValveBiped.Bip01_Spine2")
-                local position, angles = ent:GetBonePosition( attachment )
+                local position, angles = ent:GetBonePosition(attachment)
                 local effectdata = EffectData()
-                effectdata:SetOrigin( position )
-                util.Effect( "corpse_smoke", effectdata )
+                effectdata:SetOrigin(position)
+                util.Effect("corpse_smoke", effectdata)
             end)
         end
         if self.Ignited then
             timer.Create("CorpseSmoke"..tostring(ent), 0.1, 120, function()
                 if !IsValid(ent) then return end
                 local attachment = ent:LookupBone("ValveBiped.Bip01_Spine2")
-                local position, angles = ent:GetBonePosition( attachment )
+                local position, angles = ent:GetBonePosition(attachment)
                 local effectdata = EffectData()
-                effectdata:SetOrigin( position )
-                util.Effect( "mm_corpse_smoke", effectdata )
+                effectdata:SetOrigin(position)
+                util.Effect("mm_corpse_smoke", effectdata)
             end)
         end
-        timer.Simple(10,function() if IsValid(ent) then ent:Remove() end end)
         if not ent:IsValid() then return end
         local plyvel = self:GetVelocity()
        
         if self.Ply != nil && !self.Ply:Alive() then
             self.Ply:SpectateEntity(ent)
             self.Ply:Spectate(OBS_MODE_CHASE)
+            ent.Ply = self.Ply
         end
+    
+        timer.Create(tostring(ent).."_spectate", GetConVar("mm_cleanup_time"):GetInt(), 0, function()
+            if (ent == nil || !IsValid(ent)) then return end
+            
+            if (!IsValid(ent.Ply) || ent.Ply == nil || ent.Ply:GetObserverTarget() != ent) then 
+                ent:Remove() 
+                KillTimer(tostring(ent).."_spectate")
+                return
+            end
+        end)
        
         for i = 0, ent:GetPhysicsObjectCount()-1 do
             local bone = ent:GetPhysicsObjectNum(i)

@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basebase" )
+DEFINE_BASECLASS("weapon_mm_basebase")
 
 SWEP.PrintName = "Throwable base"
     
@@ -53,13 +53,13 @@ SWEP.BurnChance      = 0
 SWEP.ConcussChance   = 0
 SWEP.DismemberChance = 0
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_cannon")
 SWEP.CrosshairSize = 96
-SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
+SWEP.CrosshairRechargeMaterial = Material("vgui/hud/crosshair_cannon_fill")
 SWEP.CrosshairRechargeSize     = 96
 SWEP.CrosshairRechargeType     = CHARGETYPE_BAR
 SWEP.CrosshairRechargeColor    = Color(0,255,0, 100)
-SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
+SWEP.CrosshairChargeMaterial = Material("vgui/hud/crosshair_cannon_fill")
 SWEP.CrosshairChargeType       = CHARGETYPE_BAR
 SWEP.CrosshairChargeColor      = Color(255,0,0, 100)
 SWEP.CrosshairChargeSize       = 96
@@ -85,7 +85,7 @@ end
 function SWEP:MM_SetAnimation(act)
     local vm = self.Owner:GetViewModel()
     if !IsValid(vm) then return end
-    vm:SendViewModelMatchingSequence( vm:SelectWeightedSequence( act ) )
+    vm:SendViewModelMatchingSequence(vm:SelectWeightedSequence(act))
 end
 
 function SWEP:Holster(wep)
@@ -97,9 +97,6 @@ function SWEP:Holster(wep)
     end
     self.Owner.PrevWeapon = self
     return true
-end
-
-function SWEP:HandleHoldTypes()
 end
 
 function SWEP:PrimaryAttack()
@@ -116,18 +113,18 @@ function SWEP:Think()
         
     if self:GetMMBase_PrimeTime() < CurTime() && self:GetNextPrimaryFire() < CurTime() then
         if self.Owner:GetWeaponCooldown(self) > 0 then
-            self:MM_SetAnimation( self.AnimDraw )
+            self:MM_SetAnimation(self.AnimDraw)
             if IsValid(self.Owner:GetViewModel()) then
-                self.Owner:GetViewModel():SetPlaybackRate( 0 )
+                self.Owner:GetViewModel():SetPlaybackRate(0)
             end
             self:SetClip1(0)
             return
         elseif self:Clip1() == 0 then
             self.Owner:SetWeaponCooldown(self, 0)
             if IsValid(self.Owner:GetViewModel()) then
-                self.Owner:GetViewModel():SetPlaybackRate( 1 )
+                self.Owner:GetViewModel():SetPlaybackRate(1)
             end
-            self:MM_SetAnimation( self.AnimDraw )
+            self:MM_SetAnimation(self.AnimDraw)
             self:SetNextPrimaryFire(CurTime()+0.5)
             self:SetClip1(1)
             self:SetMMBase_PrimeTime(0)
@@ -139,6 +136,7 @@ function SWEP:Think()
             self:MM_SetAnimation(self.AnimHold)
             self:SetMMBase_Primed(true)
             self:SetMMBase_PrimeTime(CurTime()+self.Primary.HaulTime)
+            self:RemoveSpawnProtection()
         end
         
         if self.Owner:KeyDown(IN_ATTACK) && self:GetMMBase_Primed() then
@@ -157,6 +155,7 @@ function SWEP:Think()
             timer.Simple(0, function() if !IsValid(self) || !IsValid(self.Owner) then return end self.Owner:SetWeaponCooldown(self, self.Primary.RechargeTime) end)
             self:SetNextPrimaryFire(CurTime()+0.5)
             self:ThrowEntity(self.Primary)
+            self.Owner:SetLastAttackTime()
             self:SetMMBase_Charge(0)
             self:SetClip1(0)
         end
@@ -165,9 +164,9 @@ end
 
 function SWEP:ThrowEntity(mode, dropped)
     if CLIENT then return end 
-    local ent = ents.Create( mode.ProjectileEntity )
+    local ent = ents.Create(mode.ProjectileEntity)
 
-    if ( !IsValid( ent ) ) then return end
+    if (!IsValid(ent)) then return end
     
     ent:SetOwner(self.Owner)
     ent:Spawn()
@@ -175,18 +174,18 @@ function SWEP:ThrowEntity(mode, dropped)
     ent.Inflictor = self
     ent.Owner = self.Owner
     if !dropped then
-        ent:SetPos( self.Owner:EyePos() + (self.Owner:GetAimVector() * 1) )
-        ent:SetAngles( self.Owner:EyeAngles() )
+        ent:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector() * 1))
+        ent:SetAngles(self.Owner:EyeAngles())
     else
-        ent:SetPos( self:GetPos() )
-        ent:SetAngles( self:GetAngles() )
+        ent:SetPos(self:GetPos())
+        ent:SetAngles(self:GetAngles())
     end
     local phys = ent:GetPhysicsObject()
     if IsValid(phys) then 
         if dropped then return end
         local velocity = self.Owner:GetAimVector()
         velocity = velocity * ent.Force
-        phys:ApplyForceCenter( velocity )
+        phys:ApplyForceCenter(velocity)
         
         if self.EntSpin then
             phys:AddAngleVelocity(Vector(0,1500,0))
@@ -205,9 +204,9 @@ function SWEP:OnDrop()
         self.Primary.ChargeForce = 0
 		self:ThrowEntity(self.Primary, true)
         self:SetNoDraw(true)
-        timer.Simple(GetConVar( "mm_cleanup_time" ):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then self:Remove() end end)
+        timer.Simple(GetConVar("mm_cleanup_time"):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then self:Remove() end end)
 	else
 		self.Owner = nil
-		timer.Simple(GetConVar( "mm_cleanup_time" ):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then self:Remove() end end)
+		timer.Simple(GetConVar("mm_cleanup_time"):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then self:Remove() end end)
 	end
 end

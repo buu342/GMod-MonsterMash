@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "De-Animator"
 
@@ -64,9 +64,9 @@ SWEP.HoldTypeAttack   = "shotgun"
 SWEP.HoldTypeReload   = "ar2"
 SWEP.HoldTypeCrouch   = "shotgun"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_caution" )
-SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_caution_fill" )
-SWEP.CrosshairOverchargeMaterial = Material( "vgui/hud/crosshair_caution_fill" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_caution")
+SWEP.CrosshairChargeMaterial = Material("vgui/hud/crosshair_caution_fill")
+SWEP.CrosshairOverchargeMaterial = Material("vgui/hud/crosshair_caution_fill")
 SWEP.CrosshairSize = 64
 
 SWEP.ReloadOutTime = 0.5
@@ -75,7 +75,7 @@ SWEP.ReloadInTime  = 1
 SWEP.TracerName = "ToolTracer"
 SWEP.TracerName2 = "mm_deanimatortracer"
 SWEP.ImpactEffect = "MetalSpark"
-SWEP.ImpactDecal = Material("decals/scorchfade_subrect") // util.DecalMaterial( "FadingScorch" )
+SWEP.ImpactDecal = Material("decals/scorchfade_subrect") // util.DecalMaterial("FadingScorch")
 SWEP.ImpactDecalSize = 0.5
 SWEP.ImpactEffectOnPlayers = true
 
@@ -93,8 +93,8 @@ function SWEP:MM_ShootCustom(mode)
     if self:GetMMBase_ReloadTimer() != 0 || self:GetMMBase_ShootTimer() != 0 then return end
     if self:Clip1() == 0 || (mode.TakeAmmoAffectsShootability && self:Clip1()-mode.TakeAmmo < 0) then 
         if (!GetConVar("mm_autoreload"):GetBool()) then
-            self:EmitSound( "weapons/shotgun/shotgun_empty.wav", 75, 100, 1, CHAN_ITEM ) 
-            self:SetMMBase_ShootTimer( CurTime() + 0.2 )
+            self:EmitSound("weapons/shotgun/shotgun_empty.wav", 75, 100, 1, CHAN_ITEM) 
+            self:SetMMBase_ShootTimer(CurTime() + 0.2)
         end
         return
     end
@@ -107,7 +107,7 @@ function SWEP:MM_ShootCustom(mode)
     self:EmitSound(self.Secondary.Sound,75,100,1,CHAN_WEAPON)
     bullet.Num = 1
     local traceply = self.Owner:GetEyeTrace()
-    bullet.Spread = Vector( self.Secondary.Spread * 0.1 , self.Secondary.Spread * 0.1, 0)
+    bullet.Spread = Vector(self.Secondary.Spread * 0.1 , self.Secondary.Spread * 0.1, 0)
     bullet.Tracer = 1
     bullet.TracerName = self.TracerName2
     bullet.Force = 1
@@ -118,12 +118,12 @@ function SWEP:MM_ShootCustom(mode)
         local TP = trace.HitPos + trace.HitNormal 
         local TM = trace.HitPos - trace.HitNormal 
         if trace.HitWorld then 
-            util.Decal( "scorch", TP, TM ) 
+            util.Decal("scorch", TP, TM) 
         end 
 
         local effectdata = EffectData()
-        effectdata:SetOrigin( trace.HitPos )
-        util.Effect( "ManhackSparks", effectdata )
+        effectdata:SetOrigin(trace.HitPos)
+        util.Effect("ManhackSparks", effectdata)
 
         util.BlastDamage(self, self.Owner, trace.HitPos, 128, math.max(15, self.Secondary.Damage*(self:GetMMBase_Charge()/100)))
 
@@ -133,7 +133,7 @@ function SWEP:MM_ShootCustom(mode)
             hBallGen:Spawn()
             hBallGen:Fire("explode","",0)			
             
-            for k, v in pairs( player.GetAll() ) do
+            for k, v in pairs(player.GetAll()) do
                 if v:GetPos():Distance(trace.HitPos) < 128 then
                     v:Ignite(1,1)
                     if v != self.Owner then
@@ -145,9 +145,10 @@ function SWEP:MM_ShootCustom(mode)
             end
         end
     end
+    self.Owner:SetLastAttackTime()
     self.Owner:SetStatusEffect(STATUS_ELECTROCUTED, nil, 3*(self:GetMMBase_Charge()/100))
     self.Owner:ConCommand("play weapons/electric_machine.wav")
-    self.Owner:FireBullets( bullet ) 
+    self.Owner:FireBullets(bullet) 
     self:TakePrimaryAmmo(math.max(20,self:GetMMBase_Charge()))
     self:DoFireDelay(mode)
     self:SetMMBase_OverChargeTime(0)

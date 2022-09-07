@@ -15,8 +15,8 @@ end
 
 function ENT:Draw()
     self:DrawModel()
-    local dlight = DynamicLight( self:EntIndex() )
-    if ( dlight ) then
+    local dlight = DynamicLight(self:EntIndex())
+    if (dlight) then
         local r, g, b, a = self:GetColor()
         dlight.Pos = self:GetPos()
         dlight.r = 181

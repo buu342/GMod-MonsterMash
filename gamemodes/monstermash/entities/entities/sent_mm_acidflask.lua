@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.PrintName = "Acid Flask"
 ENT.Type = "anim"
@@ -24,14 +24,14 @@ function ENT:ExplodeEffect()
     self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle4.wav"))
     
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "mm_acidflask_explosion", effectdata4 )		
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("mm_acidflask_explosion", effectdata4)		
     
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "VortDispel", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("VortDispel", effectdata4)
 end

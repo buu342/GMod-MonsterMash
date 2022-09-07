@@ -629,4 +629,70 @@ local soundData = {
     pitchend  = 100,
     sound   = "physics/flesh/flesh_squishy_impact_hard1.wav"
 }
-sound.Add(soundData)  
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Tormentor.SlideBack" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/tormentor/tormentor_bolt_back.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Tormentor.ClipIn1" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/tormentor/tormentor_load.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Tormentor.SlideForward" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/tormentor/tormentor_bolt_forward.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Bloodletter.ClipOut" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/bloodletter/bloodletter_magout.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Bloodletter.ClipIn" ,
+    channel  = CHAN_ITEM,
+    volume   = 0.7,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/bloodletter/bloodletter_magin.wav"
+}
+sound.Add(soundData)
+
+local soundData = {
+    name   = "Weapon_Bloodletter.FireSelect" ,
+    channel  = CHAN_ITEM,
+    volume   = 1.0,
+    soundlevel  = 100,
+    pitchstart  = 100,
+    pitchend  = 100,
+    sound   = "weapons/bloodletter/bloodletter_detonator.wav"
+}
+sound.Add(soundData)

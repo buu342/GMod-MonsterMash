@@ -1,11 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Dueling Pistol"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_musketpistol")
 SWEP.Cost = 40
-SWEP.Points = 40
+SWEP.Points = 25
 SWEP.KillFeed = "%a settled their dispute with %v like a gentlemen."
     
 SWEP.Author = "Buu342"
@@ -54,11 +54,11 @@ SWEP.HoldType         = "pistol"
 SWEP.HoldTypeAttack   = "pistol"
 SWEP.HoldTypeCrouch   = "pistol"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairSize = 18
 SWEP.CrosshairChargeSize = 16
 SWEP.CrosshairChargeType = CHARGETYPE_CIRCLE
-SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairRechargeSize     = 96
 
 SWEP.Primary.UseRange = true

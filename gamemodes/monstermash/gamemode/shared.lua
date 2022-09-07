@@ -3,20 +3,21 @@ GM.Author = "Buu342"
 GM.Email = "buu342@hotmail.com"
 GM.Website = "N/A"
 
-include( "sh_constants.lua" )
-include( "Admin/sh_playerkick.lua" )
-include( "Characters/sh_characters.lua" )
-include( "Menu/sh_weapondescriptions.lua" )
-include( "Player/sh_mmplayer.lua" )
-include( "Rounds/sh_rounds.lua" )
-include( "Rounds/sh_wackyrounds.lua" )
-include( "Stats/sh_playerstats.lua" )
-include( "Stats/sh_treats.lua" )
-include( "Tricks/sh_tricks.lua" )
+include("sh_constants.lua")
+include("Admin/sh_playerkick.lua")
+include("Characters/sh_characters.lua")
+include("Menu/sh_weapondescriptions.lua")
+include("Player/sh_mmplayer.lua")
+include("Rounds/sh_rounds.lua")
+include("Rounds/sh_wackyrounds.lua")
+include("Stats/sh_playerstats.lua")
+include("Stats/sh_treats.lua")
+include("Tricks/sh_tricks.lua")
 
 CreateConVar("mm_orgasmicdeathsounds", "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_tasermanmode",        "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_ludicrousgibs",       "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_deathcam",            "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_budget",              "100", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_point_limit",         "500", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_wackyfrequency",      "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
@@ -25,11 +26,13 @@ CreateConVar("mm_healthregen_amount",  "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCV
 CreateConVar("mm_wackytaunts",         "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_buytime",             "15",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_roundtime",           "360", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
-CreateConVar("mm_endtime",             "5",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_endtime",             "15",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_spawnprotect",        "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_cleanup_time",        "20",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_maxrounds",           "10",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_endofmonstermash",    "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_endroundboard_time",  "4",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_slomo_duration",      "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 
 team.SetUp(TEAM_SPECT,     "Spectators",    Color(0, 0, 0, 255))
 team.SetUp(TEAM_MONST,     "Monsters",      Color(255, 140, 0, 255))
@@ -115,5 +118,5 @@ function GM:Initialize()
 end
 
 function GM:Think()
-    self:UpdateRound()  
+    self:UpdateRound()
 end

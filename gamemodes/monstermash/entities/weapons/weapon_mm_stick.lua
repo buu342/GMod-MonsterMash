@@ -1,12 +1,12 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Cool Stick"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_stick")
 SWEP.Cost = 0
 SWEP.Points = 0
-SWEP.KillFeed = "%a showed %v the cool stick they found at the park, thanks mom for taking me it was really fun."
+SWEP.KillFeed = "%a went Berserk (1997) on %v."
 
 SWEP.Author = "Buu342"
 SWEP.Contact = "buu342@hotmail.com"
@@ -51,4 +51,22 @@ SWEP.BurnChance      = 0
 SWEP.ConcussChance   = 20
 SWEP.DismemberChance = 0
 
-SWEP.KillFlags = KILL_GIB
+SWEP.KillFlags = KILL_BIFURCATE
+
+function SWEP:SecondaryAttack()
+    if self.Owner:CanUseAbility() then
+        self.Owner:ResetAbilityCoolDown()
+        self:EmitSound("weapons/stick/griffisu.wav", 75, 100, 0.3)
+        self.Owner:SetVelocity(Vector(self.Owner:GetAimVector().x, self.Owner:GetAimVector().y, 0.125)*2000)
+        if SERVER then
+            self.Trail = util.SpriteTrail(self.Owner, 1, Color(255,255,255), false, 75, 0, 1, 1/(75+0)*0.5,"trails/tube.vmt")
+        end        
+    end
+end
+
+function SWEP:Think()
+    if self.Owner:OnGround() && SERVER && IsValid(self.Trail) then
+        self.Trail:Remove()
+    end
+    BaseClass.Think(self)
+end

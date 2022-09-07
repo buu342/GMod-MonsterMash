@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.PrintName = "Cleaver"
 ENT.Type = "anim"

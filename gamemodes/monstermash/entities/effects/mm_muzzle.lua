@@ -1,5 +1,5 @@
 function EFFECT:Init(data)
-	self:SetRenderMode( RENDERMODE_TRANSALPHA )
+	self:SetRenderMode(RENDERMODE_TRANSALPHA)
 	self.WeaponEnt = data:GetEntity()
 	self.Attachment = data:GetAttachment()
 	

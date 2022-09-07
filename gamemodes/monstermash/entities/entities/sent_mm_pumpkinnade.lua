@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.Type = "anim"
 ENT.Base = "sent_mm_thrownbase"
@@ -12,6 +12,8 @@ ENT.ThrowAngle = Angle(0,90,0)
 ENT.DoDamage = false
 ENT.GibOnContact = true
 
+ENT.DamageType = DMG_BLAST
+
 ENT.LightSize = 256
 ENT.LightColor = Color(240, 104, 0)
 ENT.LightBrightness = 3
@@ -20,16 +22,16 @@ ENT.LightTime = 0.25
 
 function ENT:ExplodeEffect()
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "HelicopterMegaBomb", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("HelicopterMegaBomb", effectdata4)
     
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "mm_pumpkin_explosion", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("mm_pumpkin_explosion", effectdata4)
         
     local shake = ents.Create("env_shake")
     shake:SetOwner(self.Owner)

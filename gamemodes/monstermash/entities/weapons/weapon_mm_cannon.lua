@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Cannon"
 
@@ -50,8 +50,8 @@ SWEP.HoldTypeAttack = "shotgun"
 SWEP.HoldTypeReload = "crossbow"
 SWEP.HoldTypeCrouch = "shotgun" 
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
-SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_cannon")
+SWEP.CrosshairChargeMaterial = Material("vgui/hud/crosshair_cannon_fill")
 SWEP.CrosshairSize = 96
 SWEP.CrosshairChargeSize = 96
 SWEP.CrosshairChargeType = CHARGETYPE_BAR

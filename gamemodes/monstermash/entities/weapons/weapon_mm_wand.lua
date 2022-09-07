@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Wand"
 
@@ -60,8 +60,8 @@ SWEP.HoldTypeAttack   = "knife"
 SWEP.HoldTypeReload   = "knife"
 SWEP.HoldTypeCrouch   = "knife"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
-SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_cannon")
+SWEP.CrosshairChargeMaterial = Material("vgui/hud/crosshair_cannon_fill")
 SWEP.CrosshairSize = 96
 SWEP.CrosshairChargeSize = 96
 SWEP.CrosshairChargeType = CHARGETYPE_BAR
@@ -72,6 +72,7 @@ SWEP.ReloadInTime  = 0.0
 
 SWEP.AttackAnim = ACT_VM_HITCENTER
 SWEP.ReloadAmount = 2
+SWEP.ReloadSlowedByArm = false
 
 SWEP.KillFlags = KILL_ZAP
 

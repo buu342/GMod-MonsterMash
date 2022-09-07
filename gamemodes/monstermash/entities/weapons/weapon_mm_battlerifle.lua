@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Battle Rifle"
 
@@ -44,7 +44,8 @@ SWEP.Primary.BurstFire = true
 SWEP.Primary.BurstTime = 0.075
 SWEP.Primary.Magnetism = false
 
-SWEP.Secondary.Sound       = "weapons/cannon/cannon-1.wav" 
+SWEP.Secondary.Sound       = "weapons/mortar/mortar_fire1.wav" 
+SWEP.Secondary.Damage      = 25
 SWEP.Secondary.TakeAmmo    = 0
 SWEP.Secondary.Delay       = 1
 SWEP.Secondary.Recoil      = 0.3
@@ -56,7 +57,7 @@ SWEP.Secondary.Ammo        = "none"
 SWEP.Secondary.FireMode        = FIREMODE_PROJECTILE
 SWEP.Secondary.SpecialCooldown = 15
 SWEP.Secondary.ProjectileEntity = "sent_mm_hallucinationnade"
-SWEP.Secondary.ProjectileForce = 1000
+SWEP.Secondary.ProjectileForce = 2500
 
 SWEP.Primary.UseRange = false
 
@@ -65,15 +66,16 @@ SWEP.HoldTypeAttack   = "rpg"
 SWEP.HoldTypeReload   = "ar2"
 SWEP.HoldTypeCrouch   = "ar2"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_BAR" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_BAR")
 SWEP.CrosshairSize = 34
-SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairRechargeSize     = 96
 
 SWEP.ReloadOutTime = 0.8
 SWEP.ReloadInTime  = 1.1
 
-SWEP.ReloadAnim = ACT_VM_RELOAD_EMPTY
+SWEP.Attack2Anim = ACT_VM_SECONDARYATTACK
+SWEP.ReloadAnim = ACT_VM_RELOAD
 SWEP.KillFlags = KILL_HEADEXPLODE
 
 SWEP.EjectEffect = "RifleShellEject"

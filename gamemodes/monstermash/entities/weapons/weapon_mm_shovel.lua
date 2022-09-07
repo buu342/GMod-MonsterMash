@@ -1,11 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Shovel"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_shovel")
 SWEP.Cost = 15
-SWEP.Points = 75
+SWEP.Points = 40
 SWEP.KillFeed = "%a dug %v's grave."
 
 SWEP.Author = "Buu342"

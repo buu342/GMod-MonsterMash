@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Battle Axe"
 
@@ -53,7 +53,7 @@ SWEP.ConcussChance   = 0
 SWEP.DismemberChance = 100
 SWEP.BurnChance      = 0
 
-SWEP.KillFlags = KILL_BIFURCATE
+SWEP.KillFlags = bit.bor(KILL_BIFURCATE, KILL_DECAPITATE)
 
 hook.Add("PlayerSpawn", "MM_BattleAxeHP", function(ply)
     timer.Simple(0, function() 

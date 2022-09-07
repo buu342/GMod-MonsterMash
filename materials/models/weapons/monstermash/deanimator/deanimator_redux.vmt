@@ -1,0 +1,27 @@
+"VertexLitGeneric"
+{
+	"$baseTexture"		"models\weapons\monstermash\deanimator/deanimator_d_512"
+	"$bumpmap" "models\weapons\monstermash\deanimator/deanimator_n"
+	"$model"		1
+
+	$selfillum 1
+	$selfillummask "models\weapons\monstermash\deanimator/deanimator_selfillum"
+
+	$phong 1
+	$phongexponenttexture "models/props/test/deanimator_phong"
+	//$phongexponent			50			// either/or
+	$phongboost				10
+	$phongfresnelranges		"[0.005 0.7 1]"
+
+Proxies
+{
+	AnimatedTexture
+	{
+		animatedtexturevar	$basetexture
+		animatedtextureframenumvar $frame
+		animatedtextureframerate 8
+	}
+
+}
+
+}

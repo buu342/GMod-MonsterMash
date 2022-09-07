@@ -33,19 +33,19 @@ function EFFECT:Render()
 	local target_sequence
 	target_sequence = sequence_idle
 	local target_frame = string.sub(target_sequence, (self.countframe%string.len(target_sequence))+1, (self.countframe%string.len(target_sequence))+1)
-	local mat = Material( "ghouls/FIRE"..target_frame.."0.png" )
-	render.SetMaterial( mat )
+	local mat = Material("ghouls/FIRE"..target_frame.."0.png")
+	render.SetMaterial(mat)
 
 	self.Position = self.Position + self.Speed
 	self.Speed = self.Speed*(1-self.Resistance)
 	
 	local pos = self.Position
-	local lcolor = render.ComputeLighting( pos, Vector( 0, 0, 1 ) )
+	local lcolor = render.ComputeLighting(pos, Vector(0, 0, 1))
 	local c = Vector(1,1,1)
 
-	lcolor.x = c.r * ( math.Clamp( lcolor.x, 0, 1 ) + 0.5 ) * 255
-	lcolor.y = c.g * ( math.Clamp( lcolor.y, 0, 1 ) + 0.5 ) * 255
-	lcolor.z = c.b * ( math.Clamp( lcolor.z, 0, 1 ) + 0.5 ) * 255
+	lcolor.x = c.r * (math.Clamp(lcolor.x, 0, 1) + 0.5) * 255
+	lcolor.y = c.g * (math.Clamp(lcolor.y, 0, 1) + 0.5) * 255
+	lcolor.z = c.b * (math.Clamp(lcolor.z, 0, 1) + 0.5) * 255
 	
 	
 	local offset
@@ -61,6 +61,6 @@ function EFFECT:Render()
 
 	local width = mat:Width()
 	local height = mat:Height()
-	render.DrawSprite( pos+Vector(0,0,16 + offset), width, height, Color( lcolor.x, lcolor.y, lcolor.z, 200 ) )
+	render.DrawSprite(pos+Vector(0,0,16 + offset), width, height, Color(lcolor.x, lcolor.y, lcolor.z, 200))
 end
 

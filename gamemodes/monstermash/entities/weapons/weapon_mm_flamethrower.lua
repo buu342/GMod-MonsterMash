@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Flamethrower"
 
@@ -47,6 +47,7 @@ SWEP.Primary.ProjectileEntity = ""
 
 SWEP.Secondary.Sound       = "weapons/flamethrower/fireball.mp3"
 SWEP.Secondary.LoopStartSound = Sound("weapons/flamethrower/firecharge.mp3")
+SWEP.Secondary.Damage      = 35
 SWEP.Secondary.TakeAmmo    = 75
 SWEP.Secondary.Recoil      = 10
 SWEP.Secondary.Delay       = 1
@@ -76,7 +77,7 @@ SWEP.HoldTypeAttack   = "crossbow"
 SWEP.HoldTypeReload   = "crossbow"
 SWEP.HoldTypeCrouch   = "crossbow"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairChargeType = CHARGETYPE_CIRCLE
 SWEP.CrosshairSize = 96
 SWEP.CrosshairChargeSize = 96
@@ -105,11 +106,11 @@ function SWEP:Think()
     
     if CLIENT && !self.Owner:ShouldDrawLocalPlayer() && self:GetMMBase_Charge() > 0 then
         local effectdata4 = EffectData()
-        effectdata4:SetStart( self.Owner:GetViewModel():GetAttachment("1").Pos ) 
-        effectdata4:SetOrigin( self.Owner:GetViewModel():GetAttachment("1").Pos )
-        effectdata4:SetAngles( self.Owner:EyeAngles() )
-        effectdata4:SetScale( 1 )
-        util.Effect( "mm_flamethrower_charge", effectdata4 )
+        effectdata4:SetStart(self.Owner:GetViewModel():GetAttachment("1").Pos) 
+        effectdata4:SetOrigin(self.Owner:GetViewModel():GetAttachment("1").Pos)
+        effectdata4:SetAngles(self.Owner:EyeAngles())
+        effectdata4:SetScale(1)
+        util.Effect("mm_flamethrower_charge", effectdata4)
     end
     
     if self:GetMMFlame_FlameState() == 1 && self.Owner:KeyDown(IN_ATTACK) && self:GetMMBase_ReloadTimer() == 0 then
@@ -131,16 +132,16 @@ function SWEP:Think()
         
         if CLIENT && !self.Owner:ShouldDrawLocalPlayer() then
             local effectdata4 = EffectData()
-            effectdata4:SetStart( self.Owner:GetViewModel():GetAttachment("1").Pos ) 
-            effectdata4:SetOrigin( self.Owner:GetViewModel():GetAttachment("1").Pos )
-            effectdata4:SetAngles( self.Owner:EyeAngles() )
-            effectdata4:SetScale( 1 )
-            util.Effect( "mm_flamethrower_flame", effectdata4 )
+            effectdata4:SetStart(self.Owner:GetViewModel():GetAttachment("1").Pos) 
+            effectdata4:SetOrigin(self.Owner:GetViewModel():GetAttachment("1").Pos)
+            effectdata4:SetAngles(self.Owner:EyeAngles())
+            effectdata4:SetScale(1)
+            util.Effect("mm_flamethrower_flame", effectdata4)
         end
         
         if SERVER && IsValid(self:GetMMFlame_FlameEntity()) then
             local Offset = Vector(0,0,48)
-            if(self.Owner:Crouching()) then
+            if (self.Owner:Crouching()) then
                 Offset.z = Offset.z - 0
                 Offset.x = Offset.x + 0
             end

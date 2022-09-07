@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-DEFINE_BASECLASS( "base_anim" )
+DEFINE_BASECLASS("base_anim")
 
 ENT.PrintName = "Skellington"
 ENT.Name = "Skellington"
@@ -15,25 +15,26 @@ ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
 ENT.HP = 60
 
 ENT.Master = nil
+ENT.IsMMNPC = true
 
 function ENT:SetupDataTables()
 
-	self:NetworkVar( "Float", 0, "CoolDown")
-	self:NetworkVar( "Float", 1, "ChaseSoundCoolDown" )
-	self:NetworkVar( "Float", 2, "HP")
-	self:NetworkVar( "Float", 3, "Lifetime")
-	self:NetworkVar( "String", 0, "State")
-	self:NetworkVar( "Int", 0, "CountFrame")
-	self:NetworkVar( "Entity", 0, "Master")
+	self:NetworkVar("Float", 0, "CoolDown")
+	self:NetworkVar("Float", 1, "ChaseSoundCoolDown")
+	self:NetworkVar("Float", 2, "HP")
+	self:NetworkVar("Float", 3, "Lifetime")
+	self:NetworkVar("String", 0, "State")
+	self:NetworkVar("Int", 0, "CountFrame")
+	self:NetworkVar("Entity", 0, "Master")
 
 end
 
-function ENT:SpawnFunction( ply, tr, ClassName )
+function ENT:SpawnFunction(ply, tr, ClassName)
 
-	if ( !tr.Hit ) then return end
+	if (!tr.Hit) then return end
 
-	local ent = ents.Create( ClassName )
-	ent:SetPos( tr.HitPos + tr.HitNormal * 32 )
+	local ent = ents.Create(ClassName)
+	ent:SetPos(tr.HitPos + tr.HitNormal * 32)
 	ent:Spawn()
 	ent:Activate()
 	
@@ -41,7 +42,7 @@ function ENT:SpawnFunction( ply, tr, ClassName )
 
 end
 
-function ENT:FindNearestPlayer( pos, range )
+function ENT:FindNearestPlayer(pos, range)
 	
 	local nearestply = nil  
     
@@ -49,16 +50,19 @@ function ENT:FindNearestPlayer( pos, range )
     if (self:GetMaster() == TEAM_COOPMONST) then
         // Search for TEAM_COOPOTHER or other skellingtons
     else
-        for i, ply in pairs( player.GetAll()) do
-            if ply:Team() == TEAM_SPECT || ply:Team() == TEAM_INVALID || ply == self:GetMaster() || 
-                (IsValid(self:GetMaster()) && ply != self:GetMaster() && ply:Team() == self:GetMaster():Team() && GAMEMODE:InWackyRound() && GAMEMODE:WackyRoundData().mode != MODE_DEATHMATCH && GAMEMODE:WackyRoundData().mode != MODE_LMS) then 
-            else
-                local distance = pos:Distance( ply:GetPos() )
-                if( distance <= range ) && ply:Alive() then
-
-                    nearestply = ply
-                    range = distance
-                    
+        for i, ply in pairs(ents.GetAll()) do
+            if (ply:IsPlayer() || ply.IsMMNPC) then 
+                if (ply:IsPlayer() && (ply:Team() == TEAM_SPECT || ply:Team() == TEAM_COOPDEAD || ply:Team() == TEAM_INVALID || ply == self:GetMaster() || 
+                    (IsValid(self:GetMaster()) && ply != self:GetMaster() && ply:Team() == self:GetMaster():Team() && GAMEMODE:InWackyRound() && GAMEMODE:WackyRoundData().mode != MODE_DEATHMATCH && GAMEMODE:WackyRoundData().mode != MODE_LMS))) then 
+                    // Don't chase this player
+                else
+                    if (ply:IsPlayer() || (ply.IsMMNPC && ply.Master != self.Master && self.Master != nil)) then
+                        local distance = pos:Distance(ply:GetPos())
+                        if (distance <= range) && (!ply:IsPlayer() || ply:Alive()) then
+                            nearestply = ply
+                            range = distance
+                        end
+                    end
                 end
             end
         end
@@ -75,11 +79,11 @@ function ENT:Initialize()
 	self:SetState("Idle")
 	self:SetHP(self.HP)
 
-	if ( CLIENT ) then return end
+	if (CLIENT) then return end
 
-	self:SetModel( "models/hunter/misc/sphere175x175.mdl" )
+	self:SetModel("models/hunter/misc/sphere175x175.mdl")
 	self:RebuildPhysics()
-	self:DrawShadow( false )
+	self:DrawShadow(false)
     
     timer.Simple(0, function()
         self:SetMaster(self.Master)
@@ -94,10 +98,10 @@ end
 
 function ENT:Think()
 
-	self:NextThink( CurTime() + 0.001 )
+	self:NextThink(CurTime() + 0.001)
     
     if self:GetMaster() != nil && self:GetLifetime() < CurTime() && SERVER then
-        self:Remove()
+        self:RemoveExplode()
         return
     end
     
@@ -112,10 +116,10 @@ function ENT:Think()
 			self:EmitSound("death/clickityclack2.wav", 75, 100, 1, CHAN_VOICE)
 
             local effectdata = EffectData()
-            effectdata:SetStart( self:GetPos() ) 
-            effectdata:SetOrigin( self:GetPos() )
-            effectdata:SetScale( 1 )
-            util.Effect( "gibs_skellington", effectdata )
+            effectdata:SetStart(self:GetPos()) 
+            effectdata:SetOrigin(self:GetPos())
+            effectdata:SetScale(1)
+            util.Effect("gibs_skellington", effectdata)
 
 			self:Remove()
 		end
@@ -152,7 +156,11 @@ function ENT:Think()
 				dir:Normalize()
 				dir = Vector(-dir.x + math.Rand(-0.9,0.9), -dir.y + math.Rand(-0.9,0.9), 0)
 				dir:Normalize()
-				physobj:SetVelocity(dir*750)
+                if (self:IsOnFire()) then
+                    physobj:SetVelocity(dir*200)
+                else
+                    physobj:SetVelocity(dir*750)
+                end
 			end
 			self:SetState("Chase")
 			return
@@ -166,32 +174,51 @@ function ENT:Think()
 	end
 end
 
+function ENT:RemoveExplode()
+    local effectdata = EffectData()
+    effectdata:SetStart(self:GetPos()) 
+    effectdata:SetOrigin(self:GetPos())
+    effectdata:SetScale(1)
+    util.Effect("gibs_skellington", effectdata)
+    self:Remove()
+end
 
-function ENT:RebuildPhysics( )
+
+function ENT:RebuildPhysics()
 
 	// This is necessary so that the vphysics.dll will not crash when attaching constraints to the new PhysObj after old one was destroyed
 	// Garry pls fix
 	self.ConstraintSystem = nil
 
 	local size = 31
-	self:PhysicsInitSphere( size, "default_silent" )
-	self:SetCollisionBounds( Vector( -size, -size, -size ), Vector( size, size, size+32 ) )
+	self:PhysicsInitSphere(size, "default_silent")
+	self:SetCollisionBounds(Vector(-size, -size, -size), Vector(size, size, size+32))
     //self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 
 	self:PhysWake()
 	
 end
 
-function ENT:PhysicsCollide( data, physobj )
-	if data.HitEntity:GetClass() == "player" && data.HitEntity != self:GetMaster() && self:GetState() == "Chase" then
+function ENT:PhysicsCollide(data, physobj)
+	if (((data.HitEntity:IsPlayer() && data.HitEntity != self:GetMaster()) || (data.HitEntity.IsMMNPC && self:GetMaster() != data.HitEntity.Master)) && self:GetState() == "Chase") then
+        if (self.Master == nil && data.HitEntity.Master == nil) then return end
 		physobj:SetVelocity(Vector(0,0,0))
 		self:SetState("Attack1")
         if (data.HitEntity:IsPlayer()) then
             timer.Simple(0, function() if IsValid(data.HitEntity) then data.HitEntity:SetKillFlag(KILL_SKELLINGTON) end end)
             data.HitEntity:SetKillFlag(KILL_GIB)
         end
-		data.HitEntity:TakeDamage(140, self, self)
+        if (self:GetMaster() != nil && self:GetMaster():IsPlayer()) then
+            data.HitEntity:TakeDamage(140, self:GetMaster(), self)
+        else
+            data.HitEntity:TakeDamage(140, self, self)
+        end
 		data.HitEntity:EmitSound("death/clickityclack1.wav", 75, 100, 1, CHAN_VOICE2)
+        timer.Simple(0, function() 
+            if IsValid(self) && IsValid(data.HitEntity) && IsValid(self:GetMaster()) && self:GetMaster():IsPlayer() then 
+                self:GetMaster():AddScore(10) 
+            end 
+        end)
 	end
 end
 
@@ -202,30 +229,30 @@ if CLIENT then
     local dospook = false
     local finishedspook = false
     local skellmatspop = {
-        Material( "animated/skeletonpop_1.png" ),
-        Material( "animated/skeletonpop_2.png" ),
-        Material( "animated/skeletonpop_3.png" ),
-        Material( "animated/skeletonpop_4.png" ),
-        Material( "animated/skeletonpop_5.png" ),
-        Material( "animated/skeletonpop_6.png" )
+        Material("animated/skeletonpop_1.png"),
+        Material("animated/skeletonpop_2.png"),
+        Material("animated/skeletonpop_3.png"),
+        Material("animated/skeletonpop_4.png"),
+        Material("animated/skeletonpop_5.png"),
+        Material("animated/skeletonpop_6.png")
     }
     local skellmatsloop = {
-        Material( "animated/skeletonpoploop_1.png" ),
-        Material( "animated/skeletonpoploop_2.png" ),
-        Material( "animated/skeletonpoploop_3.png" ),
-        Material( "animated/skeletonpoploop_4.png" ),
-        Material( "animated/skeletonpoploop_5.png" )
+        Material("animated/skeletonpoploop_1.png"),
+        Material("animated/skeletonpoploop_2.png"),
+        Material("animated/skeletonpoploop_3.png"),
+        Material("animated/skeletonpoploop_4.png"),
+        Material("animated/skeletonpoploop_5.png")
     }
     
     hook.Add("HUDPaint", "MM_SkellingtonSpookHUD", function()
-        if ((LocalPlayer():HasKillFlag(KILL_SKELLINGTON) || (IsValid(LocalPlayer():GetNWEntity("MM_Killer")) && LocalPlayer():GetNWEntity("MM_Killer"):GetClass() == "sent_mm_skellington") || dospook) && !LocalPlayer():Alive()) then
+        if ((LocalPlayer():HasKillFlag(KILL_SKELLINGTON) || (IsValid(LocalPlayer():GetNWEntity("MM_Killer")) && LocalPlayer():GetNWEntity("MM_Killer").IsMMNPC) || dospook) && !LocalPlayer():Alive()) then
             if (!dospook) then
                 dospook = true
                 spooktime = CurTime() + 1.25
                 finishedspook = false
             end
             if (!finishedspook) then
-                surface.SetDrawColor( 255, 255, 255, 255 )
+                surface.SetDrawColor(255, 255, 255, 255)
                 if (spookcount > 5) then
                     surface.SetMaterial(skellmatsloop[(spookcount%5)+1])
                 else
@@ -254,7 +281,7 @@ if CLIENT then
     end)
 end
 
-function ENT:OnTakeDamage( dmginfo )
+function ENT:OnTakeDamage(dmginfo)
 	if self:GetState() != "Dying" then
 		self:SetState("Pain")
 		self:SetCoolDown(CurTime()+0.5)
@@ -262,14 +289,17 @@ function ENT:OnTakeDamage( dmginfo )
 		self:SetCountFrame(1)
 		if self:GetHP() <= 0 then
 			self:SetCountFrame(1)
-            local dethtbl = {
-                color = Color(255, 105, 0),
-                time = CurTime()+10,
-                text = dmginfo:GetAttacker():Name().." fought off a skellington"
-            }
-			net.Start("MMNPCKilled")
-				net.WriteTable(dethtbl)
-			net.Broadcast()
+            if (dmginfo:GetAttacker() != nil && dmginfo:GetAttacker():IsPlayer()) then
+                dmginfo:GetAttacker():AddScore(1)
+                local dethtbl = {
+                    color = Color(255, 105, 0),
+                    time = CurTime()+10,
+                    text = dmginfo:GetAttacker():Name().." fought off a skellington"
+                }
+                net.Start("MMNPCKilled")
+                    net.WriteTable(dethtbl)
+                net.Broadcast()
+            end
 			self:SetState("Dying")
 		else
 			self:EmitSound("weapons/bone/boner2.wav")
@@ -278,22 +308,22 @@ function ENT:OnTakeDamage( dmginfo )
 end
 
 
-if ( SERVER ) then return end
+if (SERVER) then return end
 
 
 function ENT:Draw()
 
-	local mat = Material( "animated/skeleton_run" )
+	local mat = Material("animated/skeleton_run")
 	
-	render.SetMaterial( mat )
+	render.SetMaterial(mat)
 
 	local pos = self:GetPos()
-	local lcolor = render.ComputeLighting( pos, Vector( 0, 0, 1 ) )
+	local lcolor = render.ComputeLighting(pos, Vector(0, 0, 1))
 	local c = Vector(1,1,1)
 
-	lcolor.x = c.r * ( math.Clamp( lcolor.x, 0, 1 ) + 0.25 ) * 255
-	lcolor.y = c.g * ( math.Clamp( lcolor.y, 0, 1 ) + 0.25 ) * 255
-	lcolor.z = c.b * ( math.Clamp( lcolor.z, 0, 1 ) + 0.25 ) * 255
+	lcolor.x = c.r * (math.Clamp(lcolor.x, 0, 1) + 0.25) * 255
+	lcolor.y = c.g * (math.Clamp(lcolor.y, 0, 1) + 0.25) * 255
+	lcolor.z = c.b * (math.Clamp(lcolor.z, 0, 1) + 0.25) * 255
     
     if LocalPlayer() == self:GetMaster() then
         lcolor.x = 0
@@ -303,6 +333,6 @@ function ENT:Draw()
 	local width = mat:Width()/3
 	local height = mat:Height()/3
 	local offset = 8
-	render.DrawSprite( pos+Vector(0,0,offset), width, height, Color( lcolor.x, lcolor.y, lcolor.z, 255 ) )
+	render.DrawSprite(pos+Vector(0,0,offset), width, height, Color(lcolor.x, lcolor.y, lcolor.z, 255))
 	//self:DrawModel()
 end

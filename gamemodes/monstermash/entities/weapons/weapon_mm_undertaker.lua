@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Undertaker"
 
@@ -63,7 +63,7 @@ SWEP.HoldTypeAttack   = "rpg"
 SWEP.HoldTypeReload   = "ar2"
 SWEP.HoldTypeCrouch   = "ar2"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_thompson" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_thompson")
 SWEP.CrosshairSize = 128
 
 SWEP.ReloadOutTime = 0.8

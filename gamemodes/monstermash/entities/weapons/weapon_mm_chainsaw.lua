@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Chainsaw"
 
@@ -59,7 +59,7 @@ SWEP.BurnChance      = 0
 SWEP.ConcussChance   = 0
 SWEP.DismemberChance = 100
 
-SWEP.KillFlags = KILL_BIFURCATE
+SWEP.KillFlags = bit.bor(KILL_BIFURCATE, KILL_DECAPITATE)
 SWEP.BackKill = true
 
 SWEP.EquipSound = Sound("Weapons/chainsaw/equip.wav")

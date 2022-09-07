@@ -10,7 +10,7 @@ function EFFECT:Init(data)
 	
 	local emitter = ParticleEmitter(Pos)
 		
-    local particle = emitter:Add( "particle/flamelet"..math.random(1,5), Pos + Vector( math.random( -3, 3 ), math.random( -3, 3 ), math.random( -3, 3 ) ) )
+    local particle = emitter:Add("particle/flamelet"..math.random(1,5), Pos + Vector(math.random(-3, 3), math.random(-3, 3), math.random(-3, 3)))
     particle:SetVelocity(Vector(math.random(-20,20),math.random(-20,20),math.random(-20,20)))
     particle:SetDieTime(1)
     particle:SetStartAlpha(200)

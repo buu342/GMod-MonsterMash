@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Mace"
 
@@ -53,3 +53,5 @@ SWEP.DismemberChance = 0
 
 SWEP.BackBleed = true
 SWEP.BackConcuss = true
+
+SWEP.KillFlags = KILL_HEADEXPLODE

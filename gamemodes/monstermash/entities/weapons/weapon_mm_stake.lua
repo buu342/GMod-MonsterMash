@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Stake"
 
@@ -32,9 +32,9 @@ SWEP.DrawCrosshair = false
 SWEP.Slot = 0
 SWEP.Base = "weapon_mm_basemelee"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairSize = 18
-SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairRechargeMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairRechargeSize     = 96
 
 SWEP.Primary.Damage         = 9001

@@ -1,0 +1,21 @@
+"Refract"
+{
+	"%keywords" "tf"
+	"$forcerefract" "1"
+	"$refractamount" ".02"
+	"$refracttint" "{255 0 0}"
+	"$normalmap" "vgui/hud/werewolf_overlay_normal"
+	"$bumpframe" "0"
+	"$bluramount" "1"
+	"$refracttinttexture" "vgui/hud/werewolf_overlay"
+	"Proxies"
+	{
+		"sine"
+		{
+			"sinemax" ".1"
+			"sinemin" "-.1"
+			"sineperiod" ".81"
+			"resultvar" "$refractamount"
+		}
+	}
+}

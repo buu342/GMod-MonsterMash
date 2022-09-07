@@ -1,22 +1,22 @@
-AddCSLuaFile( "shared.lua" )
+AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 function ENT:SetupDataTables()
-	self:NetworkVar( "Float", 0, "AcidTime" )
+	self:NetworkVar("Float", 0, "AcidTime")
 end
 
 function ENT:Initialize()
 
 	self.Entity:SetModel("models/weapons/monstermash/acid_puddle.mdl")
-	self.Entity:PhysicsInit( SOLID_OBB )
-	self.Entity:SetMoveType( MOVETYPE_NONE )
-	self.Entity:SetSolid( SOLID_NONE )
-	self.Entity:DrawShadow( false )
-	self.Entity:SetRenderMode( RENDERMODE_TRANSALPHA )
+	self.Entity:PhysicsInit(SOLID_OBB)
+	self.Entity:SetMoveType(MOVETYPE_NONE)
+	self.Entity:SetSolid(SOLID_NONE)
+	self.Entity:DrawShadow(false)
+	self.Entity:SetRenderMode(RENDERMODE_TRANSALPHA)
 	self:SetModelScale(0, 0)
     
 	-- Don't collide with the player
-	self.Entity:SetCollisionGroup( COLLISION_GROUP_PLAYER )
+	self.Entity:SetCollisionGroup(COLLISION_GROUP_PLAYER)
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
@@ -25,9 +25,9 @@ function ENT:Initialize()
     self:SetAcidTime(CurTime()+20)
 	timer.Simple(self:GetAcidTime()-CurTime(), function() if IsValid(self) then self:Remove() end end)
     
-    self.LoopSound = CreateSound( self, "ambient/levels/canals/toxic_slime_loop1.wav" ) 
+    self.LoopSound = CreateSound(self, "ambient/levels/canals/toxic_slime_loop1.wav") 
     if self.LoopSound then
-        self.LoopSound:SetSoundLevel( 65 ) 
+        self.LoopSound:SetSoundLevel(65) 
         self.LoopSound:Play()
     end
 end
@@ -45,8 +45,8 @@ function ENT:Think()
 		self:SetModelScale(0, 1)
 	end
     for k, v in pairs(player.GetAll()) do
-        if v:GetPos():Distance(self:GetPos()) < self:GetModelScale()*100 && v:GetPos().z > self:GetPos().z-20 && v:GetPos().z < self:GetPos().z+10 && self:Visible(v) then
-            if !v:HasStatusEffect(STATUS_SUPERACID) && (!v:HasStatusEffect(STATUS_ACID) || (v:HasStatusEffect(STATUS_ACID) && v:GetStatusEffectTime(STATUS_ACID) < 0.4)) then
+        if (v:GetPos():Distance(self:GetPos()) < self:GetModelScale()*100 && v:GetPos().z > self:GetPos().z-20 && v:GetPos().z < self:GetPos().z+10 && self:Visible(v) && v:CanBeDamagedBy(self.Owner)) then
+            if (!v:HasStatusEffect(STATUS_SUPERACID) && (!v:HasStatusEffect(STATUS_ACID) || (v:HasStatusEffect(STATUS_ACID) && v:GetStatusEffectTime(STATUS_ACID) < 0.4))) then
                 local dmginfo = DamageInfo()
                 if IsValid(self.Owner) && self.Owner != nil then
                     dmginfo:SetAttacker(self.Owner)
@@ -54,6 +54,7 @@ function ENT:Think()
                 if IsValid(self.Inflictor) && self.Inflictor != nil then
                     dmginfo:SetInflictor(self.Inflictor)
                 end
+                dmginfo:SetDamageType(DMG_POISON)
                 v:SetStatusEffect(STATUS_ACID, dmginfo, 0.4)
             end
         end

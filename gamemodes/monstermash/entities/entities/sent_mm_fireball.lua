@@ -1,11 +1,10 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.Type = "anim"
 ENT.Base = "sent_mm_thrownbase"
 ENT.Mdl = "models/props_phx/misc/smallcannonball.mdl"
 ENT.ExplodeRadius = 256
-ENT.Damage = 35
 ENT.ExplodeSound = Sound("ambient/explosions/explode_9.wav")
 ENT.ExplodeOnImpact = true
 ENT.ThrowAngle = Angle(0,90,0)
@@ -20,6 +19,8 @@ ENT.FireTrail = true
 ENT.Material = "models/effects/comball_tape"
 ENT.LoopSound = "ambient/fire/fire_small_loop1.wav"
 
+ENT.DamageType = DMG_BLAST
+
 ENT.LightSize = 256
 ENT.LightColor = Color(240, 104, 0)
 ENT.LightBrightness = 3
@@ -28,16 +29,16 @@ ENT.LightTime = 0.25
 
 function ENT:ExplodeEffect()
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "flare_explosion", effectdata4 )        
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("flare_explosion", effectdata4)        
     
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "HelicopterMegaBomb", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("HelicopterMegaBomb", effectdata4)
         
     local startp = self:GetPos()
     local traceinfo = {start = startp, endpos = startp - Vector(0,0,50), filter = self, mask = MASK_SOLID_BRUSHONLY}
@@ -49,8 +50,8 @@ end
 
 function ENT:Draw()
     if self.LightSize != 0 then
-        local dlight = DynamicLight( self:EntIndex() )
-        if ( dlight ) then
+        local dlight = DynamicLight(self:EntIndex())
+        if (dlight) then
             local r, g, b, a = self:GetColor()
             dlight.Pos = self:GetPos()
             dlight.r = self.LightColor.r

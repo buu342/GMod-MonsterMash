@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Shield + Revolver"
 
@@ -55,7 +55,7 @@ SWEP.HoldTypeAttack   = "duel"
 SWEP.HoldTypeReload   = "duel"
 SWEP.HoldTypeCrouch   = "duel"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_revolver" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_revolver")
 SWEP.CrosshairSize = 40
 
 SWEP.ReloadOutTime = 0.7
@@ -84,7 +84,7 @@ function SWEP:Think()
     
     if self.Owner:KeyDown(IN_ATTACK2) && self:GetMMShield_ShieldState() == 0 && self:GetMMBase_ShootTimer() < CurTime() then
         self:SetMMShield_ShieldState(1)
-        self.Owner:GetViewModel():SendViewModelMatchingSequence( self.Owner:GetViewModel():LookupSequence( "idle_to_blocked" ))
+        self.Owner:GetViewModel():SendViewModelMatchingSequence(self.Owner:GetViewModel():LookupSequence("idle_to_blocked"))
         self:SetMMShield_ShieldTimer(CurTime() + 0.2)
         self:SetMMBase_ShootTimer(CurTime() + 1)
     end
@@ -102,8 +102,8 @@ function SWEP:Think()
 			Ent:SetOwner(self.Owner)
 			Ent:Spawn()
 			Ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-			Ent:SetRenderMode( RENDERMODE_TRANSALPHA )
-			Ent:SetColor( Color( 255, 255, 255,0) )
+			Ent:SetRenderMode(RENDERMODE_TRANSALPHA)
+			Ent:SetColor(Color(255, 255, 255,0))
 			self:SetMMShield_ShieldEntity(Ent)
 			local phys = Ent:GetPhysicsObject()
 			phys:AddGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)
@@ -114,7 +114,7 @@ function SWEP:Think()
         
         if SERVER && IsValid(self:GetMMShield_ShieldEntity()) then
             local Offset = Vector(0,0,48)
-            if(self.Owner:Crouching()) then
+            if (self.Owner:Crouching()) then
                 Offset.z = Offset.z - 0
                 Offset.x = Offset.x + 0
             end
@@ -139,7 +139,7 @@ function SWEP:Think()
         self:SetMMShield_ShieldState(3)
         self.Owner:GetViewModel():SetSkin(0)
         self.Owner:GetViewModel():SetPlaybackRate(2)
-        self.Owner:GetViewModel():SendViewModelMatchingSequence( self.Owner:GetViewModel():LookupSequence( "blocked_to_idle" ))
+        self.Owner:GetViewModel():SendViewModelMatchingSequence(self.Owner:GetViewModel():LookupSequence("blocked_to_idle"))
         if SERVER && IsValid(self:GetMMShield_ShieldEntity()) then
             self:GetMMShield_ShieldEntity():Remove()
             self:SetMMShield_ShieldEntity(nil)
@@ -150,10 +150,19 @@ function SWEP:Think()
         self:SetMMShield_ShieldState(0)
     end
     
-    if self.Owner:MissingAnArm() && SERVER then
+    if (self.Owner:MissingAnArm() || self.Owner:MissingBothLegs()) && SERVER then
         self.Owner:Give("weapon_mm_revolver")
         self.Owner:SelectWeapon("weapon_mm_revolver")
         self.Owner:SetNWString("MM_WeaponSlot2", "weapon_mm_revolver")
         timer.Simple(0, function() if IsValid(self) then self.Owner:StripWeapon(self:GetClass()) end end)
     end
 end
+
+hook.Add("EntityTakeDamage", "MM_ShieldHurtSound", function(target, dmginfo)
+    if target:GetModel() == "models/weapons/monstermash/shield_physics.mdl" then
+        local effectdata = EffectData()
+        effectdata:SetOrigin(dmginfo:GetDamagePosition())
+        util.Effect("WheelDust", effectdata)
+        target:EmitSound("physics/wood/wood_box_impact_hard"..math.random(1, 6)..".wav")
+    end
+end)

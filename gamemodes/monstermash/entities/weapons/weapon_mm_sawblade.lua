@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Sawblade Launcher"
 
@@ -50,7 +50,7 @@ SWEP.HoldTypeAttack   = "crossbow"
 SWEP.HoldTypeReload   = "ar2"
 SWEP.HoldTypeCrouch   = "crossbow"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_cannon")
 SWEP.CrosshairSize = 48
 SWEP.CrosshairYDisplacement = 20
 

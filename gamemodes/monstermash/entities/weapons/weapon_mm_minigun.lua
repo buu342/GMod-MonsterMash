@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Minigun"
 
@@ -51,7 +51,7 @@ SWEP.HoldTypeAttack   = "crossbow"
 SWEP.HoldTypeReload   = "crossbow"
 SWEP.HoldTypeCrouch   = "crossbow"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairChargeType = CHARGETYPE_NONE
 SWEP.CrosshairSize = 96
 

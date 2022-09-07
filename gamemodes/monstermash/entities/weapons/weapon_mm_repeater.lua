@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Repeater"
 
@@ -41,7 +41,7 @@ SWEP.Primary.Delay         = 0.75
 SWEP.Primary.Chargeup      = true
 SWEP.Primary.ChargeShrinksXHair = true
 SWEP.Primary.ChargeDamage = 0
-SWEP.Primary.ChargeTime   = 2
+SWEP.Primary.ChargeTime   = 3
 SWEP.Primary.HideCharge   = true
 SWEP.Primary.MaxChargeToMagnetise = true
 
@@ -70,7 +70,7 @@ SWEP.HoldTypeAttack   = "rpg"
 SWEP.HoldTypeReload   = "shotgun"
 SWEP.HoldTypeCrouch   = "ar2"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_garand" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_garand")
 SWEP.CrosshairSize = 96
 SWEP.CrosshairChargeSize = 60
 SWEP.CrosshairChargeType = CHARGETYPE_CIRCLE

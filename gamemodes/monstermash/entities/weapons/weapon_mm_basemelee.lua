@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basebase" )
+DEFINE_BASECLASS("weapon_mm_basebase")
 
 SWEP.PrintName = "Base base"
     
@@ -60,9 +60,9 @@ SWEP.BurnChance      = 0
 SWEP.ConcussChance   = 0
 SWEP.DismemberChance = 0
 
-SWEP.CrosshairMaterial         = Material( "" )
+SWEP.CrosshairMaterial         = Material("")
 SWEP.CrosshairSize             = 0
-SWEP.CrosshairRechargeMaterial = Material( "" )
+SWEP.CrosshairRechargeMaterial = Material("")
 SWEP.CrosshairRechargeSize     = 0
 
 SWEP.RunSpeed    = 220
@@ -134,6 +134,9 @@ function SWEP:HandleHoldTypes()
         if (IsValid(self.Owner:GetHands())) then
             self.Owner:GetHands():SetBodygroup(1,0)
         end
+        if (self:GetMMBase_MeleeSwing() < CurTime()) then
+            self:SetHoldType(self.HoldType)
+        end
     end
 end
 
@@ -142,7 +145,7 @@ function SWEP:PrimaryAttack()
     if self.Primary.SwingHold && (self:GetMMBase_MeleeSwingHold()-CurTime() > -0.2 && self.Owner:KeyDown(IN_ATTACK)) then return end 
     if self:GetMMBase_ShootTimer() != 0 then return end
     if (self.Primary.SpecialCooldown != 0 && self.Owner:GetWeaponCooldown(self) > 0) then return end
-    if self.Owner:HasStatusEffect(STATUS_SPAWNPROTECTED) then self.Owner:RemoveStatusEffect(STATUS_SPAWNPROTECTED) end
+    self:RemoveSpawnProtection()
     self:SetMMBase_MeleeSwing(CurTime()+self.SwingTime)
     self:SetHoldType(self.HoldTypeAttack)
     self:SendWeaponAnim(self.AttackAnim)
@@ -158,7 +161,8 @@ function SWEP:PrimaryAttack()
     end
     self:EmitSound("empty.wav", 75, 100, 1, CHAN_VOICE2)
     self:SetMMBase_LoopSoundRepeat(CurTime()+1.5)
-    timer.Simple(0.3, function() if !IsValid(self) then return end self:SetHoldType( self.HoldType ) end)
+    self.Owner:SetLastAttackTime()
+    timer.Simple(0.3, function() if !IsValid(self) then return end self:SetHoldType(self.HoldType) end)
     
 end 
 
@@ -183,16 +187,17 @@ end
 
 function SWEP:SecondaryAttack()
     if self.Owner:MissingALeg() then return end
-    if self.Owner:CanUseAbility() then
-        if self.Owner:HasStatusEffect(STATUS_SPAWNPROTECTED) then self.Owner:RemoveStatusEffect(STATUS_SPAWNPROTECTED) end
+    if self.Owner:CanUseAbility() && self.Owner:GetWalkSpeed() > 1 then
+        self:RemoveSpawnProtection()
         self.Owner:MeleeCharge()
+        self.Owner:SetLastAttackTime()
     end
 end
 
 hook.Add("CreateMove", "MM_MeleeChargeCreateMove", function(cmd)
     if LocalPlayer():IsMeleeCharging() && LocalPlayer():GetActiveWeapon().Base == "weapon_mm_basemelee" then
-        cmd:SetForwardMove( LocalPlayer():GetActiveWeapon().ChargeSpeed )
-        cmd:SetSideMove( 0 )
+        cmd:SetForwardMove(LocalPlayer():GetActiveWeapon().ChargeSpeed)
+        cmd:SetSideMove(0)
     end
 end)
 
@@ -220,7 +225,7 @@ function SWEP:Think()
                 if !self.Owner:KeyDown(IN_ATTACK) then
                     self:SetMMBase_MeleeSwingHold(0)
                     self:SetMMBase_MeleeSwing(0)
-                    self:SetMMBase_ShootTimer( CurTime() + 1 )
+                    self:SetMMBase_ShootTimer(CurTime() + 1)
                     self:SendWeaponAnim(self.AttackAnimLoopEnd)
                     self:EmitSound("weapons/chainsaw/sawtoidle.wav")
                     self:SetMMBase_LoopSoundRepeat(CurTime()+1)
@@ -231,16 +236,16 @@ function SWEP:Think()
     
     if (self.Primary.SpecialCooldown != 0) then
         if self.Owner:GetWeaponCooldown(self) > 0 then
-            self:SendWeaponAnim( ACT_VM_DRAW )
-            self.Owner:GetViewModel():SetPlaybackRate( 0 )
+            self:SendWeaponAnim(ACT_VM_DRAW)
+            self.Owner:GetViewModel():SetPlaybackRate(0)
             self.ViewModelFOV = 1
             self:SetClip1(0)
             return
         elseif self:Clip1() == 0 then
             self.Owner:SetWeaponCooldown(self, 0)
             self.ViewModelFOV = 54
-            self.Owner:GetViewModel():SetPlaybackRate( 1 )
-            self:SendWeaponAnim( ACT_VM_DRAW )
+            self.Owner:GetViewModel():SetPlaybackRate(1)
+            self:SendWeaponAnim(ACT_VM_DRAW)
             self:SetNextPrimaryFire(CurTime()+0.5)
             self:SetClip1(1)
         end
@@ -254,14 +259,14 @@ function SWEP:Think()
     
     if IsValid(self.Owner) then
         if self.Owner:IsMeleeCharging() then
-            local tr = util.TraceHull( {
+            local tr = util.TraceHull({
                 start = self.Owner:GetShootPos(),
-                endpos = self.Owner:GetShootPos() + ( Vector(self.Owner:GetAimVector().x, self.Owner:GetAimVector().y, 0) * 64 ),
+                endpos = self.Owner:GetShootPos() + (Vector(self.Owner:GetAimVector().x, self.Owner:GetAimVector().y, 0) * 64),
                 filter = self.Owner,
-                mins = Vector( -10, -10, -10 ),
-                maxs = Vector( 10, 10, 10 ),
+                mins = Vector(-10, -10, -10),
+                maxs = Vector(10, 10, 10),
                 mask = MASK_SHOT_HULL
-            } )
+            })
             
             if tr && tr.Hit && tr.Entity:IsPlayer() then
                 self.Owner:RemoveStatusEffect(STATUS_MELEECHARGE)
@@ -270,18 +275,18 @@ function SWEP:Think()
                 self.Owner:SetVelocity(self.Owner:GetAimVector(), 0)
                 if SERVER then
                     self.Owner:EmitSound("physics/body/body_medium_impact_hard" .. math.random(1, 6) .. ".wav", math.Rand(80, 100), math.Rand(90, 120)) 
-                    tr.Entity:TakeDamage( 5, self.Owner, self )
-                    local shake = ents.Create( "env_shake" )
+                    tr.Entity:TakeDamage(5, self.Owner, self)
+                    local shake = ents.Create("env_shake")
                     shake:SetOwner(self.Owner)
-                    shake:SetPos( tr.HitPos )
-                    shake:SetKeyValue( "amplitude", "2500" )
-                    shake:SetKeyValue( "radius", "100" )
-                    shake:SetKeyValue( "duration", "0.5" )
-                    shake:SetKeyValue( "frequency", "255" )
-                    shake:SetKeyValue( "spawnflags", "4" )	
+                    shake:SetPos(tr.HitPos)
+                    shake:SetKeyValue("amplitude", "2500")
+                    shake:SetKeyValue("radius", "100")
+                    shake:SetKeyValue("duration", "0.5")
+                    shake:SetKeyValue("frequency", "255")
+                    shake:SetKeyValue("spawnflags", "4")	
                     shake:Spawn()
                     shake:Activate()
-                    shake:Fire( "StartShake", "", 0 )
+                    shake:Fire("StartShake", "", 0)
                 end
             end
         end
@@ -295,22 +300,22 @@ function SWEP:DoDamage(secondary)
     end
     self:SetMMBase_MeleeSwing(0)
     
-    local tr = util.TraceLine( {
+    local tr = util.TraceLine({
         start = self.Owner:GetShootPos(),
         endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
         filter = self.Owner,
         mask = MASK_SHOT_HULL
-    } )
+    })
  
-    if ( !IsValid( tr.Entity ) ) then
-        tr = util.TraceHull( {
+    if (!IsValid(tr.Entity)) then
+        tr = util.TraceHull({
             start = self.Owner:GetShootPos(),
             endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Reach,
             filter = self.Owner,
-            mins = Vector( -self.BoxSize, -self.BoxSize, -self.BoxSize ),
-            maxs = Vector( self.BoxSize, self.BoxSize, self.BoxSize ),
+            mins = Vector(-self.BoxSize, -self.BoxSize, -self.BoxSize),
+            maxs = Vector(self.BoxSize, self.BoxSize, self.BoxSize),
             mask = MASK_SHOT_HULL
-        } )
+        })
     end
     
     if tr.Hit then
@@ -329,32 +334,50 @@ function SWEP:DoDamage(secondary)
             local damage = mode.Damage
             local addedkillflag1 = false
             local addedkillflag2 = false
-            if ( !IsValid( attacker ) ) then attacker = self end
-            dmginfo:SetAttacker( attacker )
-            dmginfo:SetInflictor( self )
+            local removedkillflag3 = false
+            if (!IsValid(attacker)) then attacker = self end
+            dmginfo:SetAttacker(attacker)
+            dmginfo:SetInflictor(self)
             if self:Backstab() && self.BackKill then
-                dmginfo:SetDamage( 9001 )
+                if (tr.Entity:IsPlayer() && tr.Entity:IsSuper()) then
+                    dmginfo:SetDamage(damage*3)
+                else
+                    dmginfo:SetDamage(9001)
+                end
                 addedkillflag1 = true
                 self.KillFlags = bit.bor(self.KillFlags, KILL_BACKSTAB)
             elseif self:Backstab() && self.BackDoubleDamage then
-                dmginfo:SetDamage( damage*2 )
+                dmginfo:SetDamage(damage*2)
                 addedkillflag1 = true
                 self.KillFlags = bit.bor(self.KillFlags, KILL_BACKSTAB)
             elseif self.Owner:IsMeleeCharging() || self:GetMMBase_MeleeChargeExtra() > CurTime() then
-                dmginfo:SetDamage( damage*1.2 )
+                dmginfo:SetDamage(damage*1.2)
             else
-                dmginfo:SetDamage( damage )
+                dmginfo:SetDamage(damage)
             end
+			if (tr.Entity:IsPlayer()) then
+				if (bit.band(self.KillFlags, KILL_DECAPITATE)) then
+					if ((tr.HitPos-tr.Entity:GetPos()).z < 48) then
+						removedkillflag3 = true
+						self.KillFlags = bit.band(self.KillFlags, bit.bnot(KILL_DECAPITATE))
+					end
+				end
+				if (bit.band(self.KillFlags, KILL_HEADEXPLODE)) then
+					if ((tr.HitPos-tr.Entity:GetPos()).z > 48) then
+						tr.Entity:SetLastHitgroup(HITGROUP_HEAD)
+					end
+				end
+			end
             if self:Backstab() && self.BackBifurcate then
                 self.KillFlags = bit.bor(self.KillFlags, KILL_BIFURCATE)
                 self.KillFlags = bit.bor(self.KillFlags, KILL_BACKSTAB)
                 addedkillflag1 = true
                 addedkillflag2 = true
             end
-            if !secondary then
-                dmginfo:SetDamageType( DMG_SLASH )
+            if (!secondary) then
+                dmginfo:SetDamageType(DMG_SLASH)
             else
-                dmginfo:SetDamageType( DMG_DIRECT )
+                dmginfo:SetDamageType(DMG_DIRECT)
             end
             if (!secondary) then
                 if (self.DismemberChance >= math.random(1, 100) || (self:Backstab() && self.BackDismember)) then
@@ -370,7 +393,9 @@ function SWEP:DoDamage(secondary)
                     tr.Entity:SetStatusEffect(STATUS_ONFIRE, dmginfo, 6)
                 end
             end
-            tr.Entity:TakeDamageInfo( dmginfo )
+            if (!tr.Entity:IsPlayer() || tr.Entity:CanBeDamagedBy(self.Owner)) then
+                tr.Entity:TakeDamageInfo(dmginfo)
+            end
             
             timer.Simple(0, function() 
                 if !IsValid(self) then return end
@@ -380,6 +405,9 @@ function SWEP:DoDamage(secondary)
                 if addedkillflag2 then
                     self.KillFlags = bit.band(self.KillFlags, bit.bnot(KILL_BIFURCATE))
                 end
+				if removedkillflag3 then
+                    self.KillFlags = bit.bor(self.KillFlags, KILL_DECAPITATE)
+				end
             end)
             if (self.Primary.SpecialCooldown != 0) && tr.Entity:IsPlayer() then
                 self.Owner:SetWeaponCooldown(self, self.Primary.SpecialCooldown)
@@ -388,8 +416,8 @@ function SWEP:DoDamage(secondary)
         
         // Push the physics object around
         local phys = tr.Entity:GetPhysicsObject()
-        if ( IsValid( phys ) ) then
-            phys:ApplyForceOffset( self.Owner:GetAimVector()*80*phys:GetMass(), tr.HitPos )
+        if (IsValid(phys)) then
+            phys:ApplyForceOffset(self.Owner:GetAimVector()*80*phys:GetMass(), tr.HitPos)
         end
     end
     
@@ -400,33 +428,33 @@ function SWEP:DoDamage(secondary)
 end
 
 function SWEP:Backstab()
-    local tr = util.TraceLine( {
+    local tr = util.TraceLine({
         start = self.Owner:GetShootPos(),
         endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 150,
         filter = self.Owner,
         mask = MASK_SHOT_HULL
-    } )
+    })
 
-    if ( !IsValid( tr.Entity ) ) then 
-        tr = util.TraceHull( {
+    if (!IsValid(tr.Entity)) then 
+        tr = util.TraceHull({
             start = self.Owner:GetShootPos(),
             endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 150,
             filter = self.Owner,
-            mins = Vector( -20, -20, -16 ),
-            maxs = Vector( 20, 20, 16 ),
+            mins = Vector(-20, -20, -16),
+            maxs = Vector(20, 20, 16),
             mask = MASK_SHOT_HULL
-        } )
+        })
     end
 	
-    if tr.Hit && IsValid( tr.Entity ) && (tr.Entity:IsPlayer() && (math.abs(math.AngleDifference(tr.Entity:GetAngles().y,self.Owner:GetAngles().y)) <= 50)) then
-		//self.Owner:SetVelocity(Vector( self.Owner:GetAimVector(), self.Owner:GetAimVector(), 0 )*500)
+    if tr.Hit && IsValid(tr.Entity) && (tr.Entity:IsPlayer() && (math.abs(math.AngleDifference(tr.Entity:GetAngles().y,self.Owner:GetAngles().y)) <= 50)) then
+		//self.Owner:SetVelocity(Vector(self.Owner:GetAimVector(), self.Owner:GetAimVector(), 0)*500)
         return true
     else
         return false
     end
 end
 
-hook.Add("StartCommand", "MM_MeleeChargeDisableCrouch", function( ply, cmd )
+hook.Add("StartCommand", "MM_MeleeChargeDisableCrouch", function(ply, cmd)
 
     if IsValid(ply) && ply:Alive() && IsValid(ply:GetActiveWeapon()) && ply:GetActiveWeapon() != nil && ply:GetActiveWeapon().IsMMGun then
         
@@ -440,13 +468,13 @@ end)
 function SWEP:DoMeleeDecal()
     local tr = {}
     tr.start = self.Owner:GetShootPos()
-    tr.endpos = self.Owner:GetShootPos() + ( self.Owner:GetAimVector() * (self.Reach+10.7) )
+    tr.endpos = self.Owner:GetShootPos() + (self.Owner:GetAimVector() * (self.Reach+10.7))
     tr.filter = self.Owner
     tr.mask = MASK_SHOT
     
-    local trace = util.TraceLine( tr )
+    local trace = util.TraceLine(tr)
     for i=0, self.DecalCount-1 do
-        if ( trace.Hit ) then
+        if (trace.Hit) then
             bullet = {}
             bullet.Num    = 1
             bullet.Src    = self.Owner:GetShootPos()
@@ -464,7 +492,7 @@ function SWEP:DoMeleeDecal()
             end
             if self.DecalUse == true then
                 for loop = 1,self.DecalAmount do 
-                    timer.Simple( self.DecalSpeed*loop, function() 
+                    timer.Simple(self.DecalSpeed*loop, function() 
                         if !IsValid(self) || !IsValid(self.Owner) then return end 
                         local increment = (self.DecalSpread - (((2*self.DecalSpread)/self.DecalAmount)*loop))*self.DecalDirection
                         tr.endpos = tr.endpos + self.Owner:EyeAngles():Forward()*5 
@@ -475,7 +503,7 @@ function SWEP:DoMeleeDecal()
                         tr2.filter = self.Owner 
                         local trace2 = util.TraceLine(tr2) 
                         if trace2.HitWorld then 
-                            util.Decal( self.DecalMaterial, trace2.HitPos+trace2.HitNormal, trace2.HitPos-trace2.HitNormal  ) 
+                            util.Decal(self.DecalMaterial, trace2.HitPos+trace2.HitNormal, trace2.HitPos-trace2.HitNormal ) 
                         end 
                     end) 
                 end 
@@ -499,21 +527,21 @@ function SWEP:DrawDebugBox(size, dist)
     local color = Color(255, 255, 255, 255)
     local mins = Vector(-size, -size, -size)
     local maxs = Vector(size, size, size)
-    local tr = util.TraceLine( {
+    local tr = util.TraceLine({
         start = self.Owner:GetShootPos(),
         endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * dist,
         filter = self.Owner,
         mask = MASK_SHOT_HULL
-    } )
-    if ( !IsValid( tr.Entity ) ) then
-        tr = util.TraceHull( {
+    })
+    if (!IsValid(tr.Entity)) then
+        tr = util.TraceHull({
             start = self.Owner:GetShootPos(),
             endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * dist,
             filter = self.Owner,
             mins = mins,
             maxs = maxs,
             mask = MASK_SHOT_HULL
-        } )
+        })
     end
     if tr.Entity:IsPlayer() then
         color = Color(255, 0, 0, 255)
@@ -521,51 +549,69 @@ function SWEP:DrawDebugBox(size, dist)
     render.DrawWireframeBox(tr.HitPos, ang, mins, maxs, color)
 end
 
-function SWEP:DoImpactEffect( tr, nDamageType )
+function SWEP:DoImpactEffect(tr, nDamageType)
 
     if tr.Entity:IsPlayer() then
         local ply = tr.Entity
         local effectdata = EffectData()
-        effectdata:SetOrigin( tr.HitPos + tr.HitNormal )
-        effectdata:SetNormal( tr.HitNormal )
-        effectdata:SetStart( tr.HitPos + tr.HitNormal )
-        effectdata:SetScale( 0.75 )
+        effectdata:SetOrigin(tr.HitPos + tr.HitNormal)
+        effectdata:SetNormal(tr.HitNormal)
+        effectdata:SetStart(tr.HitPos + tr.HitNormal)
+        effectdata:SetScale(0.75)
         
         if self.ImpactEffectOnPlayers then
             local effectdata = EffectData()
-            effectdata:SetOrigin( tr.HitPos )
-            effectdata:SetNormal( tr.HitNormal )
-            util.Effect( self.ImpactEffect, effectdata )
+            effectdata:SetOrigin(tr.HitPos)
+            effectdata:SetNormal(tr.HitNormal)
+            util.Effect(self.ImpactEffect, effectdata)
         end
         
         if (ply:GetCharacter().bloodtype == BLOODTYPE_NONE) then
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
         elseif (ply:GetCharacter().bloodtype == BLOODTYPE_HAY) then
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
-            util.Effect( "WheelDust", effectdata )
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
+            util.Effect("WheelDust", effectdata)
         elseif (ply:GetCharacter().bloodtype == BLOODTYPE_GREEN) then
-            util.Effect( "AntlionGib", effectdata )
+            util.Effect("AntlionGib", effectdata)
         else
-            util.Effect( "BloodImpact", effectdata )
+            if (GetConVar("mm_confetti"):GetBool()) then
+                util.Effect("mm_confetti", effectdata)
+            else
+                util.Effect("BloodImpact", effectdata)
+                local startp = tr.HitPos
+                local endp = startp + tr.Normal*50
+                local traceinfo = {
+                    start = startp, 
+                    endpos = endp, 
+                    filter = tr.Entity, 
+                    mask = MASK_SOLID_BRUSHONLY
+                }
+                
+                // Emit the trace and draw the decal
+                local trace = util.TraceHull(traceinfo)
+                local todecal1 = trace.HitPos + trace.HitNormal
+                local todecal2 = trace.HitPos - trace.HitNormal
+                util.Decal("Blood", todecal1, todecal2)
+            end
         end
         return true
     end
 end
 
-hook.Add( "CreateMove", "MM_MeleeBase_AimAssist", function( cmd )
+hook.Add("CreateMove", "MM_MeleeBase_AimAssist", function(cmd)
     local ply = LocalPlayer()
     local speed = 10
     local bone = "ValveBiped.Bip01_Neck1"
@@ -577,7 +623,7 @@ hook.Add( "CreateMove", "MM_MeleeBase_AimAssist", function( cmd )
         
         for k, v in pairs(player.GetAll()) do
             local target = v
-            if (v:Team() != TEAM_SPECT && v:Team() != TEAM_COOPDEAD && !v:HasStatusEffect(STATUS_INVISIBLE)) then
+            if (v:CanBeDamagedBy(LocalPlayer()) && !v:HasStatusEffect(STATUS_INVISIBLE)) then
                 local targetbody = target:LookupBone(bone)
                 local targetpos, targetang = target:GetBonePosition(targetbody)
                 if (target != ply && targetpos:Distance(ply:EyePos()) < dist) then
@@ -589,12 +635,12 @@ hook.Add( "CreateMove", "MM_MeleeBase_AimAssist", function( cmd )
                         local viewangles = ply:EyeAngles()
                         local targetbody = target:LookupBone(bone)
                         
-                        local tr = util.TraceLine( {
+                        local tr = util.TraceLine({
                             mask = MASK_SHOT,
                             start = LocalPlayer():EyePos(),
                             endpos = targetpos,
                             filter = {LocalPlayer()}
-                        } )
+                        })
 
                         if tr.Entity != v then return end
                         
@@ -607,4 +653,4 @@ hook.Add( "CreateMove", "MM_MeleeBase_AimAssist", function( cmd )
             end
         end
     end
-end )
+end)

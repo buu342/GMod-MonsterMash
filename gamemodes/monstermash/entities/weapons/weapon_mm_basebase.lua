@@ -61,7 +61,7 @@ SWEP.MMSwayScale = 60
 SWEP.CrouchPos = Vector(-1,-1,.5)
 SWEP.CrouchAng = Vector(0, 0, 0)
 
-SWEP.SelectIcon = Material( "vgui/entities/mm_colt" )
+SWEP.SelectIcon = Material("vgui/entities/mm_colt")
 SWEP.Cost = 25
 SWEP.Points = 40
 
@@ -71,15 +71,15 @@ SWEP.BleedChance     = 0
 SWEP.ConcussChance   = 0
 SWEP.DismemberChance = 0
 
-SWEP.CrosshairMaterial         = Material( "" )
+SWEP.CrosshairMaterial         = Material("")
 SWEP.CrosshairSize             = 0
 SWEP.CrosshairXDisplacement    = 0
 SWEP.CrosshairYDisplacement    = 0
-SWEP.CrosshairChargeMaterial   = Material( "" )
+SWEP.CrosshairChargeMaterial   = Material("")
 SWEP.CrosshairChargeSize       = 0
-SWEP.CrosshairRechargeMaterial = Material( "" )
+SWEP.CrosshairRechargeMaterial = Material("")
 SWEP.CrosshairRechargeSize     = 0
-SWEP.CrosshairOverchargeMaterial = Material( "" )
+SWEP.CrosshairOverchargeMaterial = Material("")
 SWEP.CrosshairOverchargeSize     = 0
 SWEP.CrosshairChargeType         = CHARGETYPE_BAR
 SWEP.CrosshairChargeColor        = Color(255,0,0, 100)
@@ -124,7 +124,6 @@ function SWEP:SetupDataTables()
     self:NetworkVar("Float", 13, "MMBase_RandSeed")
     self:NetworkVar("Float", 14, "MMBase_Windup")
     self:NetworkVar("Float", 15, "MMBase_LoopSoundRepeat")
-    self:NetworkVar("Float", 16, "MMBase_LastShootTime")
     self:NetworkVar("Bool", 10, "MMBase_Deploying")
 end
 
@@ -132,14 +131,13 @@ function SWEP:Initialize()
     self.Primary.DefaultClip = self.Primary.ClipSize
     self:SetClip1(self.Primary.DefaultClip)
     self:SetMMBase_RandSeed(CurTime())
-    self:SetWeaponHoldType( self.HoldType )
+    self:SetWeaponHoldType(self.HoldType)
     self:SetMMBase_Charge(0)
-    self:SetMMBase_LastShootTime(0)
     self.SpawnTime = CurTime()
 end 
 
 function SWEP:Deploy()
-    self:SetMMBase_ShootTimer( CurTime() + 1 )
+    self:SetMMBase_ShootTimer(CurTime() + 1)
     self:SetMMBase_Deploying(true)
     self:SendWeaponAnim(ACT_VM_DRAW)
     self:EmitSound(self.EquipSound)
@@ -195,7 +193,7 @@ function SWEP:HandleTimers()
     
     if self:GetMMBase_ReloadTimer() != 0 && self:GetMMBase_ReloadTimer() < CurTime() then
         self:SetMMBase_ReloadTimer(0)
-        self.Owner:GetViewModel():SetPlaybackRate( 1 )
+        self.Owner:GetViewModel():SetPlaybackRate(1)
     end    
     
     if self:GetMMBase_LoopSoundRepeat() != 0 && self:GetMMBase_LoopSoundRepeat() < CurTime() then
@@ -294,32 +292,32 @@ function SWEP:SetMovementSpeed(speed)
     end
 end
 
-local CMoveData = FindMetaTable( "CMoveData" )
-function CMoveData:RemoveKeys( keys )
+local CMoveData = FindMetaTable("CMoveData")
+function CMoveData:RemoveKeys(keys)
 	-- Using bitwise operations to clear the key bits.
-	local newbuttons = bit.band( self:GetButtons(), bit.bnot( keys ) )
-	self:SetButtons( newbuttons )
+	local newbuttons = bit.band(self:GetButtons(), bit.bnot(keys))
+	self:SetButtons(newbuttons)
 end
 
-hook.Add( "SetupMove", "MM_DisableStuffIfNoLegs", function( ply, mvd, cmd )
+hook.Add("SetupMove", "MM_DisableStuffIfNoLegs", function(ply, mvd, cmd)
     if gmod.GetGamemode().Name != "Monster Mash" then return end
 	if ply:MissingBothLegs() then
-		if mvd:KeyDown( IN_JUMP ) then
-			mvd:RemoveKeys( IN_JUMP )
+		if mvd:KeyDown(IN_JUMP) then
+			mvd:RemoveKeys(IN_JUMP)
 		end
-		if mvd:KeyDown( IN_DUCK ) then
-			mvd:RemoveKeys( IN_DUCK )
+		if mvd:KeyDown(IN_DUCK) then
+			mvd:RemoveKeys(IN_DUCK)
 		end
 	end
     
     if ply:MissingALeg() && !ply:MissingBothLegs() then
         if ply:GetNWFloat("MM_NextHop") >= CurTime() then
-            if mvd:KeyDown( IN_JUMP ) then
-                mvd:RemoveKeys( IN_JUMP )
+            if mvd:KeyDown(IN_JUMP) then
+                mvd:RemoveKeys(IN_JUMP)
             end
         end
     end
-end )
+end)
 
 function SWEP:HandleHop()
     if !IsValid(self.Owner) || !self.Owner:Alive() then return end
@@ -349,8 +347,8 @@ function SWEP:HandleHop()
             end
             
             local effectdata = EffectData()
-            effectdata:SetOrigin( vPoint )
-            util.Effect( "BloodImpact", effectdata )
+            effectdata:SetOrigin(vPoint)
+            util.Effect("BloodImpact", effectdata)
         
             local start = self.Owner:GetPos()
             local btr = util.TraceLine({start=start, endpos=(start + Vector(0,0,-256)), filter=ignore, mask=MASK_SOLID})
@@ -380,8 +378,8 @@ function SWEP:HandleHop()
             ang = Angle(0,-45,0)
             vec = -vec
         end
-        vec:Rotate( ang )
-        self.Owner:SetVelocity( -self.Owner:GetVelocity() + vec*power_forward + Vector(0,0,1)*power_jump )
+        vec:Rotate(ang)
+        self.Owner:SetVelocity(-self.Owner:GetVelocity() + vec*power_forward + Vector(0,0,1)*power_jump)
     end
 end
 
@@ -413,16 +411,20 @@ end
 function SWEP:HandlePlayerHull()
     if !IsValid(self.Owner) then return end
     if self.Owner:MissingBothLegs() then
-        self.Owner:SetViewOffset( Vector(0,0,20) )
-        self.Owner:SetViewOffsetDucked( Vector(0,0,20) )
+        self.Owner:SetViewOffset(Vector(0,0,20))
+        self.Owner:SetViewOffsetDucked(Vector(0,0,20))
         
         local bottom, top = self.Owner:GetHull()
         local bottom2, top2 = self.Owner:GetHullDuck()
         self.Owner:SetHull(bottom, Vector(16,16,25))
         self.Owner:SetHullDuck(bottom2, Vector(16,16,25))
     else
-        self.Owner:SetViewOffset( Vector(0,0,64) )
-        self.Owner:SetViewOffsetDucked( Vector(0,0,28) )
+        if (self.Owner:GetSuperClass() == SUPERCLASS_WOLF) then
+            self.Owner:SetViewOffset(Vector(0, 0, 80))
+        else
+            self.Owner:SetViewOffset(Vector(0, 0, 64))
+        end
+        self.Owner:SetViewOffsetDucked(Vector(0,0,28))
         
         local bottom, top = self.Owner:GetHull()
         local bottom2, top2 = self.Owner:GetHullDuck()
@@ -435,8 +437,10 @@ function SWEP:HandleDodgeRollStuff()
     local ply = self.Owner
     if !IsValid(ply) || !ply:Alive() then return end
     if !ply:CanUseAbility() then return end
+    if ply:GetWalkSpeed() <= 1 then return end
     if ply:MissingBothLegs() then return end
     if !ply:IsOnGround() || ply:HasStatusEffect(STATUS_BROOM) then return end
+    if (ply:IsSuper()) then return end
     if ply:KeyDown(IN_MOVELEFT) && ply:KeyDown(IN_SPEED) then
         ply:DodgeRoll("Left")
     elseif ply:KeyDown(IN_MOVERIGHT) && ply:KeyDown(IN_SPEED) then
@@ -444,13 +448,22 @@ function SWEP:HandleDodgeRollStuff()
     end
 end
 
+function SWEP:RemoveSpawnProtection()
+    if self.Owner:HasStatusEffect(STATUS_SPAWNPROTECTED) then 
+        self.Owner:RemoveStatusEffect(STATUS_SPAWNPROTECTED) 
+        if SERVER then 
+            self.Owner:GodDisable() 
+        end 
+    end
+end
+
 if SERVER then
-    util.AddNetworkString( "ServerDoingTauntCamera" )
-    util.AddNetworkString( "ServerDoingTrick" )
+    util.AddNetworkString("ServerDoingTauntCamera")
+    util.AddNetworkString("ServerDoingTrick")
 end
 net.Receive("ServerDoingTauntCamera", function(len, ply)
 	ply:SetCycle(0)
-    if (GetConVar( "mm_wackytaunts" ):GetInt() == 1) then
+    if (GetConVar("mm_wackytaunts"):GetInt() == 1) then
         ply:SetStatusEffect(STATUS_TAUNT, nil, 6.25)
         ply:EmitSound("gameplay/cancer.mp3")
     else
@@ -463,9 +476,9 @@ end)
 
 function SWEP:HandleTaunts()
     if SERVER then return end
-    if input.IsKeyDown( KEY_Z ) && !LocalPlayer():HasStatusEffect(STATUS_TAUNT) then
+    if input.IsKeyDown(KEY_Z) && !LocalPlayer():HasStatusEffect(STATUS_TAUNT) && !LocalPlayer():IsSuper() then
         LocalPlayer():SetCycle(0)
-        if GetConVar( "mm_wackytaunts" ):GetInt() == 1 then
+        if GetConVar("mm_wackytaunts"):GetInt() == 1 then
             LocalPlayer():SetStatusEffect(STATUS_TAUNT, nil, 6.25)
         else
             LocalPlayer():SetStatusEffect(STATUS_TAUNT, nil, LocalPlayer():SequenceDuration(LocalPlayer():LookupSequence(LocalPlayer():GetCharacter().taunt[1]))-0.25)
@@ -474,7 +487,7 @@ function SWEP:HandleTaunts()
         net.SendToServer()
     end
     
-    if (input.IsKeyDown( KEY_C ) && LocalPlayer():GetWeaponTable()["Trick"] != "None") then
+    if (input.IsKeyDown(KEY_C) && LocalPlayer():GetWeaponTable()["Trick"] != "None") then
         LocalPlayer():ActivateTrick()
         net.Start("ServerDoingTrick")
         net.SendToServer()
@@ -497,19 +510,19 @@ function SWEP:ExplodePlayer()
         self.Owner:SetVelocity(dir*250)
     end
     local effectdata5 = EffectData()
-    effectdata5:SetOrigin( self:GetPos() )
-    util.Effect( "Fireball_Explosion", effectdata5 ) 
+    effectdata5:SetOrigin(self:GetPos())
+    util.Effect("Fireball_Explosion", effectdata5) 
         
     local effectdata3 = EffectData()
-    effectdata3:SetOrigin( self:GetPos() )
-    effectdata3:SetScale( 1 )
-    util.Effect( "ManhackSparks", effectdata3 )
+    effectdata3:SetOrigin(self:GetPos())
+    effectdata3:SetScale(1)
+    util.Effect("ManhackSparks", effectdata3)
         
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "HelicopterMegaBomb", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("HelicopterMegaBomb", effectdata4)
     if SERVER then
         self:Remove()
         return
@@ -532,7 +545,7 @@ if CLIENT then
             if !boneid then return end
             
             if self.Owner:MissingRightArm() then
-                self.WorldMdl:SetModel(string.sub( self.WorldModel, 1, string.len(self.WorldModel)-4 ).."_left.mdl")
+                self.WorldMdl:SetModel(string.sub(self.WorldModel, 1, string.len(self.WorldModel)-4).."_left.mdl")
             end
 
             self.WorldMdl:SetPos(self:GetPos())
@@ -544,47 +557,54 @@ if CLIENT then
             self.WorldMdl:SetAngles(self:GetAngles())
         end
 
+        if (self.Owner:IsPlayer() && self.Owner:HasStatusEffect(STATUS_INVISIBLE)) then
+            self.WorldMdl:SetRenderMode(RENDERMODE_TRANSCOLOR)
+            self.WorldMdl:SetColor(Color(255, 255, 255, math.max(0, 100*(self.Owner:GetLastAttackTime()+1-CurTime()))))
+        else
+            self.WorldMdl:SetRenderMode(RENDERMODE_NORMAL)
+            self.WorldMdl:SetColor(Color(255, 255, 255, 255))
+        end
         self.WorldMdl:DrawModel()
         
         if IsValid(self.Owner) then
             if self.FlameThrower && self:GetMMFlame_FlameState() == 1 && self:GetMMBase_ReloadTimer() == 0 then
                 local effectdata4 = EffectData()
-                effectdata4:SetStart( self.WorldMdl:GetAttachment("1").Pos ) 
-                effectdata4:SetOrigin(self.WorldMdl:GetAttachment("1").Pos )
-                effectdata4:SetAngles( self.WorldMdl:GetAttachment("1").Ang  )
-                effectdata4:SetScale( 1 )
-                util.Effect( "mm_flamethrower_flame", effectdata4 )
+                effectdata4:SetStart(self.WorldMdl:GetAttachment("1").Pos) 
+                effectdata4:SetOrigin(self.WorldMdl:GetAttachment("1").Pos)
+                effectdata4:SetAngles(self.WorldMdl:GetAttachment("1").Ang )
+                effectdata4:SetScale(1)
+                util.Effect("mm_flamethrower_flame", effectdata4)
             end
             
-            if self:GetMMBase_LastShootTime() > lastshoottime then
+            if self.Owner:GetLastAttackTime() > lastshoottime && self.Base == "weapon_mm_basegun" then
                 if self.MuzzleEffect != "" then
-                    local fx = EffectData( );
-                    fx:SetOrigin( self.Owner:GetShootPos( ) );
-                    fx:SetEntity( self );
-                    fx:SetStart( self.Owner:GetShootPos( ) );
-                    fx:SetNormal( self.Owner:GetAimVector( ) );
-                    fx:SetAttachment( 1 );
-                    util.Effect( self.MuzzleEffect, fx );
+                    local fx = EffectData();
+                    fx:SetOrigin(self.Owner:GetShootPos());
+                    fx:SetEntity(self);
+                    fx:SetStart(self.Owner:GetShootPos());
+                    fx:SetNormal(self.Owner:GetAimVector());
+                    fx:SetAttachment(1);
+                    util.Effect(self.MuzzleEffect, fx);
                 end
                 if self.EjectEffect != "" then
-                    local fx = EffectData( );
-                    fx:SetOrigin( self.Owner:GetShootPos( ) );
-                    fx:SetEntity( self );
-                    fx:SetStart( self.Owner:GetShootPos( ) );
-                    fx:SetNormal( self.Owner:GetAimVector( ) );
-                    fx:SetAttachment( 2 );
-                    util.Effect( self.EjectEffect, fx );
+                    local fx = EffectData();
+                    fx:SetOrigin(self.Owner:GetShootPos());
+                    fx:SetEntity(self);
+                    fx:SetStart(self.Owner:GetShootPos());
+                    fx:SetNormal(self.Owner:GetAimVector());
+                    fx:SetAttachment(2);
+                    util.Effect(self.EjectEffect, fx);
                 end
-                lastshoottime = self:GetMMBase_LastShootTime()
+                lastshoottime = self.Owner:GetLastAttackTime()
             end            
             
             if self:GetMMBase_Charge() > 0 && self.ChargeEffect != "" then
                 local effectdata4 = EffectData()
-                effectdata4:SetStart( self.WorldMdl:GetAttachment("1").Pos ) 
-                effectdata4:SetOrigin( self.WorldMdl:GetAttachment("1").Pos )
-                effectdata4:SetAngles( self.WorldMdl:GetAttachment("1").Ang  )
-                effectdata4:SetScale( 1 )
-                util.Effect( self.ChargeEffect, effectdata4 )
+                effectdata4:SetStart(self.WorldMdl:GetAttachment("1").Pos) 
+                effectdata4:SetOrigin(self.WorldMdl:GetAttachment("1").Pos)
+                effectdata4:SetAngles(self.WorldMdl:GetAttachment("1").Ang )
+                effectdata4:SetScale(1)
+                util.Effect(self.ChargeEffect, effectdata4)
             end
         end
         
@@ -593,7 +613,7 @@ if CLIENT then
 end
 
 if CLIENT then
-    surface.CreateFont( "MM_Font_Ammo", {
+    surface.CreateFont("MM_Font_Ammo", {
         font = "Chiller", -- Use the font-name which is shown to you by your operating system Font Viewer, not the file name
         extended = false,
         size = 96,
@@ -609,7 +629,7 @@ if CLIENT then
         shadow = false,
         additive = false,
         outline = false ,
-    } )
+    })
 end
 
 function SWEP:LookingAtShootable()
@@ -626,26 +646,26 @@ local function boolToNumber(value)
 end
 
 if CLIENT then
-    local Tex_white = surface.GetTextureID( "vgui/white" )
-    function SWEP:DrawPercentageCircle( x, y, radius, seg, progression )
+    local Tex_white = surface.GetTextureID("vgui/white")
+    function SWEP:DrawPercentageCircle(x, y, radius, seg, progression)
         local cir = { [1] = { x = x, y = y } }
         local cir2 = { [1] = { x = x, y = y } }
 
         for i = 0, seg do
-            local a = math.rad( ( i / seg ) * -360 )
-            cir[#cir+1] = { x = x - math.sin( a ) * radius, y = y - math.cos( a ) * radius }
+            local a = math.rad((i / seg) * -360)
+            cir[#cir+1] = { x = x - math.sin(a) * radius, y = y - math.cos(a) * radius }
         end
 
         for i = 0, progression do
-            table.insert( cir2, cir[next(cir)+1] )
-            table.remove( cir, next(cir)+1 )
+            table.insert(cir2, cir[next(cir)+1])
+            table.remove(cir, next(cir)+1)
         end
 
-        surface.SetTexture( Tex_white )
-        surface.SetDrawColor( self.CrosshairChargeColor )
-        surface.DrawPoly( cir )
-        //surface.SetDrawColor( 0, 0, 0, 255 )
-        //surface.DrawPoly( cir2 )
+        surface.SetTexture(Tex_white)
+        surface.SetDrawColor(self.CrosshairChargeColor)
+        surface.DrawPoly(cir)
+        //surface.SetDrawColor(0, 0, 0, 255)
+        //surface.DrawPoly(cir2)
     end
 
     local wratio = ScrW()/1600
@@ -656,7 +676,7 @@ if CLIENT then
         // Ammo counter
         local ammo = self:Clip1()
         if ammo != -1 then 
-            draw.SimpleTextOutlined( ammo, "MM_Font_Ammo", ScrW()-150*wratio, ScrH()-60*hratio, Color(255,105,0,255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
+            draw.SimpleTextOutlined(ammo, "MM_Font_Ammo", ScrW()-150*wratio, ScrH()-60*hratio, Color(255,105,0,255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
         end
         
         local armMissing = 0
@@ -680,9 +700,9 @@ if CLIENT then
                     local iheight = size*charge
                     local icharge = 1-charge
                     
-                    surface.SetMaterial( self.CrosshairChargeMaterial )
-                    surface.SetDrawColor( self.CrosshairChargeColor )
-                    surface.DrawTexturedRectUV( (ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y+(size-charge*size), size, iheight, 0, icharge, 1, 1 )
+                    surface.SetMaterial(self.CrosshairChargeMaterial)
+                    surface.SetDrawColor(self.CrosshairChargeColor)
+                    surface.DrawTexturedRectUV((ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y+(size-charge*size), size, iheight, 0, icharge, 1, 1)
                 end
             end
             
@@ -692,9 +712,9 @@ if CLIENT then
                     local size = (self.CrosshairSize+self.CrosshairRechargeSize*(self.Owner:GetWeaponCooldown(self)/self.Owner:GetWeaponCooldownMax(self)))*armMissing
                     size = ScrW()*(size/2560)
                     
-                    surface.SetMaterial( self.CrosshairRechargeMaterial )
-                    surface.SetDrawColor( self.CrosshairRechargeColor )
-                    surface.DrawTexturedRect( (ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y, size, size )
+                    surface.SetMaterial(self.CrosshairRechargeMaterial)
+                    surface.SetDrawColor(self.CrosshairRechargeColor)
+                    surface.DrawTexturedRect((ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y, size, size)
                 elseif self.CrosshairRechargeType == CHARGETYPE_CIRCLE then
                     //self:DrawPercentageCircle(ScrW()/2, ScrH()/2, self.CrosshairChargeSize/2, 100, 99-self:GetMMBase_Charge())
                 else 
@@ -703,9 +723,9 @@ if CLIENT then
                     local iheight = size*charge
                     local icharge = 1-charge
                     
-                    surface.SetMaterial( self.CrosshairRechargeMaterial )
-                    surface.SetDrawColor( self.CrosshairRechargeColor )
-                    surface.DrawTexturedRectUV( (ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y+(size-charge*size), size, iheight, 0, icharge, 1, 1 )
+                    surface.SetMaterial(self.CrosshairRechargeMaterial)
+                    surface.SetDrawColor(self.CrosshairRechargeColor)
+                    surface.DrawTexturedRectUV((ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y+(size-charge*size), size, iheight, 0, icharge, 1, 1)
                 end
             end
             
@@ -715,9 +735,9 @@ if CLIENT then
                     local size = (self.CrosshairSize+self.CrosshairOverchargeSize*(self:GetMMBase_OverChargeAmount()/100))*armMissing
                     size = ScrW()*(size/2560)
                     
-                    surface.SetMaterial( self.CrosshairOverchargeMaterial )
-                    surface.SetDrawColor( self.CrosshairOverchargeColor )
-                    surface.DrawTexturedRect( (ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y, size, size )
+                    surface.SetMaterial(self.CrosshairOverchargeMaterial)
+                    surface.SetDrawColor(self.CrosshairOverchargeColor)
+                    surface.DrawTexturedRect((ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y, size, size)
                 elseif self.CrosshairOverchargeType == CHARGETYPE_CIRCLE then
                 
                 else 
@@ -726,9 +746,9 @@ if CLIENT then
                     local iheight = size*charge
                     local icharge = 1-charge
                     
-                    surface.SetMaterial( self.CrosshairOverchargeMaterial )
-                    surface.SetDrawColor( self.CrosshairOverchargeColor )
-                    surface.DrawTexturedRectUV( (ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y+(size-charge*size), size, iheight, 0, icharge, 1, 1 )
+                    surface.SetMaterial(self.CrosshairOverchargeMaterial)
+                    surface.SetDrawColor(self.CrosshairOverchargeColor)
+                    surface.DrawTexturedRectUV((ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y+(size-charge*size), size, iheight, 0, icharge, 1, 1)
                 end
             end
             
@@ -737,13 +757,13 @@ if CLIENT then
                 local size = self.CrosshairSize*armMissing
                 size = ScrW()*(size/2560)
                 
-                surface.SetMaterial( self.CrosshairMaterial )
+                surface.SetMaterial(self.CrosshairMaterial)
                 if (self:LookingAtShootable()) then
-                    surface.SetDrawColor( 255, 0, 0, 255 )
+                    surface.SetDrawColor(255, 0, 0, 255)
                 else
-                    surface.SetDrawColor( 255, 255, 255, 255 )
+                    surface.SetDrawColor(255, 255, 255, 255)
                 end
-                surface.DrawTexturedRect( (ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y, size, size )
+                surface.DrawTexturedRect((ScrW()/2)-(size/2)+x, (ScrH()/2)-(size/2)+y, size, size)
             end
         
         end
@@ -772,13 +792,13 @@ local ActIndex = {
 	[ "revolver" ]		= ACT_HL2MP_IDLE_REVOLVER
 }
 
-function SWEP:SetWeaponHoldType( t )
+function SWEP:SetWeaponHoldType(t)
 
-	t = string.lower( t )
+	t = string.lower(t)
 	local index = ActIndex[ t ]
 
-	if ( index == nil ) then
-		Msg( "SWEP:SetWeaponHoldType - ActIndex[ \"" .. t .. "\" ] isn't set! (defaulting to normal)\n" )
+	if (index == nil) then
+		Msg("SWEP:SetWeaponHoldType - ActIndex[ \"" .. t .. "\" ] isn't set! (defaulting to normal)\n")
 		t = "normal"
 		index = ActIndex[ t ]
 	end
@@ -800,11 +820,11 @@ function SWEP:SetWeaponHoldType( t )
 
 	
 	-- "normal" jump animation doesn't exist
-	if ( t == "normal" ) then
+	if (t == "normal") then
 		self.ActivityTranslate[ ACT_MP_JUMP ] = ACT_HL2MP_JUMP_SLAM
 	end
 
-	self:SetupWeaponHoldTypeForAI( t )
+	self:SetupWeaponHoldTypeForAI(t)
 
 end
 
@@ -814,19 +834,19 @@ end
 
 function SWEP:OnDrop()
 	self.Owner = nil
-	timer.Simple(GetConVar( "mm_cleanup_time" ):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then  self:Remove() end end)
+	timer.Simple(GetConVar("mm_cleanup_time"):GetInt(),function() if !IsValid(self) then return end if !self.Owner:IsPlayer() then  self:Remove() end end)
 end
 
-function SWEP:TranslateActivity( act )
+function SWEP:TranslateActivity(act)
 
-	if ( self.Owner:IsNPC() ) then
-		if ( self.ActivityTranslateAI[ act ] ) then
+	if (self.Owner:IsNPC()) then
+		if (self.ActivityTranslateAI[ act ]) then
 			return self.ActivityTranslateAI[ act ]
 		end
 		return -1
 	end
     
-    if ( self.ActivityTranslate[ act ] != nil ) then
+    if (self.ActivityTranslate[ act ] != nil) then
         if self.Owner:MissingBothLegs() && (self.HoldTypeProne == "pistol" || self.HoldTypeProne == "revolver" || self.HoldType == "pistol" || self.HoldType == "revolver") then
             if act == ACT_MP_STAND_IDLE then                return ACT_DOD_PRONE_AIM_PISTOL end
             if act == ACT_MP_WALK then                      return ACT_DOD_PRONEWALK_IDLE_PISTOL end
@@ -935,8 +955,8 @@ if CLIENT then
             TestVectorAngle = LerpVector(5*FrameTime(),TestVectorAngle,TestVectorAngleTarget) 
         end
 		
-		ang:RotateAroundAxis(ang:Right(),TestVectorAngle.x  )
-		ang:RotateAroundAxis(ang:Up(),TestVectorAngle.y )
+		ang:RotateAroundAxis(ang:Right(),TestVectorAngle.x )
+		ang:RotateAroundAxis(ang:Up(),TestVectorAngle.y)
 		ang:RotateAroundAxis(ang:Forward(),TestVectorAngle.z)
 		
 		pos = pos + TestVector.z * ang:Up()
@@ -985,12 +1005,12 @@ if CLIENT then
             self.LandTime = RealTime() + 0.31
         end
         
-        if (self.Owner:GetMoveType() == MOVETYPE_NOCLIP || self.Owner:GetMoveType() == MOVETYPE_LADDER || self.Owner:WaterLevel() > 1 ) || (self.LandTime < RealTime() && self.LandTime != 0) then
+        if (self.Owner:GetMoveType() == MOVETYPE_NOCLIP || self.Owner:GetMoveType() == MOVETYPE_LADDER || self.Owner:WaterLevel() > 1) || (self.LandTime < RealTime() && self.LandTime != 0) then
             self.LandTime = 0
             self.JumpTime = 0
         end
 
-        if self.Owner:KeyDownLast( IN_JUMP ) then
+        if self.Owner:KeyDownLast(IN_JUMP) then
             if self.JumpTime == 0 then
                 self.JumpTime = RealTime() + 0.31
                 self.LandTime = 0
@@ -1082,7 +1102,7 @@ if CLIENT then
         Current_Aim = LerpAngle(5*FrameTime(), Current_Aim, ply:EyeAngles())
         
         self.EyePosition = Current_Aim - ply:EyeAngles()
-        self.EyePosition.y = math.AngleDifference( Current_Aim.y, math.NormalizeAngle(ply:EyeAngles().y) ) -- Thank you MushroomGuy for telling me this function even existed    
+        self.EyePosition.y = math.AngleDifference(Current_Aim.y, math.NormalizeAngle(ply:EyeAngles().y)) -- Thank you MushroomGuy for telling me this function even existed    
         
         ang:RotateAroundAxis(ang:Right(), math.Clamp(4*self.EyePosition.p/self.MMSwayScale,-4,4))
         ang:RotateAroundAxis(ang:Up(), math.Clamp(-4*self.EyePosition.y/self.MMSwayScale,-4,4))
@@ -1105,7 +1125,7 @@ end
 local myfov = 75
 local myfov_t = 90
 local lastangle = nil
-hook.Add( "CalcView", "MMCalcView", function(ply, origin, angles, fov)
+hook.Add("CalcView", "MM_CalcView", function(ply, origin, angles, fov)
     if ply:GetActiveWeapon().IsMMGun then
         local vmpos, vmang = ply:GetActiveWeapon():ManipulateViewModel(Vector(origin.x, origin.y, origin.z), Angle(angles.p, angles.y, angles.r))
         ply:GetViewModel():SetRenderOrigin(vmpos) 
@@ -1115,25 +1135,27 @@ hook.Add( "CalcView", "MMCalcView", function(ply, origin, angles, fov)
     end
 end)
 
-hook.Add( "PlayerCanPickupWeapon", "UseWeapon", function( ply, wep )
+hook.Add("PlayerCanPickupWeapon", "MM_AllowWeaponPickup", function(ply, wep)
     if (CurTime() == wep.SpawnTime) then 
         return true 
     end
     
-    if ( !ply:KeyDown( IN_USE ) ) then return false end
+    if (ply:Team() == TEAM_COOPOTHER) then return false end
+    if (!ply:KeyDown(IN_USE)) then return false end
     if ply:HasWeapon(wep:GetClass()) then return false end
     if ply:MissingBothArms() then return false end
+    if (ply:IsSuper()) then return false end
     
-    local trace = util.TraceHull( {
+    local trace = util.TraceHull({
         start = ply:GetShootPos(),
-        endpos = ply:GetShootPos() + ( ply:GetAimVector() * 100 ),
+        endpos = ply:GetShootPos() + (ply:GetAimVector() * 100),
         filter = ply,
-        mins = Vector( -10, -10, -10 ),
-        maxs = Vector( 10, 10, 10 ),
+        mins = Vector(-10, -10, -10),
+        maxs = Vector(10, 10, 10),
         mask = MASK_SHOT_HULL
-    } )
+    })
     
-    if ( !trace.Entity || !trace.Entity:IsValid() || trace.Entity != wep ) then
+    if (!trace.Entity || !trace.Entity:IsValid() || trace.Entity != wep) then
         return false
     else
         ply:DropWeaponSlot(wep.Slot+1)
@@ -1154,13 +1176,13 @@ net.Receive("MM_EquipHeal", function(len, ply)
     end
 end)
 
-hook.Add( "OnSpawnMenuOpen", "MM_Heal", function()
-    if (LocalPlayer():GetNextHeal() < CurTime() && LocalPlayer():Health() < LocalPlayer():GetMaxHealth()) then
+hook.Add("OnSpawnMenuOpen", "MM_Heal", function()
+    if (LocalPlayer():GetNextHeal() < CurTime() && LocalPlayer():Health() < LocalPlayer():GetMaxHealth()) && !LocalPlayer():IsSuper() then
         net.Start("MM_EquipHeal")
         net.SendToServer()
     end
 end)
 
-hook.Add( "AllowPlayerPickup", "PickupStuff", function( ply, ent )
+hook.Add("AllowPlayerPickup", "MM_AllowPickupStuff", function(ply, ent)
     return false
-end )
+end)

@@ -2,4 +2,5 @@
 {
 	"$basetexture" "particle/confetti1"
 	"$alphatest" "1"
+	$vertexcolor 1
 }

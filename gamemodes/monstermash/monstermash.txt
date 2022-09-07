@@ -31,10 +31,26 @@
 			"name"		"mm_endtime"
 			"text"		"Round Ending Time"
 			"type"		"Numeric"
-			"default"	"5"
+			"default"	"15"
 		}
 
 		4
+		{
+			"name"		"mm_endroundboard_time"
+			"text"		"End Scoreboard Display Time"
+			"type"		"Numeric"
+			"default"	"4"
+		}
+
+		5
+		{
+			"name"		"mm_slomo_duration"
+			"text"		"Round End Slowmo Duration"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+
+		6
 		{
 			"name"		"mm_point_limit"
 			"text"		"Point Limit"
@@ -42,7 +58,7 @@
 			"default"	"500"
 		}
 
-		5
+		7
 		{
 			"name"		"mm_maxrounds"
 			"text"		"Max Rounds"
@@ -50,7 +66,7 @@
 			"default"	"10"
 		}
 
-		6
+		8
 		{
 			"name"		"mm_wackyfrequency"
 			"text"		"Wacky Round Frequency"
@@ -58,7 +74,7 @@
 			"default"	"3"
 		}
 
-		7
+		9
 		{
 			"name"		"mm_budget"
 			"text"		"Gold Limit"
@@ -66,7 +82,7 @@
 			"default"	"100"
 		}
 
-		8
+		10
 		{
 			"name"		"mm_cleanup_time"
 			"text"		"Cleanup Time"
@@ -74,7 +90,7 @@
 			"default"	"20"
 		}
 
-		9
+		11
 		{
 			"name"		"mm_healthregen_time"
 			"text"		"Health Regen Time"
@@ -82,7 +98,7 @@
 			"default"	"5"
 		}
 
-		10
+		12
 		{
 			"name"		"mm_healthregen_amount"
 			"text"		"Health Regen Amount"
@@ -90,7 +106,7 @@
 			"default"	"3"
 		}
 
-		11
+		13
 		{
 			"name"		"mm_spawnprotect"
 			"text"		"Spawn Protection"
@@ -98,7 +114,15 @@
 			"default"	"1"
 		}
 
-		12
+		14
+		{
+			"name"		"mm_deathcam"
+			"text"		"Death Camera"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+
+		15
 		{
 			"name"		"mm_ludicrousgibs"
 			"text"		"Ludicrous Gibs Mode"
@@ -106,7 +130,7 @@
 			"default"	"0"
 		}
 
-		13
+		16
 		{
 			"name"		"mm_orgasmicdeathsounds"
 			"text"		"Orgasmic Death Sounds"
@@ -114,15 +138,7 @@
 			"default"	"0"
 		}
 
-		14
-		{
-			"name"		"mm_orgasmicdeathsounds"
-			"text"		"Orgasmic Death Sounds"
-			"type"		"CheckBox"
-			"default"	"0"
-		}
-
-		15
+		17
 		{
 			"name"		"mm_tasermanmode"
 			"text"		"Tazerman Mode"
@@ -130,7 +146,7 @@
 			"default"	"0"
 		}
 
-		16
+		18
 		{
 			"name"		"mm_wackytaunts"
 			"text"		"Wacky Taunts"
@@ -138,7 +154,7 @@
 			"default"	"0"
 		}
 
-		17
+		19
 		{
 			"name"		"mm_endofmonstermash"
 			"text"		"End of Monster Mash"

@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.Type = "anim"
 ENT.Base = "sent_mm_thrownbase"
@@ -14,13 +14,13 @@ ENT.LightTime = 0.25
 function ENT:Initialize()
     self:SetModel(self.Mdl)
     self:SetAngles(self:GetAngles())
-    self:PhysicsInit( SOLID_VPHYSICS )
-    self:SetMoveType( MOVETYPE_FLY )
-    self:SetMoveCollide( MOVECOLLIDE_FLY_SLIDE )
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_FLY)
+    self:SetMoveCollide(MOVECOLLIDE_FLY_SLIDE)
     self:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
     
     if SERVER then
-        self:SetTrigger( true )
+        self:SetTrigger(true)
     end
 
     local phys = self:GetPhysicsObject()
@@ -37,7 +37,7 @@ function ENT:Think()
 end
 
 
-function ENT:Touch( ent )
+function ENT:Touch(ent)
 
     if ent != self.Owner then
         local dmginfo = DamageInfo()
@@ -45,12 +45,15 @@ function ENT:Touch( ent )
         if ent.LastDamageFThrower == nil then
             ent.LastDamageFThrower = 0
         end
-        
-        if ent.LastDamageFThrower < CurTime() && self.Owner:VisibleVec( ent:GetPos()+Vector(0,0,50)) then
+        if (ent.LastDamageFThrower < CurTime() && (!ent:IsPlayer() || (ent:CanBeDamagedBy(self.Owner) && self.Owner:VisibleVec(ent:GetPos()+Vector(0,0,50))))) then
             ent.LastDamageFThrower = CurTime() + (ent:GetPos():Distance(self.Owner:GetPos())/(256*20))
             dmginfo:SetDamage(1)
-            dmginfo:SetAttacker(self.Owner)
-            dmginfo:SetInflictor(self.Inflictor)
+            if (self.Owner != nil && IsValid(self.Owner)) then
+                dmginfo:SetAttacker(self.Owner)
+            end
+            if (self.Inflictor != nil && IsValid(self.Inflictor)) then
+                dmginfo:SetInflictor(self.Inflictor)
+            end
             ent:TakeDamageInfo(dmginfo)
             if (ent:IsPlayer()) then
                 ent:SetStatusEffect(STATUS_ONFIRE, dmginfo, 6)
@@ -67,8 +70,8 @@ end
 
 function ENT:Draw()
     if self.LightSize != 0 then
-        local dlight = DynamicLight( self:EntIndex() )
-        if ( dlight ) then
+        local dlight = DynamicLight(self:EntIndex())
+        if (dlight) then
             local r, g, b, a = self:GetColor()
             dlight.Pos = self:GetPos()
             dlight.r = self.LightColor.r

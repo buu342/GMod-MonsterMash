@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Melter"
 
@@ -71,7 +71,7 @@ SWEP.HoldTypeReload   = "pistol"
 SWEP.HoldTypeCrouch   = "ar2"
 SWEP.HoldTypeProne    = "pistol"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_thompson" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_thompson")
 SWEP.CrosshairSize = 96
 
 SWEP.ReloadOutTime = 0.2

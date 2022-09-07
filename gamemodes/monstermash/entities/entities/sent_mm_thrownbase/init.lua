@@ -1,4 +1,4 @@
-AddCSLuaFile( "shared.lua" )
+AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 ENT.AutomaticFrameAdvance = true
@@ -45,6 +45,7 @@ ENT.RemoveOnDamage = false
 ENT.Material = ""
 ENT.NumBounces = 1
 ENT.RemoveBounces = false
+ENT.Seeker = false
 
 ENT.BleedChance     = 0
 ENT.BurnChance      = 0
@@ -62,6 +63,20 @@ ENT.Force = 0
 ENT.LoopSoundEnt = nil
 ENT.SpawnTime = 0
 ENT.MMSent = true
+ENT.Target = nil
+ENT.NextTargetTime = 0
+ENT.RetargetLerp = 0
+
+local BoneTargets = {
+    "ValveBiped.Bip01_Spine4",
+    "ValveBiped.Bip01_Head1",
+    "ValveBiped.Bip01_Neck1",
+    "ValveBiped.Bip01_Spine2",
+    "ValveBiped.Bip01_Spine1",
+    "ValveBiped.Bip01_Spine",
+    "ValveBiped.Bip01_Pelvis",
+    "ValveBiped.Bip01",
+}
 
 function ENT:SetupDataTables()
 end
@@ -69,20 +84,20 @@ end
 function ENT:Initialize()
     self:SetModel(self.Mdl)
     self:SetAngles(self:GetAngles()+self.ThrowAngle)
-    self:PhysicsInit( SOLID_VPHYSICS )
+    self:PhysicsInit(SOLID_VPHYSICS)
     if self.Arrow then
         local size = 0.25
         self:SetVelocity(self:GetForward()*self.Force)
 		self:SetGravity(self.Gravity)
-        self:SetMoveType( MOVETYPE_FLYGRAVITY )
-        self:SetSolid( SOLID_VPHYSICS )
+        self:SetMoveType(MOVETYPE_FLYGRAVITY)
+        self:SetSolid(SOLID_VPHYSICS)
         self:SetCollisionBounds(Vector(-size, -size, -size), Vector(size, size, size))
     else
-        self:SetMoveType( MOVETYPE_VPHYSICS )
-        self:SetSolid( SOLID_VPHYSICS )
+        self:SetMoveType(MOVETYPE_VPHYSICS)
+        self:SetSolid(SOLID_VPHYSICS)
     end
     self:SetUseType(SIMPLE_USE)
-	self:DrawShadow( true )
+	self:DrawShadow(true)
     
     if !self.CanAffectOwner then
         self:SetOwner(self.Owner)
@@ -94,9 +109,9 @@ function ENT:Initialize()
     
     if self.FireTrail then
         if SERVER then
-            local zfire = ents.Create( "env_fire_trail" )
-            zfire:SetPos( self:GetPos() )
-            zfire:SetParent( self )
+            local zfire = ents.Create("env_fire_trail")
+            zfire:SetPos(self:GetPos())
+            zfire:SetParent(self)
             zfire:Spawn()
             zfire:Activate()
         end
@@ -124,22 +139,25 @@ function ENT:Initialize()
         if self.NoGravity then
             phys:EnableGravity(false) 
         end
+        if (self.Seeker) then
+            phys:SetVelocity(self.Dir*self.Force)
+        end
     end
 
     if self.LifeTime == -1 then
-        self.RemoveEnt = CurTime() + GetConVar( "mm_cleanup_time" ):GetInt()
+        self.RemoveEnt = CurTime() + GetConVar("mm_cleanup_time"):GetInt()
     else
         self.RemoveEnt = CurTime() + self.LifeTime
     end
     
     if self.Trail != nil then
-        local trail = util.SpriteTrail( self, 0, Color( 255, 255, 255 ), true, 5, 0, 1, 1 / ( 5 + 0 ) * 0.5, self.Trail )
+        local trail = util.SpriteTrail(self, 0, Color(255, 255, 255), true, 5, 0, 1, 1 / (5 + 0) * 0.5, self.Trail)
     end
     
     if (self.LoopSound != nil) then
-        self.LoopSoundEnt = CreateSound( self, self.LoopSound ) 
+        self.LoopSoundEnt = CreateSound(self, self.LoopSound) 
         if self.LoopSoundEnt then
-            self.LoopSoundEnt:SetSoundLevel( 65 ) 
+            self.LoopSoundEnt:SetSoundLevel(65) 
             self.LoopSoundEnt:Play()
         end
     end
@@ -149,20 +167,63 @@ function ENT:Initialize()
 end
 
 function ENT:OnRemove()
+    self:DoRemoveStuff()
     if self.LoopSound != nil then
         self.LoopSoundEnt:Stop() 
     end
 end
+
+function ENT:DoRemoveStuff()
+end
 	
 function ENT:Think()
-    if self.SwooshSound != nil then
-        soundfx = CreateSound( self, self.SwooshSound )
-        if self.DoDamage == true then
-            for k, v in pairs( player.GetAll() ) do
-                if v:GetPos():Distance(self:GetPos()) < 128 then
-                    soundfx:SetSoundLevel( 60 )
+    if (self.SwooshSound != nil) then
+        if (type(self.SwooshSound) == "table") then
+            soundfx = CreateSound(self, table.Random(self.SwooshSound))
+        else
+            soundfx = CreateSound(self, self.SwooshSound)
+        end
+        if (self.DoDamage == true) then
+            for k, v in pairs(player.GetAll()) do
+                if (v:GetPos():Distance(self:GetPos()) < 128) then
+                    soundfx:SetSoundLevel(60)
                     soundfx:Play()
                 end
+            end
+        end
+    end
+    
+    if (self.Seeker) then
+        local phys = self:GetPhysicsObject()
+        
+        if (self.Target != nil && IsValid(self.Target) && (self.Target:IsNPC() || (self.Target:IsPlayer() && self.Target:Alive() && self.Target:CanBeDamagedBy(self.Owner)))) then
+            local targetpos = self.Target:GetPos()+Vector(0,0,10)
+            local found = false
+
+            for k, v in pairs(BoneTargets) do
+                if (self.Target:LookupBone(v) != nil) then
+                    targetpos = self.Target:GetBonePosition(self.Target:LookupBone(v))
+                    found = true
+                    break
+                end
+            end            
+    
+            local dir = targetpos-self:GetPos()
+            dir:Normalize()
+            phys:SetVelocity(LerpVector(1-math.max(0, self.RetargetLerp-CurTime()), self.Dir, dir)*self.Force)
+        else
+            phys:SetVelocity(self.Dir*self.Force)
+            if (self.NextTargetTime < CurTime()) then
+                if (self.Target == nil || !(self.Target:IsPlayer() || self.Target:IsNPC())) then
+                    for k, v in pairs(ents.FindInSphere(self:GetPos(), 192)) do
+                        if ((v:IsPlayer() || v:IsNPC()) && v != self.Owner) then
+                            self.Target = v
+                            break
+                        end
+                    end
+                end
+                self.NextTargetTime = CurTime() + 0.7
+                self.RetargetLerp = CurTime() + 1
             end
         end
     end
@@ -198,7 +259,7 @@ if (SERVER) then
 	end
 end
 
-function ENT:Touch( ent )
+function ENT:Touch(ent)
     if self.StoppedMoving then return end
     if ent:GetClass() == "trigger_soundscape" then return end
     if ent:GetClass() == "prop_ragdoll" then return end
@@ -245,6 +306,9 @@ function ENT:PhysicsCollide(data, phys)
             if data.HitEntity:IsPlayer() && self.GibOnContact && data.HitEntity:Health()-self.Damage <= 0 then
                 data.HitEntity:SetKillFlag(KILL_GIB)
             end
+            if data.HitEntity:IsPlayer() && data.HitEntity:IsDodgeRolling() && SERVER then
+                data.HitEntity:GiveTreat("dodged_explosion")
+            end
             util.BlastDamageInfo(dmginfo, self:GetPos(), self.ExplodeRadius)
             if (self.RemoveOnDamage) then
                 self.Exploded = true
@@ -255,15 +319,15 @@ function ENT:PhysicsCollide(data, phys)
             local d = data
             if data.HitEntity:IsPlayer() then
                 if data.HitEntity:IsOnGround() then
-                    d = util.TraceLine( {
+                    d = util.TraceLine({
                         start = data.HitEntity:GetPos(),
                         endpos = data.HitEntity:GetPos() - Vector(0,0,100),
-                        filter = function( ent ) 
-                            if ( ent:IsPlayer() ) then 
+                        filter = function(ent) 
+                            if (ent:IsPlayer()) then 
                                 return true 
                             end 
                         end
-                    } )
+                    })
                 else
                     d = nil
                 end
@@ -282,7 +346,10 @@ function ENT:PhysicsCollide(data, phys)
         self:DoCollideThing(data, phys)
         self.DoDamage = false
     elseif self.DoDamage then
-        if data.HitEntity:IsPlayer() && !data.HitEntity:HasGodMode() then
+        
+        self:ExplodeExtra(data, phys)
+        
+        if ((data.HitEntity:IsPlayer() && data.HitEntity:CanBeDamagedBy(self.Owner)) || data.HitEntity.IsMMNPC) then
             local dmginfo = DamageInfo()
             dmginfo:SetDamage(self.Damage)
             dmginfo:SetAttacker(self.Owner)
@@ -301,8 +368,12 @@ function ENT:PhysicsCollide(data, phys)
             end
             if self.DamageType != 0 then
                 dmginfo:SetDamageType(self.DamageType)
+            else
+                dmginfo:SetDamageType(DMG_BLAST)
             end
-            data.HitEntity:TakeDamageInfo(dmginfo)
+            if (!data.HitEntity:IsPlayer() || data.HitEntity:CanBeDamagedBy(self.Owner)) then
+                data.HitEntity:TakeDamageInfo(dmginfo)
+            end
             if (self.RemoveOnDamage) then
                 self.Exploded = true
             end
@@ -313,8 +384,8 @@ function ENT:PhysicsCollide(data, phys)
             self.StoppedMoving = true
             phys:Wake()  
             phys:EnableGravity(false) 
-            self:SetMoveType( MOVETYPE_NONE )
-            self:PhysicsInit( SOLID_NONE )
+            self:SetMoveType(MOVETYPE_NONE)
+            self:PhysicsInit(SOLID_NONE)
             self.HitEnt = data.HitEntity
             self.HitPosAng = {self:GetPos(), self:GetAngles()}
         end
@@ -346,8 +417,8 @@ function ENT:ApplyStatusRadius()
     if self.ActivateTime+self.SpawnTime > CurTime() then return end
     for k, v in pairs(player.GetAll()) do
         if v:Alive() then
-            local damagable = (!v:IsDodgeRolling() && (self.CanAffectOwner || (!self.CanAffectOwner && v != self.Owner)) && self:VisibleVec( v:GetPos()+Vector(0,0,50)))
-            if v:GetPos():Distance(self:GetPos()) <= self.ApplyEffectDistance && damagable && !v:HasGodMode() then 
+            local damagable = ((self.CanAffectOwner || (!self.CanAffectOwner && v != self.Owner)) && self:VisibleVec(v:GetPos()+Vector(0,0,50)) && v:CanBeDamagedBy(self.Owner))
+            if v:GetPos():Distance(self:GetPos()) <= self.ApplyEffectDistance && damagable then 
                 local dmginfo = DamageInfo()
                 if self.Owner != nil && IsValid(self.Owner) then
                     dmginfo:SetAttacker(self.Owner)
@@ -375,5 +446,9 @@ function ENT:ExplodeEffect()
 end
 
 function ENT:DoCollideThing(data, phys)
+
+end
+
+function ENT:ExplodeExtra(data, phys)
 
 end

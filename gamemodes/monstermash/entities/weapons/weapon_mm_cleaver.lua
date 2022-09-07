@@ -1,11 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Meat Cleaver"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_cleaver")
 SWEP.Cost = 5
-SWEP.Points = 20
+SWEP.Points = 40
 SWEP.KillFeed = "%a showed %v what real cleavage looks like."
 
 SWEP.Author = "Buu342"

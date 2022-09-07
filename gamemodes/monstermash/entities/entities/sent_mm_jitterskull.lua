@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
-DEFINE_BASECLASS( "base_anim" )
+DEFINE_BASECLASS("base_anim")
 
 ENT.PrintName = "Jitterskull"
 ENT.Name = ENT.PrintName
@@ -13,23 +13,24 @@ ENT.AdminOnly = false
 ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
 
 ENT.HP = 200
+ENT.IsMMNPC = true
 
 function ENT:SetupDataTables()
 
-	self:NetworkVar( "Float", 0, "CoolDown")
-	self:NetworkVar( "Float", 1, "ChaseSoundCoolDown")
-	self:NetworkVar( "Float", 2, "ChaseCoolDown")
-	self:NetworkVar( "Float", 3, "HP")
-	self:NetworkVar( "String", 0, "State")
+	self:NetworkVar("Float", 0, "CoolDown")
+	self:NetworkVar("Float", 1, "ChaseSoundCoolDown")
+	self:NetworkVar("Float", 2, "ChaseCoolDown")
+	self:NetworkVar("Float", 3, "HP")
+	self:NetworkVar("String", 0, "State")
 
 end
 
-function ENT:SpawnFunction( ply, tr, ClassName )
+function ENT:SpawnFunction(ply, tr, ClassName)
 
-	if ( !tr.Hit ) then return end
+	if (!tr.Hit) then return end
 
-	local ent = ents.Create( ClassName )
-	ent:SetPos( tr.HitPos + tr.HitNormal * 32 )
+	local ent = ents.Create(ClassName)
+	ent:SetPos(tr.HitPos + tr.HitNormal * 32)
 	ent:Spawn()
 	ent:Activate()
 	
@@ -37,15 +38,16 @@ function ENT:SpawnFunction( ply, tr, ClassName )
 
 end
 
-function ENT:FindNearestPlayer( pos, range )
+function ENT:FindNearestPlayer(pos, range)
 	
 	local nearestply = nil
     
-    for k, ply in pairs( player.GetAll()) do
-        if (ply:Team() == TEAM_SPECT || ply:Team() == TEAM_INVALID) then 
+    for k, ply in pairs(player.GetAll()) do
+        if (ply:Team() == TEAM_SPECT || ply:Team() == TEAM_COOPDEAD || ply:Team() == TEAM_INVALID) then 
+            // Don't chase this player
         else
-            local distance = pos:Distance( ply:GetPos() )
-            if( distance <= range ) && ply:Alive() then
+            local distance = pos:Distance(ply:GetPos())
+            if (distance <= range) && ply:Alive() then
                 
                 nearestply = ply
                 range = distance
@@ -67,18 +69,18 @@ function ENT:Initialize()
 	
 	self.Name = self.PrintName
 
-	if ( CLIENT ) then return end
+	if (CLIENT) then return end
 
-	self:SetModel( "models/hunter/misc/shell2x2.mdl" )
+	self:SetModel("models/hunter/misc/shell2x2.mdl")
 	self:RebuildPhysics()
-	self:DrawShadow( false )
+	self:DrawShadow(false)
 	self:SetName(self.PrintName)
 	
 end
 
 function ENT:Think()
 
-	self:NextThink( CurTime() + 0.01 )
+	self:NextThink(CurTime() + 0.01)
 	local ply = self:FindNearestPlayer(self:GetPos(), 4096)
 	
 	if GetConVar("ai_disabled"):GetInt() == 1 || (ply == nil && self:GetState() != "Dying") then 
@@ -94,8 +96,8 @@ function ENT:Think()
 			for i=1, 5 do
 				local vPoint = self:GetPos()
 				local effectdata = EffectData()
-				effectdata:SetOrigin( vPoint )
-				util.Effect( "mm_ghoul_fire1", effectdata )
+				effectdata:SetOrigin(vPoint)
+				util.Effect("mm_ghoul_fire1", effectdata)
 			end
 			self:EmitSound("ghouls/DSFLAME.wav")
             if (!self.Dead) then
@@ -155,22 +157,22 @@ function ENT:Think()
 end
 
 
-function ENT:RebuildPhysics( )
+function ENT:RebuildPhysics()
 
 	// This is necessary so that the vphysics.dll will not crash when attaching constraints to the new PhysObj after old one was destroyed
 	// Garry pls fix
 	self.ConstraintSystem = nil
 
 	local size = 40
-	self:PhysicsInitSphere( size, "default_silent" )
+	self:PhysicsInitSphere(size, "default_silent")
 	//self:PhysicsInitBox(self:GetPos()-Vector(32,0,0), self:GetPos()+Vector(32,0,96))
-	self:SetCollisionBounds( Vector( -size, -size, -size ), Vector( size, size, size+32 ) )
+	self:SetCollisionBounds(Vector(-size, -size, -size), Vector(size, size, size+32))
 
 	self:PhysWake()
 
 end
 
-function ENT:PhysicsCollide( data, physobj )
+function ENT:PhysicsCollide(data, physobj)
 	if data.HitEntity:GetClass() == "player" && self:GetState() == "Attack2" then
 		physobj:SetVelocity(Vector(0,0,0))
 		self:SetState("Attack2")
@@ -182,7 +184,7 @@ function ENT:PhysicsCollide( data, physobj )
 	end
 end
 
-function ENT:OnTakeDamage( dmginfo )
+function ENT:OnTakeDamage(dmginfo)
 	if self:GetState() != "Dying" then
 		if self:GetState() == "Attack2" then
 			self:SetState("Idle")
@@ -191,20 +193,23 @@ function ENT:OnTakeDamage( dmginfo )
 		self:SetHP(self:GetHP() - dmginfo:GetDamage())
 		if self:GetHP() <= 0 then
 			self:SetState("Dying")
-            local dethtbl = {
-                color = Color(255, 105, 0),
-                time = CurTime()+10,
-                text = dmginfo:GetAttacker():Name().." overpowered the Jitterskull"
-            }
-			net.Start("MMNPCKilled")
-				net.WriteTable(dethtbl)
-			net.Broadcast()
+            if (dmginfo:GetAttacker() != nil && dmginfo:GetAttacker():IsPlayer()) then
+                dmginfo:GetAttacker():AddScore(5)
+                local dethtbl = {
+                    color = Color(255, 105, 0),
+                    time = CurTime()+10,
+                    text = dmginfo:GetAttacker():Name().." overpowered the Jitterskull"
+                }
+                net.Start("MMNPCKilled")
+                    net.WriteTable(dethtbl)
+                net.Broadcast()
+            end
             self:EmitSound("ghouls/jitterskull/die.wav", 75, 100, 1, CHAN_VOICE)
 		end
 	end
 end
 
-if ( SERVER ) then return end
+if (SERVER) then return end
 
 local sequence_idle = "A"
 local sequence_chase = "ABCBABCBCBABABCBCBABABCBCBA"
@@ -227,16 +232,16 @@ function ENT:Draw()
 		target_sequence = sequence_idle
 	end
 	local target_frame = string.sub(target_sequence, (self.countframe%string.len(target_sequence))+1, (self.countframe%string.len(target_sequence))+1)
-	local mat = Material( "ghouls/JSKL"..target_frame.."0.png" )
-	render.SetMaterial( mat )
+	local mat = Material("ghouls/JSKL"..target_frame.."0.png")
+	render.SetMaterial(mat)
 
 	local pos = self:GetPos()
-	local lcolor = render.ComputeLighting( pos, Vector( 0, 0, 1 ) )
+	local lcolor = render.ComputeLighting(pos, Vector(0, 0, 1))
 	local c = Vector(1,1,1)
 
-	lcolor.x = c.r * ( math.Clamp( lcolor.x, 0, 1 ) + 0.20 ) * 255
-	lcolor.y = c.g * ( math.Clamp( lcolor.y, 0, 1 ) + 0.20 ) * 255
-	lcolor.z = c.b * ( math.Clamp( lcolor.z, 0, 1 ) + 0.20 ) * 255
+	lcolor.x = c.r * (math.Clamp(lcolor.x, 0, 1) + 0.20) * 255
+	lcolor.y = c.g * (math.Clamp(lcolor.y, 0, 1) + 0.20) * 255
+	lcolor.z = c.b * (math.Clamp(lcolor.z, 0, 1) + 0.20) * 255
 	
 	local height = 96	
 	local offset = 17
@@ -244,5 +249,5 @@ function ENT:Draw()
 		height = 128
 		offset = 32
 	end
-	render.DrawSprite( pos+Vector(0,0,offset), 64, height, Color( lcolor.x, lcolor.y, lcolor.z, 255 ) )
+	render.DrawSprite(pos+Vector(0,0,offset), 64, height, Color(lcolor.x, lcolor.y, lcolor.z, 255))
 end

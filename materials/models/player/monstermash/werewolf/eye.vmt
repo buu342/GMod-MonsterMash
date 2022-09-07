@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models\player\monstermash\werewolf/Eye"
+	"$selfillum"	"1"
+}

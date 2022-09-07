@@ -1,6 +1,7 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basebase" )
+DEFINE_BASECLASS("weapon_mm_basebase")
 
+SWEP.PrintName = "Candy Corn"
 SWEP.Author = "Buu342"
 SWEP.Contact = "buu342@hotmail.com"
 SWEP.Purpose = ""
@@ -38,8 +39,8 @@ end
 
 function SWEP:Deploy()
     BaseClass.Deploy(self)
-	self.Owner:GetViewModel( ):SetPlaybackRate( 1 )
-	self.Owner:GetViewModel():SetSequence( "Draw" )
+	self.Owner:GetViewModel():SetPlaybackRate(1)
+	self.Owner:GetViewModel():SetSequence("Draw")
     self:SetMMBase_State(0)
     self:SetMMBase_StateTimer(CurTime()+0.75)
 end
@@ -59,8 +60,8 @@ function SWEP:Think()
         self:SetMMBase_State(self:GetMMBase_State()+1)
         
         if (self:GetMMBase_State() == 1) then
-            self.Owner:GetViewModel( ):SetPlaybackRate( 1.5 )
-            self.Owner:GetViewModel():SetSequence( "Pills" )
+            self.Owner:GetViewModel():SetPlaybackRate(1.5)
+            self.Owner:GetViewModel():SetSequence("Pills")
             self:SetMMBase_StateTimer(CurTime()+0.4)
             self.Owner:ViewPunch(Angle(0,-2,0))
         elseif (self:GetMMBase_State() == 2) then
@@ -77,6 +78,9 @@ function SWEP:Think()
             self.Owner:ViewPunch(Angle(-5,0,0))
             if CLIENT && IsFirstTimePredicted() then
                 self.Owner:EmitSound("weapons/healing/nom.wav", 75, 100, 0.5, CHAN_VOICE2)
+            end
+            if SERVER then
+                self.Owner:IncrementPlayerStat("Candy_Consumed")
             end
             self.Owner:SetHealth(math.Clamp(self.Owner:Health() + 35, 0, self.Owner:GetMaxHealth()))
             if SERVER then

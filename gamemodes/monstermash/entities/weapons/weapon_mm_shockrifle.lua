@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Shock Rifle"
 
@@ -66,8 +66,8 @@ SWEP.HoldTypeAttack   = "rpg"
 SWEP.HoldTypeReload   = "ar2"
 SWEP.HoldTypeCrouch   = "ar2"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_garand" )
-SWEP.CrosshairChargeMaterial = Material( "vgui/hud/crosshair_carbine_fill" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_garand")
+SWEP.CrosshairChargeMaterial = Material("vgui/hud/crosshair_carbine_fill")
 SWEP.CrosshairSize = 64
 SWEP.CrosshairChargeSize = 36
 SWEP.CrosshairChargeType = CHARGETYPE_CIRCLE
@@ -80,7 +80,7 @@ SWEP.KillFlags = KILL_SKELETIZE
 SWEP.ChargeSpeed = 80
 SWEP.TracerName = "ToolTracer"
 SWEP.ImpactEffect = "MetalSpark"
-SWEP.ImpactDecal = Material("decals/scorchfade_subrect") // util.DecalMaterial( "FadingScorch" )
+SWEP.ImpactDecal = Material("decals/scorchfade_subrect") // util.DecalMaterial("FadingScorch")
 SWEP.ImpactDecalSize = 0.5
 SWEP.ImpactEffectOnPlayers = true
 

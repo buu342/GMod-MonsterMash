@@ -1,11 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Skull"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_skull")
 SWEP.Cost = 10
-SWEP.Points = 20
+SWEP.Points = 40
 SWEP.KillFeed = "%a recited Hamlet with %v."
 
 SWEP.Author = "Buu342"

@@ -36,11 +36,11 @@ Initialize
 ---------------------------------------------------------*/
 function ENT:Initialize()	
     self.Entity:SetModel("models/props_phx/construct/metal_plate1.mdl")
-	self.Entity:PhysicsInit( SOLID_NONE )
-	self.Entity:SetMoveType( MOVETYPE_NONE )
-	self.Entity:SetSolid( SOLID_NONE )
-	self.Entity:DrawShadow( false )
-	self.Entity:SetCollisionGroup( COLLISION_GROUP_WEAPON )
+	self.Entity:PhysicsInit(SOLID_NONE)
+	self.Entity:SetMoveType(MOVETYPE_NONE)
+	self.Entity:SetSolid(SOLID_NONE)
+	self.Entity:DrawShadow(false)
+	self.Entity:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
 		phys:Wake()
@@ -69,7 +69,7 @@ function ENT:Initialize()
     
     self.Snd = CreateSound(self, "kick/hell.mp3")
     if self.Snd then
-        self.Snd:SetSoundLevel( 65 )
+        self.Snd:SetSoundLevel(65)
         self.Snd:Play()
     end
 end
@@ -135,20 +135,20 @@ end
 				Custom render.Model func
 -----------------------------------------------------*/
 if SERVER then return end
-function render.ModelPlayer( self, mdl, pos, ang, animation, animationspeed, scale )
+function render.ModelPlayer(self, mdl, pos, ang, animation, animationspeed, scale)
     
-	local ent = ClientsideModel( mdl, RENDERGROUP_OTHER )
+	local ent = ClientsideModel(mdl, RENDERGROUP_OTHER)
 
-	if ( !IsValid( ent ) ) then return end
+	if (!IsValid(ent)) then return end
 
-	ent:SetModel( mdl )
-	ent:SetNoDraw( true )
+	ent:SetModel(mdl)
+	ent:SetNoDraw(true)
 
-	ent:SetPos( pos )
-	ent:SetAngles( ang )
-	ent:ResetSequence( ent:LookupSequence( animation ) )
+	ent:SetPos(pos)
+	ent:SetAngles(ang)
+	ent:ResetSequence(ent:LookupSequence(animation))
 	ent:SetModelScale(scale)
-	ent:SetCycle( animationspeed )
+	ent:SetCycle(animationspeed)
 	ent:SetMaterial(self:GetNWString("KickPlayerMat") or "")
 	ent:SetSkin(self:GetNWInt("KickPlayerSkin") or 0)
     ent:SetBodygroup(1, self:GetNWInt("KickPlayerBG1"))
@@ -162,38 +162,38 @@ function render.ModelPlayer( self, mdl, pos, ang, animation, animationspeed, sca
     return returnpos, returnang
 end
 
-function surface.DrawCirc( x, y, radius, seg )
+function surface.DrawCirc(x, y, radius, seg)
 	local cir = {}
 
-	table.insert( cir, { x = x, y = y, u = 0.5, v = 0.5 } )
+	table.insert(cir, { x = x, y = y, u = 0.5, v = 0.5 })
 	for i = 0, seg do
-		local a = math.rad( ( i / seg ) * -360 )
-		table.insert( cir, { x = x + math.sin( a ) * radius, y = y + math.cos( a ) * radius, u = math.sin( a ) / 2 + 0.5, v = math.cos( a ) / 2 + 0.5 } )
+		local a = math.rad((i / seg) * -360)
+		table.insert(cir, { x = x + math.sin(a) * radius, y = y + math.cos(a) * radius, u = math.sin(a) / 2 + 0.5, v = math.cos(a) / 2 + 0.5 })
 	end
 
-	local a = math.rad( 0 ) -- This is needed for non absolute segment counts
-	table.insert( cir, { x = x + math.sin( a ) * radius, y = y + math.cos( a ) * radius, u = math.sin( a ) / 2 + 0.5, v = math.cos( a ) / 2 + 0.5 } )
+	local a = math.rad(0) -- This is needed for non absolute segment counts
+	table.insert(cir, { x = x + math.sin(a) * radius, y = y + math.cos(a) * radius, u = math.sin(a) / 2 + 0.5, v = math.cos(a) / 2 + 0.5 })
 
-	surface.DrawPoly( cir )
+	surface.DrawPoly(cir)
 end
 
 function ENT:RenderGrab(animation)
 
-	local ent = ClientsideModel( "models/monstermash/skeletonhand.mdl", RENDERGROUP_OTHER )
-	if ( !IsValid( ent ) ) then return end
+	local ent = ClientsideModel("models/monstermash/skeletonhand.mdl", RENDERGROUP_OTHER)
+	if (!IsValid(ent)) then return end
 
-	ent:SetNoDraw( true )
+	ent:SetNoDraw(true)
 
     local pos = self:GetPos()
     pos = pos + self:GetForward()*-20
     pos = pos + self:GetRight()*0
     pos = pos + self:GetUp()*30
     
-	ent:SetPos( pos )
-	ent:SetAngles( self:GetAngles() )
-	ent:ResetSequence( ent:LookupSequence( "idle" ) )
+	ent:SetPos(pos)
+	ent:SetAngles(self:GetAngles())
+	ent:ResetSequence(ent:LookupSequence("idle"))
 	ent:SetModelScale(10)
-	ent:SetCycle( animation )
+	ent:SetCycle(animation)
 	ent:DrawModel()
 	local returnpos, returnang = ent:GetBonePosition(ent:LookupBone("ValveBiped.Bip01_R_Hand"))
 	
@@ -231,28 +231,28 @@ function ENT:RenderOverride()
     
     if !IsValid(self) then return end
 	
-    render.SetStencilEnable( true )
+    render.SetStencilEnable(true)
     
         // Garry's halos are mean to us so we need to reset some values 
-		render.SetStencilWriteMask( 255 )
-		render.SetStencilTestMask( 255 )
-		render.MaterialOverride( 0 ) 
+		render.SetStencilWriteMask(255)
+		render.SetStencilTestMask(255)
+		render.MaterialOverride(0) 
 		
 		/*-----------------------------------------------------
 							Make the hole
 		-----------------------------------------------------*/
 
-		render.SetStencilReferenceValue( 13 )
-		render.SetStencilCompareFunction( STENCIL_ALWAYS ) // Always draw the circle
-		render.SetStencilPassOperation( STENCIL_REPLACE ) // If the hole is visible normally, overwrite the current pixels
-        render.SetStencilZFailOperation( STENCIL_ZERO ) // If something obscures the hole, decrease it's pixel value
-		render.SetStencilZFailOperation( STENCIL_DECR ) // If something obscures the hole, decrease it's pixel value
+		render.SetStencilReferenceValue(13)
+		render.SetStencilCompareFunction(STENCIL_ALWAYS) // Always draw the circle
+		render.SetStencilPassOperation(STENCIL_REPLACE) // If the hole is visible normally, overwrite the current pixels
+        render.SetStencilZFailOperation(STENCIL_ZERO) // If something obscures the hole, decrease it's pixel value
+		render.SetStencilZFailOperation(STENCIL_DECR) // If something obscures the hole, decrease it's pixel value
 		
 		pos = pos - Vector(scale/2,-scale/2,0)
 
-		cam.Start3D2D( pos, angle, scale )
-			surface.SetDrawColor( Color( 0, 0, 0, 255 ) )
-			surface.DrawCirc( 0.5, 0.5, scale2/256, 32 ) // a circular hole on the floor
+		cam.Start3D2D(pos, angle, scale)
+			surface.SetDrawColor(Color(0, 0, 0, 255))
+			surface.DrawCirc(0.5, 0.5, scale2/256, 32) // a circular hole on the floor
 		cam.End3D2D()
         
 
@@ -260,20 +260,20 @@ function ENT:RenderOverride()
 							Draw Hell
 		-----------------------------------------------------*/
 		
-		render.SetStencilCompareFunction( STENCIL_EQUAL ) // If our pixel value is the same as the hole, draw hell
-		cam.IgnoreZ( true )
+		render.SetStencilCompareFunction(STENCIL_EQUAL) // If our pixel value is the same as the hole, draw hell
+		cam.IgnoreZ(true)
             local size = 128
 			render.SetMaterial(Material("models/misc/cube_left.png"))
-			render.DrawBox( pos,angle,Vector(-128,-size*3+128,-size*3),Vector(-128,128,0),Color(255,255,255,255),true)
+			render.DrawBox(pos,angle,Vector(-128,-size*3+128,-size*3),Vector(-128,128,0),Color(255,255,255,255),true)
 			render.SetMaterial(Material("models/misc/cube_right.png"))
-			render.DrawBox( pos,angle,Vector(size*3-128,-size*3+128,-size*3),Vector(size*3-128,128,0),Color(255,255,255,255),true)
+			render.DrawBox(pos,angle,Vector(size*3-128,-size*3+128,-size*3),Vector(size*3-128,128,0),Color(255,255,255,255),true)
 			render.SetMaterial(Material("models/misc/cube_center.png"))
-			render.DrawBox( pos,angle,Vector(-128,128,-size*3),Vector(size*3-128,128,0),Color(255,255,255,255),true)
+			render.DrawBox(pos,angle,Vector(-128,128,-size*3),Vector(size*3-128,128,0),Color(255,255,255,255),true)
 			render.SetMaterial(Material("models/misc/cube_back.png"))
-			render.DrawBox( pos,angle,Vector(-128,-size*3+128,-size*3),Vector(size*3-128,-size*3+128,0),Color(255,255,255,255),true)
+			render.DrawBox(pos,angle,Vector(-128,-size*3+128,-size*3),Vector(size*3-128,-size*3+128,0),Color(255,255,255,255),true)
 			render.SetMaterial(Material("models/misc/cube_bot.png"))
-			render.DrawBox( pos,angle,Vector(-128,-size*3+128,-size*3),Vector(size*3-128,128,-size*3),Color(255,255,255,255),true)
-		cam.IgnoreZ( false )
+			render.DrawBox(pos,angle,Vector(-128,-size*3+128,-size*3),Vector(size*3-128,128,-size*3),Color(255,255,255,255),true)
+		cam.IgnoreZ(false)
         
         render.SetStencilReferenceValue(12)
 		render.SetStencilCompareFunction(STENCIL_EQUAL)
@@ -285,15 +285,15 @@ function ENT:RenderOverride()
                         Draw player and hand
 		-----------------------------------------------------*/		
         
-		render.SetStencilCompareFunction( STENCIL_GREATEREQUAL )
-		render.SetStencilPassOperation( STENCIL_REPLACE )
-		render.SetStencilFailOperation( STENCIL_DECR )
-		render.SetStencilZFailOperation( STENCIL_DECR )
-		cam.IgnoreZ( true )
+		render.SetStencilCompareFunction(STENCIL_GREATEREQUAL)
+		render.SetStencilPassOperation(STENCIL_REPLACE)
+		render.SetStencilFailOperation(STENCIL_DECR)
+		render.SetStencilZFailOperation(STENCIL_DECR)
+		cam.IgnoreZ(true)
             self:RenderGrab(animation)
-		cam.IgnoreZ( false )
+		cam.IgnoreZ(false)
 		
-	render.SetStencilEnable( false )
+	render.SetStencilEnable(false)
     
     self:RenderGrab(animation)
 end

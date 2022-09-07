@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/hud/tricks/fury"
+	"$translucent" "1"
+	$vertexcolor 1
+}

@@ -1,9 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.Type = "anim"
 ENT.Base = "sent_mm_thrownbase"
 ENT.Mdl = "models/weapons/monstermash/thrown_pumpkin.mdl"
+
+ENT.DamageType = DMG_SONIC
 
 ENT.LightSize = 256
 ENT.LightColor = Color(0, 125, 255)
@@ -15,9 +17,9 @@ ENT.PushList = {}
 
 function ENT:Initialize() 
 	self.Entity:SetModel("models/XQM/Rails/gumball_1.mdl")
-	self.Entity:PhysicsInit( SOLID_VPHYSICS )
-	self.Entity:SetMoveType( MOVETYPE_NONE )
-	self.Entity:SetSolid( SOLID_NONE )
+	self.Entity:PhysicsInit(SOLID_VPHYSICS)
+	self.Entity:SetMoveType(MOVETYPE_NONE)
+	self.Entity:SetSolid(SOLID_NONE)
     self:SetNoDraw(true)
 	local phys = self.Entity:GetPhysicsObject()
 	if (phys:IsValid()) then
@@ -26,10 +28,10 @@ function ENT:Initialize()
 	end
 	
     local effectdata4 = EffectData()
-    effectdata4:SetStart( self:GetPos() ) 
-    effectdata4:SetOrigin( self:GetPos() )
-    effectdata4:SetScale( 1 )
-    util.Effect( "mm_expandball", effectdata4 )
+    effectdata4:SetStart(self:GetPos()) 
+    effectdata4:SetOrigin(self:GetPos())
+    effectdata4:SetScale(1)
+    util.Effect("mm_expandball", effectdata4)
     
     if SERVER then
         timer.Simple(0.5, function() if IsValid(self) then self:Remove() end end)
@@ -55,20 +57,21 @@ function ENT:Think()
                 "sent_mm_skull",
                 "sent_mm_spidernade",
                 "sent_mm_toiletpaper",
+                "sent_mm_seeker",
                 "sent_mm_urn",
                 "sent_mm_wandball"
             }
             if table.HasValue(entlist, ent:GetClass()) then
                 local pos = ent:GetPos()
                 local effectdata = EffectData()
-                effectdata:SetStart( pos ) 
-                effectdata:SetOrigin( pos )
-                effectdata:SetScale( 1 )
-                util.Effect( "ManhackSparks", effectdata )
+                effectdata:SetStart(pos) 
+                effectdata:SetOrigin(pos)
+                effectdata:SetScale(1)
+                util.Effect("ManhackSparks", effectdata)
                 ent:Remove()
             end
             
-            if v != self.Owner && self.Owner:VisibleVec(v:GetPos()+Vector(0,0,10)) && !table.HasValue(self.PushList, v) then
+            if v != self.Owner && (v.IsMMNPC || self.Owner:VisibleVec(v:GetPos()+Vector(0, 0, 10))) && !table.HasValue(self.PushList, v) && (!v:IsPlayer() || v:CanBeDamagedBy(self.Owner)) then
                 local damage = DamageInfo()
                 damage:SetDamage(25)
                 damage:SetAttacker(self.Owner)
@@ -76,7 +79,7 @@ function ENT:Think()
                 damage:SetDamageType(DMG_DISSOLVE)
                 v:TakeDamageInfo(damage)
                 local phys = v:GetPhysicsObject()
-                if ( IsValid( phys ) ) then
+                if (IsValid(phys)) then
                     local dir = (v:GetPos()-self.Owner:GetPos()):Angle():Forward()
                     dir:Normalize()
                     if v:OnGround() then

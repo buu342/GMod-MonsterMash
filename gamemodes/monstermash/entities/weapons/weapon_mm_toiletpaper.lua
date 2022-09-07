@@ -1,11 +1,11 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basemelee" )
+DEFINE_BASECLASS("weapon_mm_basemelee")
 
 SWEP.PrintName = "Toilet Paper"
 
 SWEP.SelectIcon = Material("vgui/entities/mm_tp")
 SWEP.Cost = 0
-SWEP.Points = 20
+SWEP.Points = 0
 
 SWEP.Author = "Buu342"
 SWEP.Contact = "buu342@hotmail.com"

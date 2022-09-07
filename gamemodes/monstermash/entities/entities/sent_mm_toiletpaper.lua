@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "sent_mm_thrownbase" )
+DEFINE_BASECLASS("sent_mm_thrownbase")
 
 ENT.PrintName = "Toilet Paper"
 ENT.Type = "anim"
@@ -13,7 +13,7 @@ ENT.DoDamage = true
 ENT.Retrievable = true
 
 function ENT:DoCollideThing(data, phys)
-    if data.HitEntity:IsPlayer() && data.HitEntity != self.Owner && !data.HitEntity:HasStatusEffect(STATUS_SPAWNPROTECTED) then
+    if data.HitEntity:IsPlayer() && data.HitEntity != self.Owner && data.HitEntity:CanBeDamagedBy(self.Owner) then
         self.Owner:GiveTreat("tp")
     end
 end

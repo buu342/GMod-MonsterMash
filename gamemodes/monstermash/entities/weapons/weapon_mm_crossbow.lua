@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Crossbow"
 
@@ -42,6 +42,7 @@ SWEP.Primary.FireMode    = FIREMODE_PROJECTILE
 SWEP.Primary.ProjectileEntity = "sent_mm_arrow"
 SWEP.Primary.ProjectileForce = 3500
 
+SWEP.Secondary.Damage      = 53
 SWEP.Secondary.Sound         = "weapons/crossbow/fire.wav" 
 SWEP.Secondary.TakeAmmo    = 1
 SWEP.Secondary.Delay       = 0.5
@@ -62,8 +63,8 @@ SWEP.HoldTypeAttack   = "ar2"
 SWEP.HoldTypeReload   = "ar2"
 SWEP.HoldTypeCrouch   = "ar2"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_cannon" )
-SWEP.CrosshairRechargeMaterial = Material( "vgui/hud/crosshair_cannon_fill" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_cannon")
+SWEP.CrosshairRechargeMaterial = Material("vgui/hud/crosshair_cannon_fill")
 SWEP.CrosshairSize = 56
 SWEP.CrosshairRechargeType = CHARGETYPE_BAR
 SWEP.CrosshairRechargeColor = Color(0,255,0, 100)

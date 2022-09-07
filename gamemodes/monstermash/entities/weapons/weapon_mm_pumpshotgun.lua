@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Pump shotgun"
 
@@ -46,7 +46,7 @@ SWEP.Secondary.Sound         = "weapons/pumpaction/fire.wav"
 SWEP.Secondary.Damage        = 6
 SWEP.Secondary.TakeAmmo      = 2
 SWEP.Secondary.ClipSize      = 6
-SWEP.Secondary.Spread        = 6
+SWEP.Secondary.Spread        = 4
 SWEP.Secondary.NumberofShots = 8
 SWEP.Secondary.Automatic     = true
 SWEP.Secondary.Recoil        = 2
@@ -63,7 +63,7 @@ SWEP.HoldTypeAttack   = "rpg"
 SWEP.HoldTypeReload   = "shotgun"
 SWEP.HoldTypeCrouch   = "ar2"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairSize = 112
 
 SWEP.ShotgunReload = true

@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "weapon_mm_basegun" )
+DEFINE_BASECLASS("weapon_mm_basegun")
 
 SWEP.PrintName = "Coach Gun"
 
@@ -54,7 +54,7 @@ SWEP.HoldTypeAttack   = "shotgun"
 SWEP.HoldTypeReload   = "shotgun"
 SWEP.HoldTypeCrouch   = "shotgun"
 
-SWEP.CrosshairMaterial = Material( "vgui/hud/crosshair_carbine" )
+SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
 SWEP.CrosshairSize = 128
 
 SWEP.ReloadOutTime = 0.2
