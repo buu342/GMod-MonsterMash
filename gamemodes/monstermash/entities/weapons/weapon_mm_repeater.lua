@@ -31,7 +31,7 @@ SWEP.Slot = 2
 SWEP.Base = "weapon_mm_basegun"
 
 SWEP.Primary.Sound         = "weapons/repeater/fire.wav" 
-SWEP.Primary.Damage        = 30
+SWEP.Primary.Damage        = 35
 SWEP.Primary.ClipSize      = 8
 SWEP.Primary.Spread        = 0.275
 SWEP.Primary.NumberofShots = 1
