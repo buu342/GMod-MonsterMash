@@ -748,7 +748,7 @@ function SWEP:MM_ShootSpiral(mode)
     if !self.Owner:IsOnGround() then return end
     if self:GetMMBase_ReloadTimer() != 0 || self:GetMMBase_ShootTimer() != 0 then return end
     if self:Clip1() == 0 || (mode.TakeAmmoAffectsShootability && self:Clip1()-mode.TakeAmmo < 0) then 
-        if (!GetConVar("mm_autoreload"):GetBool()) then
+        if (GetConVar("mm_autoreload") != nil && !GetConVar("mm_autoreload"):GetBool()) then
             self:EmitSound("weapons/shotgun/shotgun_empty.wav", 75, 100, 1, CHAN_ITEM) 
             self:SetMMBase_ShootTimer(CurTime() + 0.2)
         end

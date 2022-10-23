@@ -714,9 +714,10 @@ net.Receive("MM_SetAnimCycle", function(len)
     local cycle = net.ReadFloat()
     local ply = net.ReadEntity()
     
+    if (ply == nil || !IsValid(ply) || !ply:IsPlayer()) then return end
     if LocalPlayer() == ply then return end
     ply:AnimRestartMainSequence()
-    ply:SetCycle(cycle)
+    ply:SetCycle(cycle or 0)
 end)
 
 

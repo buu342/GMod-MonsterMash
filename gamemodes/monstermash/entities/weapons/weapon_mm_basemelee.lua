@@ -625,29 +625,31 @@ hook.Add("CreateMove", "MM_MeleeBase_AimAssist", function(cmd)
             local target = v
             if (v:CanBeDamagedBy(LocalPlayer()) && !v:HasStatusEffect(STATUS_INVISIBLE)) then
                 local targetbody = target:LookupBone(bone)
-                local targetpos, targetang = target:GetBonePosition(targetbody)
-                if (target != ply && targetpos:Distance(ply:EyePos()) < dist) then
+                if (targetbody != nil) then
                     local targetpos, targetang = target:GetBonePosition(targetbody)
-                    local norm = (targetpos-LocalPlayer():EyePos()):GetNormalized()
-                    local ang = norm:Dot(LocalPlayer():EyeAngles():Forward())
-                    local tricker = (12-math.sqrt(targetpos:Distance(ply:EyePos())))/60
-                    if ang > 0.75-tricker then
-                        local viewangles = ply:EyeAngles()
-                        local targetbody = target:LookupBone(bone)
-                        
-                        local tr = util.TraceLine({
-                            mask = MASK_SHOT,
-                            start = LocalPlayer():EyePos(),
-                            endpos = targetpos,
-                            filter = {LocalPlayer()}
-                        })
-
-                        if tr.Entity != v then return end
-                        
+                    if (target != ply && targetpos:Distance(ply:EyePos()) < dist) then
                         local targetpos, targetang = target:GetBonePosition(targetbody)
-                        local aimto = (targetpos-ply:GetShootPos()):Angle()
-                        local thing = LerpAngle(FrameTime()*speed, ply:EyeAngles(), aimto)
-                        cmd:SetViewAngles(Angle(thing.p, thing.y, 0))
+                        local norm = (targetpos-LocalPlayer():EyePos()):GetNormalized()
+                        local ang = norm:Dot(LocalPlayer():EyeAngles():Forward())
+                        local tricker = (12-math.sqrt(targetpos:Distance(ply:EyePos())))/60
+                        if ang > 0.75-tricker then
+                            local viewangles = ply:EyeAngles()
+                            local targetbody = target:LookupBone(bone)
+                            
+                            local tr = util.TraceLine({
+                                mask = MASK_SHOT,
+                                start = LocalPlayer():EyePos(),
+                                endpos = targetpos,
+                                filter = {LocalPlayer()}
+                            })
+
+                            if tr.Entity != v then return end
+                            
+                            local targetpos, targetang = target:GetBonePosition(targetbody)
+                            local aimto = (targetpos-ply:GetShootPos()):Angle()
+                            local thing = LerpAngle(FrameTime()*speed, ply:EyeAngles(), aimto)
+                            cmd:SetViewAngles(Angle(thing.p, thing.y, 0))
+                        end
                     end
                 end
             end

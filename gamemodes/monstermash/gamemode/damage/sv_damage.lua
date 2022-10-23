@@ -79,14 +79,14 @@ function GM:EntityTakeDamage(victim, dmginfo)
     end
     
     // Scale bullet damage if armor'd
-    if (victim:GetBloodColor() == BLOOD_COLOR_MECH) then
+    if (victim:GetBloodColor() == BLOOD_COLOR_MECH && dmginfo:IsDamageType(DMG_BULLET)) then
         dmginfo:ScaleDamage(0.5)
     end
         
     // Viewpunch if hit by a melee weapon
-    if IsValid(victim) && victim:IsPlayer() && (dmginfo:GetDamageType() == DMG_SLASH || dmginfo:GetDamageType() == DMG_DIRECT) then
+    if IsValid(victim) && victim:IsPlayer() && (dmginfo:IsDamageType(DMG_SLASH) || dmginfo:IsDamageType(DMG_DIRECT)) then
         local force = 50
-        if dmginfo:GetDamageType() == DMG_DIRECT then
+        if dmginfo:IsDamageType(DMG_DIRECT) then
             force = 3
         end
         local punch = math.Clamp(force*((math.random(1,2)*2)-3),force*((math.random(1,2)*2)-3),force*((math.random(1,2)*2)-3))

@@ -200,8 +200,8 @@ function ENT:RebuildPhysics()
 end
 
 function ENT:PhysicsCollide(data, physobj)
-	if (((data.HitEntity:IsPlayer() && data.HitEntity != self:GetMaster()) || (data.HitEntity.IsMMNPC && self:GetMaster() != data.HitEntity.Master)) && self:GetState() == "Chase") then
-        if (self.Master == nil && data.HitEntity.Master == nil) then return end
+	if (((data.HitEntity:IsPlayer() && (self:GetMaster() == nil || data.HitEntity != self:GetMaster())) || (data.HitEntity.IsMMNPC && self:GetMaster() != data.HitEntity.Master)) && self:GetState() == "Chase") then
+        if (self.Master == nil && data.HitEntity.IsMMNPC && data.HitEntity.Master == nil) then return end
 		physobj:SetVelocity(Vector(0,0,0))
 		self:SetState("Attack1")
         if (data.HitEntity:IsPlayer()) then

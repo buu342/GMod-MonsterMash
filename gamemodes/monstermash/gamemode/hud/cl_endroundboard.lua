@@ -252,23 +252,25 @@ function MM_EndRoundboard:show()
             local xpos = 300*wratio
             local ypos = 80*hratio
             local previous = nil
-            for k, v in pairs(textstack) do
-                if (v.item == nil) then
-                    if (previous != nil && previous.xposoffset > 100) then
-                        break
+            if (textstack != nil && textstack != {}) then
+                for k, v in pairs(textstack) do
+                    if (v.item == nil) then
+                        if (previous != nil && previous.xposoffset > 100) then
+                            break
+                        end
+                        v.item = vgui.Create("DLabel", self)
+                        v.item.xposoffset = 255
+                        v.item:SetFont("MMTabs")
+                        v.item:SetText(v.text)
+                        v.item:SizeToContents()
+                    else
+                        v.item.xposoffset = Lerp(RealFrameTime()*10, v.item.xposoffset, 0)
                     end
-                    v.item = vgui.Create("DLabel", self)
-                    v.item.xposoffset = 255
-                    v.item:SetFont("MMTabs")
-                    v.item:SetText(v.text)
-                    v.item:SizeToContents()
-                else
-                    v.item.xposoffset = Lerp(RealFrameTime()*10, v.item.xposoffset, 0)
+                    v.item:SetPos(xpos+v.item.xposoffset*wratio, ypos)
+                    v.item:SetColor(Color(0, 0, 0, 255-v.item.xposoffset))
+                    ypos = ypos + 34*hratio
+                    previous = v.item
                 end
-                v.item:SetPos(xpos+v.item.xposoffset*wratio, ypos)
-                v.item:SetColor(Color(0, 0, 0, 255-v.item.xposoffset))
-                ypos = ypos + 34*hratio
-                previous = v.item
             end
             
             // Handle treats display

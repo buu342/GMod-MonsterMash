@@ -335,7 +335,7 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
 	util.Effect("mm_Spoopyghost", effectdata)
     
     // Select the player's death
-    if (dmginfo:GetDamageType() != DMG_DISSOLVE) then
+    if (dmginfo:IsDamageType(DMG_DISSOLVE)) then
         if (victim:HasKillFlag(KILL_BLEED)) then
             self:GoreNormalDeath(victim)
             victim:GetRagdollEntity():Remove()
@@ -387,7 +387,7 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
         elseif (victim:HasStatusEffect(STATUS_ONFIRE)) then
             self:GoreFire(victim)
             victim:GetRagdollEntity():Remove()
-        elseif (!victim:MissingBothLegs() && victim:GetLastDamage().totalamount >= 50 && bit.band(dmginfo:GetDamageType(), DMG_BULLET) == DMG_BULLET) then
+        elseif (!victim:MissingBothLegs() && victim:GetLastDamage().totalamount >= 50 && dmginfo:IsDamageType(DMG_BULLET)) then
             MakeExtraBodyGibs(victim, dmginfo)
             self:BlowTorsoOff(victim)
             victim:GetRagdollEntity():Remove()
@@ -427,7 +427,7 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
 end
 
 function MakeExtraBodyGibs(ply, dmginfo)
-    if (ply:GetLastDamage().totalamount >= 30 && bit.band(dmginfo:GetDamageType(), DMG_BULLET) == DMG_BULLET) then
+    if (ply:GetLastDamage().totalamount >= 30 && dmginfo:IsDamageType(DMG_BULLET)) then
         local ent = ents.Create("prop_ragdoll")
         ent:SetModel(ply:GetCharacter().gib_chunks)
         ent:SetSkin(ply:GetSkin())
