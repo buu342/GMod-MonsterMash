@@ -1,8 +1,15 @@
+if MusicList then return end // Prevent autorefresh
+ 
 MusicList = {
     {
         name = "2 SPOOKY 4 U",
         author = "Griffin Lewis",
         song = "sound/music/2Spooky4U.ogg",
+    },
+    {
+        name = "Chopin's Ghost",
+        author = "Bert Shefter",
+        song = "sound/music/ChopinsGhost.ogg",
     },
     {
         name = "Danse Macabre",

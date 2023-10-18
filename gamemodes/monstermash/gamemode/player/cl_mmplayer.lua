@@ -78,6 +78,9 @@ hook.Add("CalcMainActivity", "MM_Animations_DodgeRoll", function(ply, velocity)
         return ply.CalcIdeal, ply.CalcSeqOverride
     elseif ply:HasStatusEffect(STATUS_TAUNT) then
         local taunt = ply:GetCharacter().taunt[GetConVar("mm_wackytaunts"):GetInt()+1]
+        if (ply:GetSuperClass() == SUPERCLASS_WOLF) then
+            taunt = "taunt_mm_werewolf_howl"
+        end
         if ply.CurrentDodgeCycle == -1 || velocity:Length() > 50 then
             ply.CurrentDodgeCycle = 0
             ply:SetCycle(0)

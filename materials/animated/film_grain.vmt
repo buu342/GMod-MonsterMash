@@ -1,0 +1,16 @@
+"Refract"
+{
+    "$model" 1
+    "$refractamount" ".2"
+    "$REFRACTTINTTEXTURE" "animated/film_grain"
+    "$REFRACTTINT" "{250 230 200}"
+    "Proxies"
+    {
+        "AnimatedTexture"
+        {
+            "animatedTextureVar" "$REFRACTTINTTEXTURE"
+            "animatedTextureFrameNumVar" "$REFRACTTINTTEXTUREFRAME"
+            "animatedTextureFrameRate" "12"
+        }
+    }
+}

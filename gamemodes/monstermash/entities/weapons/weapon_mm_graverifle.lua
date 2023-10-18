@@ -32,7 +32,7 @@ SWEP.Points = 25
 SWEP.KillFeed = "%a tormented %v to death."
  
 SWEP.Primary.Sound            = "weapons/tormentor/tormentor_fire.wav" 
-SWEP.Primary.Damage           = 20
+SWEP.Primary.Damage           = 10
 SWEP.Primary.TakeAmmo         = 1
 SWEP.Primary.ClipSize         = 7
 SWEP.Primary.Spread           = 0

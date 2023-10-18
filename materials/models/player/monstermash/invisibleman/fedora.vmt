@@ -1,6 +1,10 @@
-"VertexlitGeneric"
+patch
 {
-	"$basetexture" "models/player/monstermash/invisibleman/fedora"
-	"$nocull" 1
-
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\invisibleman\fedora"
+$nocull 1
 }
+}
+

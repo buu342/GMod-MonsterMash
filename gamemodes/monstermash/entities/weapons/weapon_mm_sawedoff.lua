@@ -60,7 +60,7 @@ SWEP.CrosshairSize = 128
 SWEP.ReloadOutTime = 0.2
 SWEP.ReloadInTime  = 1.5
 
-SWEP.KillFlags = KILL_HEADEXPLODE
+SWEP.KillFlags = bit.bor(KILL_HEADEXPLODE, KILL_SCRIPTED) 
 SWEP.TraceName = "None"
 
 SWEP.EjectEffect = ""

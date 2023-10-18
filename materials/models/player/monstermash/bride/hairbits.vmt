@@ -1,9 +1,10 @@
-"VertexLitGeneric"
+vertexlitgeneric
 {
-	// Original shader: VertexLitTranslucentTexture
-	"$translucent" 1
-	"$basetexture" "models\player\monstermash\bride\hairbits"
-	"$halflambert" 1
-	"$nodecal" "1"
-	"$nocull" "1"
+$baseTexture "models\player\monstermash\bride\hairbits"
+$translucent 1
+$nodecal 1
+$nocull 1
 }
+
+
+

@@ -1,6 +1,10 @@
-"VertexlitGeneric"
+patch
 {
-	"$basetexture" "models\player\monstermash\werewolf/Werewolf_Diffuse"               
-
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\werewolf\werewolf_diffuse"
 
 }
+}
+

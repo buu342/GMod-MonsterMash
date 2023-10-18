@@ -1,6 +1,3 @@
-
-
-
 local wratio = ScrW()/1600
 local hratio = ScrH()/900
 
@@ -13,6 +10,7 @@ local mat_arm_right       = Material("vgui/hud/arm_right.png")
 local mat_skeleton_base   = Material("vgui/hud/base.png")
 local mat_corn_empty2     = Material("vgui/hud/candy_corn_empty2.png")
 local mat_corn_full       = Material("vgui/hud/candy_corn_full.png")
+local mat_corn_flash      = Material("vgui/hud/candy_corn_flash.png")
 local mat_hud_base        = Material("vgui/hud/hud_base")
 local mat_gravestone      = Material("vgui/hud/gravestone.png")
 local mat_gravestonetrick = Material("vgui/hud/gravestone_backdrop")
@@ -69,7 +67,7 @@ local deathhints = {
     "When choosing a melee weapon, decide what you’re trying to optimize your loadout for. Extra points, bleeding, dismembering, concussing, or perhaps a little bit of everything.",
     "Although they have no alternate attacks, the Coach Gun and Sawblade Launcher are the only primary weapons that can remove limbs.",
     "Finishing a melee dash will render you unable to dodgeroll out of harm’s way until your stamina has recharged!",
-    "Using a fully randomized loadout will earn you +5 extra points per kill.",
+    "Using a fully randomized loadout will grant an aditional treat.",
     "If your gun’s crosshairs aren’t red, you’re not close enough to your opponent for your shots to reach them. Get closer!",
     "Scoring a kill while barely clinging to life will earn you an extra treat.",
     "The stake kills most opponents with a single stab, but is left in their body after usage. Consider how many foes you’ll be taking on before deciding if you can risk losing your melee weapon in the middle of a fight.",
@@ -98,12 +96,28 @@ local SelectTime = {
     0, 0, 0, 0
 }
 
+local function DrawVerticalImageBar(x, y, w, h, mat, matalpha, percent, text, textcol, textyadd)
+    local time = 1-percent
+    local texturesize = h*hratio
+    surface.SetMaterial(mat)
+    surface.SetDrawColor(255, 255, 255, matalpha)
+    surface.DrawTexturedRectUV(x, y+(texturesize-texturesize*time), w*wratio, texturesize*time, 0, 1-time, 1, 1)
+    if (text != nil) then
+        if (textcol == nil) then
+            textcol = Color(255,255,255,255)
+        end
+        draw.SimpleTextOutlined(text, "MMDefaultFont", x+(w*wratio)/2, y+(h*hratio)/2+textyadd, textcol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
+    end
+end
+
 local heartbeatloop = nil
 local oldscore = 0
 local scorelist = {}
 local baranim = 0
 local oldstamina = 0
+local oldcorncharge = 0
 local staminacolor = Color(255, 115, 0, 255)
+local cornfade = 0
 local damagedir = {}
 hook.Add("HUDPaint", "MM_HUD", function()
     
@@ -262,14 +276,11 @@ hook.Add("HUDPaint", "MM_HUD", function()
         surface.SetDrawColor(255, 255, 255, 255)
         surface.SetMaterial(mat_heart_dark)
         surface.DrawTexturedRect(60*wratio, ScrH()-152*hratio, 53*wratio, 80*hratio)
-        surface.SetMaterial(mat_heart_light)
-        local hp = LocalPlayer():Health()/LocalPlayer():GetMaxHealth()
         local col = Color(255,255,255,255)
         if LocalPlayer():HasStatusEffect(STATUS_BLEED) then
             col = Color(255,0,0,255)
         end
-        surface.DrawTexturedRectUV(60*wratio, math.floor(ScrH()-151*hratio+80*(1-hp)*hratio), 53*wratio, math.ceil(80*hp*hratio), 0, 1-hp, 1, 1)
-        draw.SimpleTextOutlined(LocalPlayer():Health(), "MMDefaultFont", 84*wratio, ScrH()-103*hratio, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
+        DrawVerticalImageBar(60*wratio, math.floor(ScrH()-151*hratio), 53, 80, mat_heart_light, 255, 1-LocalPlayer():Health()/LocalPlayer():GetMaxHealth(), LocalPlayer():Health(), col, 7*hratio)
         
         if !LocalPlayer():MissingBothLegs() then
             if !LocalPlayer():MissingLeftLeg() then
@@ -301,11 +312,23 @@ hook.Add("HUDPaint", "MM_HUD", function()
         surface.SetMaterial(mat_corn_empty2)
         surface.DrawTexturedRect(194*wratio, ScrH()-151*hratio, 58*wratio, 80*hratio)
         if !LocalPlayer():MissingBothArms() then
-            surface.SetMaterial(mat_corn_full)
-            local time = 1-math.Clamp((LocalPlayer():GetNextHeal()-CurTime())/20,0,20)
-            surface.DrawTexturedRectUV(194*wratio, math.floor(ScrH()-151*hratio+80*(1-time)*hratio), 58*wratio, math.ceil(80*hratio*time), 0, 1-time, 1, 1)
-            if LocalPlayer():GetNextHeal() > CurTime() then
-                draw.SimpleTextOutlined(math.ceil(LocalPlayer():GetNextHeal()-CurTime()), "MMDefaultFont", 224*wratio, ScrH()-104*hratio, Color(255,255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,255))
+            local percent = math.Clamp((LocalPlayer():GetNextHeal()-CurTime())/20,0,20)
+            local regentimetext = nil
+            if (LocalPlayer():GetNextHeal() > CurTime()) then
+                regentimetext = math.ceil(LocalPlayer():GetNextHeal()-CurTime())
+            end
+            if (oldcorncharge > 0 && percent == 0 && oldcorncharge != 1) then
+                surface.PlaySound("gameplay/candycorn_recharge.wav")
+                cornfade = 255
+            end
+            oldcorncharge = percent
+            DrawVerticalImageBar(194*wratio, math.floor(ScrH()-151*hratio), 58, 80, mat_corn_full, 255, percent, regentimetext, Color(255, 255, 255, 255), 7*hratio)
+        
+            cornfade = Lerp(3*FrameTime(), cornfade, 0)
+            if (cornfade > 1) then
+                surface.SetMaterial(mat_corn_flash)
+                surface.SetDrawColor(255, 255, 255, cornfade)
+                surface.DrawTexturedRect(194*wratio, math.floor(ScrH()-151*hratio), 58*wratio, math.ceil(80*hratio))
             end
         end
         
@@ -344,6 +367,7 @@ hook.Add("HUDPaint", "MM_HUD", function()
             // Tombstone trick aura
             if (LocalPlayer():GetWeaponTable() != nil) then
                 local trickamount = 0
+                local matalpha = 255
                 if (LocalPlayer():HasStatusEffect(STATUS_INVISIBLE)) then
                     trickamount = LocalPlayer():GetStatusEffectTime(STATUS_INVISIBLE)/15
                 elseif (LocalPlayer():HasStatusEffect(STATUS_SIGHT)) then
@@ -354,10 +378,9 @@ hook.Add("HUDPaint", "MM_HUD", function()
                     trickamount = LocalPlayer():GetTreatStack()/GAMEMODE.Weapons["Trick"][LocalPlayer():GetWeaponTable()["Trick"]].cost
                 end
                 if (trickamount == 1) then
-                    surface.SetDrawColor(255, 255, 255, 255*math.abs(math.sin(CurTime()*4)))
-                else
-                    surface.SetDrawColor(255, 255, 255, 255)
+                    matalpha = 255*math.abs(math.sin(CurTime()*4))
                 end
+                DrawVerticalImageBar(ScrW()-108*wratio, ScrH()-math.floor(155*hratio), 101, 146, mat_gravestonetrick, matalpha, 1-trickamount)
                 surface.SetMaterial(mat_gravestonetrick)
                 surface.DrawTexturedRectUV(ScrW()-108*wratio, ScrH()-math.floor(155*hratio)+146*hratio*(1-trickamount), 101*wratio, math.ceil(146*hratio*trickamount), 0, 1-trickamount, 1, 1)
                 surface.SetDrawColor(255, 255, 255, 255)
@@ -576,7 +599,8 @@ hook.Add("PostPlayerDraw", "MM_HUDNameAmmo", function(ply)
     local tr = util.GetPlayerTrace(LocalPlayer())
     local trace = util.TraceLine(tr)
     
-	if trace.Hit && trace.HitNonWorld && ply == trace.Entity then 
+	if trace.Hit && trace.HitNonWorld && ply == trace.Entity then
+        //for i=1, 
         local pos = ply:GetBonePosition(ply:LookupBone("ValveBiped.Bip01_Head1"))
         pos.z = pos.z + 30
         local ang = ply:EyeAngles()
@@ -722,3 +746,24 @@ net.Receive("MM_DamageDirection", function(len)
 		smallest.time = CurTime()+1
 	end
 end)
+
+hook.Add( "RenderScreenspaceEffects", "OldTimeyMode", function()
+
+    if (GetConVar("mm_oldtimeymode"):GetBool()) then
+        local tab = {
+            [ "$pp_colour_addr" ] = 0,
+            [ "$pp_colour_addg" ] = 0,
+            [ "$pp_colour_addb" ] = 0,
+            [ "$pp_colour_brightness" ] = 0,
+            [ "$pp_colour_contrast" ] = 1,
+            [ "$pp_colour_colour" ] = 0,
+            [ "$pp_colour_mulr" ] = 0,
+            [ "$pp_colour_mulg" ] = 0,
+            [ "$pp_colour_mulb" ] = 0
+        }
+        
+        DrawColorModify(tab)
+        DrawMaterialOverlay("animated/film_grain", 0)
+    end
+
+end )

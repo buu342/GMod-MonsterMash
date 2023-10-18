@@ -12,6 +12,8 @@ ENT.Gravity = 0.3
 ENT.LifeTime = 10
 ENT.SwooshSound = Sound("weapons/fx/nearmiss/bulletltor13.wav")
 
+ENT.DamageType = DMG_SNIPER
+
 ENT.BurnChance = 100
 
 ENT.FireLight = true

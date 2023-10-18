@@ -74,7 +74,18 @@ hook.Add("RenderScreenspaceEffects", "MM_MaterialsOnPlayers", function()
             if v.lastTextureBlendTime > 0 then
                 v.lastTextureBlendTime = v.lastTextureBlendTime - FrameTime()
             end
-        end 
+        end
+        /*
+        for k, v in pairs(ents.GetAll()) do 
+            if (v.IsBloodyGibs) then
+                render.SetBlend(1)
+                render.MaterialOverride(BloodMat)
+                v:DrawModel() 
+                render.SetBlend(1) 
+                render.MaterialOverride(0) 
+            end
+        end
+        */
 	cam.End3D() 
 end)
 
@@ -171,6 +182,36 @@ hook.Add("RenderScreenspaceEffects", "MM_BloodiedScreen", function()
     end
 end)
 
+hook.Add("PostPlayerDraw", "MM_BloodDripsGorejar", function(ply)
+    if ply:HasStatusEffect(STATUS_GOREJARED) then
+        if ply.BloodNextDrip == nil then
+            ply.BloodNextDrip = 0
+        end
+        if (ply.BloodNextDrip > CurTime()) then return end
+        ply.BloodNextDrip = CurTime() + math.Rand(0.01, 0.05)
+        
+        local Spawnpos = ply:GetBonePosition(ply:LookupBone("ValveBiped.Bip01_Spine4"))
+        local LightColor = render.GetLightColor(Spawnpos)*255
+        LightColor.r = math.Clamp(LightColor.r, 70, 255)
+        
+        local RandVel = VectorRand()*16
+        RandVel.z = 0
+
+        local emitter = ParticleEmitter(Spawnpos)
+        local particle = emitter:Add("effects/blooddrop", Spawnpos + RandVel)
+        if (particle) then
+            particle:SetVelocity(Vector(0, 0, math.Rand(-150, -50)))
+            particle:SetDieTime(1)
+            particle:SetStartAlpha(255)
+            particle:SetEndAlpha(255)
+            particle:SetStartSize(3)
+            particle:SetEndSize(0)
+            particle:SetColor(LightColor.r*0.5, 0, 0)
+        end
+        emitter:Finish()
+    end
+end)
+
 
 /**************************************************************
                           Concussion
@@ -193,6 +234,7 @@ local MirroredMaterial = CreateMaterial(
     "UnlitGeneric",
     {
         [ '$basetexture' ] = MirrorRT,
+        [ '$REFRACTTINT'] = "250 230 200",
         [ '$basetexturetransform' ] = "center .5 .5 scale -1 1 rotate 0 translate 0 0",
     }
 )
@@ -518,6 +560,8 @@ end)
 
 hook.Add("RenderScreenspaceEffects", "MM_EletrocutedHUD", function()
 	if LocalPlayer():HasStatusEffect(STATUS_ELECTROCUTED) || LocalPlayer():HasStatusEffect(STATUS_SELFELECTROCUTED) then
+        render.SetBlend(1) 
+        render.MaterialOverride(0) 
 		DrawMaterialOverlay("animated/zappy", 0.2)
 	end
 end)

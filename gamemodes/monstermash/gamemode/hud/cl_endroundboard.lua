@@ -28,6 +28,7 @@ local medaldescriptions = {
     ["gib"] = "You blew an opponent to bits.",  
     ["immobilized"] = "You killed an opponent who was stuck in place.",  
     ["kill_healing"] = "You killed an opponent who was trying to eat their candy corn.",  
+    ["kill_upon_spawning"] = "You killed an opponent immediately upon spawning.",  
     ["killed_jammed"] = "You killed an opponent whose gun was jammed.",
     ["killed_reloading"] = "You killed an opponent whom was reloading.",    
     ["killstreak"] = "You killed 3+ opponents in one life.",  
@@ -130,7 +131,27 @@ local wackyachievements = {
     "You dislocated your pancreas %d times",
     "You caused %d wheat famines in Bowling Green, Ohio",
     "You explored %d shipwrecks south of the Indian Ocean",
-    "You pirated %d movies"
+    "You pirated %d movies",
+    "You swallowed %d Toyota 7 Series 6,000 lb. lift capacity forklifts",
+    "You graduated with %d PhD's you're not using",
+    "You snuck past %d sentry turrets",
+    "You smuggled %d diamonds across the Denmark border",
+    "You raked the leaves off your front lawn %d times",
+    "You infiltrated %d Chinese submarines",
+    "You visited a Siamese chiropractor %d times",
+    "You did the Trannsylvania Twist %d times",
+    "You crafted %d improvised explosive devices in your basement",
+    "You were charged with treason %d times",
+    "You were indicted for horse theft %d times",
+    "You were chased by %d mall cops",
+    "You walked %d kilometers",
+    "You carved %d Jack-o-lanterns",
+    "You streamed all %d of the Pirates of the Carribean movies",
+    "You started %d projects that you should probably finish",
+    "You swallowed %d Toyota 7 Series 6,000 lb. lift capacity forklifts",
+    "You attended %d wedding rehearsals",
+    "You successfully removed %d Jenga blocks before the tower collapsed",
+    "You memorized all %d of the secret codes for gaining entry to Octavius Vault"
 }
 
 function MM_EndRoundboard:show()

@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\player\monstermash\nosferatu_rimlight\nosferatu_eyes"		
+	"$halflambert" "1"	
+	"$model" "1"
+
+
+}

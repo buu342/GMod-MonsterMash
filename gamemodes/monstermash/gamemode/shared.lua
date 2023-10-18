@@ -13,6 +13,7 @@ include("Rounds/sh_wackyrounds.lua")
 include("Stats/sh_playerstats.lua")
 include("Stats/sh_treats.lua")
 include("Tricks/sh_tricks.lua")
+include("Gore/sh_gore.lua")
 
 CreateConVar("mm_orgasmicdeathsounds", "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_tasermanmode",        "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
@@ -33,6 +34,7 @@ CreateConVar("mm_maxrounds",           "10",  FCVAR_ARCHIVE + FCVAR_NOTIFY + FCV
 CreateConVar("mm_endofmonstermash",    "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_endroundboard_time",  "4",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_slomo_duration",      "3",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+CreateConVar("mm_throwablespawncool",  "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 
 team.SetUp(TEAM_SPECT,     "Spectators",    Color(0, 0, 0, 255))
 team.SetUp(TEAM_MONST,     "Monsters",      Color(255, 140, 0, 255))
@@ -71,7 +73,7 @@ function GM:PrecacheEverything()
         // Precache gibs
         local files, directories = file.Find("models/monstermash/gibs/*.mdl", mode)
         for k, v in pairs(files) do
-            cacheit("models/monstermash/"..v)
+            cacheit("models/monstermash/gibs/"..v)
         end
     
         // Precache weapons

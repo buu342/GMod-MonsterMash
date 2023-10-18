@@ -1,11 +1,12 @@
-"VertexLitGeneric"
+patch
 {
-	"$basetexture"	"models\player\monstermash\nosferatu\nosferatu_coat"	
-	"$phong" "0"
-	$nocull 1
-//	"$phongexponent" "8"
-	"$phongboost" "1"	
-	"$phongfresnelranges"	"[1 3 8]"
-//	"$halflambert" "1"
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\nosferatu\nosferatu_coat"
+$nocull 1
+}
+}
 
-	"$phongalbedotint" "1"								}
+
+

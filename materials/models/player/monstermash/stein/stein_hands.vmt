@@ -1,9 +1,14 @@
-"VertexLitGeneric"
+patch
 {
-	"$baseTexture" "models\player\monstermash\stein/stein_hands"
-	
-	"$phong" "1"
-	"$phongexponent" "5"
-	"$phongboost" "0.5"
-	"$phongfresnelranges" "[0.05 0.3 0.7]"
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\stein\stein_hands"
+
 }
+}
+
+
+
+
+

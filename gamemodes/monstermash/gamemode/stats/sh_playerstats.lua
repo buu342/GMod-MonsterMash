@@ -105,6 +105,7 @@ function GM:SavePlayerStats(ply)
     else
         id = ply:SteamID64()
     end
+    if (self.PlayerStats[id] == nil) then return end
     local converted = util.TableToJSON(self.PlayerStats[id])
     file.Write("monstermash/mm_playerdata_"..id..".json", converted)
 end

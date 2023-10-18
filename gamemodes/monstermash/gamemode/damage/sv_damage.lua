@@ -167,6 +167,7 @@ function GM:EntityTakeDamage(victim, dmginfo)
 	end
 end
 
+// lua_run local dmginfo = DamageInfo() dmginfo:SetDamage(1) dmginfo:SetDamageCustom(STATUS_MISSINGLIMB) Entity(1):TakeDamageInfo(dmginfo)
 function GM:LoseLimb(victim, dmginfo, force)
     if force == nil && victim:Health()-dmginfo:GetDamage() <= 0 then return end
     
@@ -193,7 +194,7 @@ function GM:LoseLimb(victim, dmginfo, force)
                 if !victim:MissingLeftArm() then
                     victim:SetStatusEffect(STATUS_MISSINGLARM, dmginfo)
                     victim:EmitSound("ambient/machines/slicer1.wav")
-                    self:GoreCreateGib(victim, victim:GetCharacter().gib_armleft, victim:GetPos(), victim:GetAngles())
+                    self:GoreCreateGibClient(victim, victim:GetCharacter().gib_armleft, victim:GetPos(), victim:GetAngles(), nil, false, true)
                     if victim:MissingRightArm() then
                         victim:SetBodygroup(GIBGROUP_ARMS, GIBGROUP_ARMS_NONE)
                     else
@@ -213,7 +214,7 @@ function GM:LoseLimb(victim, dmginfo, force)
                 if !victim:MissingRightArm() then
                     victim:SetStatusEffect(STATUS_MISSINGRARM, dmginfo)
                     victim:EmitSound("ambient/machines/slicer1.wav")
-                    self:GoreCreateGib(victim, victim:GetCharacter().gib_armright, victim:GetPos(), victim:GetAngles())
+                    self:GoreCreateGibClient(victim, victim:GetCharacter().gib_armright, victim:GetPos(), victim:GetAngles(), nil, false, true)
                     if victim:MissingLeftArm() then
                         victim:SetBodygroup(GIBGROUP_ARMS, GIBGROUP_ARMS_NONE)
                     else
@@ -233,7 +234,7 @@ function GM:LoseLimb(victim, dmginfo, force)
                 if !victim:MissingLeftLeg() then
                     victim:SetStatusEffect(STATUS_MISSINGLLEG, dmginfo)
                     victim:EmitSound("ambient/machines/slicer1.wav")
-                    self:GoreCreateGib(victim, victim:GetCharacter().gib_legleft, victim:GetPos(), victim:GetAngles())
+                    self:GoreCreateGibClient(victim, victim:GetCharacter().gib_legleft, victim:GetPos(), victim:GetAngles(), nil, false, true)
                     if victim:MissingRightLeg() then
                         victim:SetBodygroup(GIBGROUP_LEGS, GIBGROUP_LEGS_NONE)
                     else
@@ -250,7 +251,7 @@ function GM:LoseLimb(victim, dmginfo, force)
                 if !victim:MissingRightLeg() then
                     victim:SetStatusEffect(STATUS_MISSINGRLEG, dmginfo)
                     victim:EmitSound("ambient/machines/slicer1.wav")
-                    self:GoreCreateGib(victim, victim:GetCharacter().gib_legright, victim:GetPos(), victim:GetAngles())
+                    self:GoreCreateGibClient(victim, victim:GetCharacter().gib_legright, victim:GetPos(), victim:GetAngles(), nil, false, true)
                     if victim:MissingLeftLeg() then
                         victim:SetBodygroup(GIBGROUP_LEGS, GIBGROUP_LEGS_NONE)
                     else

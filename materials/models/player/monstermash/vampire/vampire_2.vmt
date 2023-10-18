@@ -1,6 +1,16 @@
-"VertexLitGeneric"
+patch
 {
-	"$baseTexture" "models\player\monstermash\vampire/vampire_2"
-        "$nocull" "1"
-
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\vampire\vampire_2"
+$nocull 1
 }
+}
+
+
+
+
+
+
+

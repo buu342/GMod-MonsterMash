@@ -1,5 +1,6 @@
 "VertexLitGeneric"
 {
 	"$basetexture" "Models/player/monstermash/gibs/bloody"
+  //           "$bumpmap" "Models/player/monstermash/gibs/acid_skin_n"
 	"$translucent" "1"
 }

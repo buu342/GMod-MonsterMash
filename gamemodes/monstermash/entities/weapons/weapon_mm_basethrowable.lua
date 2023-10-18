@@ -82,6 +82,15 @@ function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 0, "MMBase_Primed")
 end
 
+function SWEP:Initialize()
+    BaseClass.Initialize(self)
+    if (GetConVar("mm_throwablespawncool"):GetBool()) then
+        timer.Simple(0, function()
+            self.Owner:SetWeaponCooldown(self, self.Primary.RechargeTime)
+        end)
+    end
+end
+
 function SWEP:MM_SetAnimation(act)
     local vm = self.Owner:GetViewModel()
     if !IsValid(vm) then return end

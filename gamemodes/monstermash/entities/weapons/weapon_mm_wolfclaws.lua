@@ -36,7 +36,7 @@ SWEP.Primary.Delay          = 0.62
 SWEP.Primary.SwingSound     = Sound("weapons/bone/swing1.wav")
 SWEP.Primary.SwingHitSound  = {Sound("weapons/bone/boner1.wav"), Sound("weapons/bone/boner2.wav")}
 
-SWEP.HoldType         = "passive" 
+SWEP.HoldType         = "melee" 
 SWEP.HoldTypeAttack   = "melee"
 
 SWEP.SwingTime = 0.3

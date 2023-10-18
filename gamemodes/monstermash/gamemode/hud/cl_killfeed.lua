@@ -28,6 +28,7 @@ local SuicideMessages = {
     " was detained by the IRS for committing tax fraud.",
     " went home to take a spooky dooky.",
     " was frightened by their own intelligence.",
+    " did not return the slab, and suffered the curse.",
 }
 
 local function AddKillFeed(killtable)

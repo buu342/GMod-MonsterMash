@@ -1,8 +1,12 @@
-"VertexLitGeneric"
+patch
 {
-	// Original shader: VertexLitTranslucentTexture
-	//"$translucent" 1
-"$alphatest" 1
-	"$basetexture" "models/player/monstermash/scarecrow/not_so_scared_crow"
-
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\scarecrow\not_so_scared_crow"
+$alphatest 1
 }
+}
+
+
+

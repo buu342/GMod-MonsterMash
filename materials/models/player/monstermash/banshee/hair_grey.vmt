@@ -1,7 +1,12 @@
-vertexlitgeneric
+patch
 {
-$basetexture "models/player/monstermash/banshee/hair_grey"
-$surfaceprop flesh
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\banshee\hair_grey"
 $nocull 1
 $translucent 1
 }
+}
+
+

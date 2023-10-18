@@ -33,6 +33,15 @@ function ENT:OnRemove()
 end
 	
 function ENT:Think()
+    if SERVER then
+        if (self.Owner != nil && IsValid(self.Owner)) then
+            if (!self.Owner:Alive()) then
+                self:Remove()
+            end
+        else
+            self:Remove()
+        end
+    end
     self:NextThink(CurTime()) return true
 end
 

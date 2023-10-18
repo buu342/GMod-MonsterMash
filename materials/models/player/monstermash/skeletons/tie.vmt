@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\player\monstermash\skeletons\tie"
+        "$nocull" "1"
+}
+

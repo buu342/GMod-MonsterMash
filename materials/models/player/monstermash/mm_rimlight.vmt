@@ -1,0 +1,18 @@
+ VertexLitGeneric
+{
+//	$phong			1
+
+	$bumpmap		"models/player/monstermash/flat_normal"
+//	$phongexponent		1		
+//	$phongexponenttexture	"models/player/monstermash/flat_normal"
+//	$phongboost		1.0
+//	$phongfresnelranges	"[0 0.5 1]"
+
+
+//	$halflambert 1
+
+
+//	$rimlight               1
+//	$rimlightexponent       0.2
+//	$rimlightboost          0.5			
+}

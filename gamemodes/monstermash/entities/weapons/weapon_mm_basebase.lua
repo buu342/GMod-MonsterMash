@@ -271,9 +271,22 @@ function SWEP:HandleMovementSpeed()
     if (self.Owner:MissingBothLegs()) then
         speed = math.min(speed, self.NoLegsSpeed)
     else
-        speed = math.min(speed, self.RunSpeed)
+        local multiplier = 1
+        if (self.Base == "weapon_mm_basemelee") then
+            local tr = self.Owner:GetEyeTrace()
+            if (IsValid(tr.Entity) && tr.Entity:IsPlayer()) then
+                if (tr.HitPos:Distance(tr.StartPos) < 150) then
+                    multiplier = 1+math.max(0, self:GetMMBase_MeleeSwing()-CurTime())*3
+                end
+                if (self:Backstab()) then
+                    multiplier = 1.2
+                end
+            end
+        end
+        speed = math.min(speed, self.RunSpeed)*multiplier
     end
     
+    // Melee charging
     if self.Owner:IsMeleeCharging() && self.Owner:GetActiveWeapon().Base == "weapon_mm_basemelee" then
         speed = self.ChargeSpeed
     end
@@ -646,6 +659,7 @@ local function boolToNumber(value)
 end
 
 if CLIENT then
+    local wratio = 1920/ScrW()
     local Tex_white = surface.GetTextureID("vgui/white")
     function SWEP:DrawPercentageCircle(x, y, radius, seg, progression)
         local cir = { [1] = { x = x, y = y } }
@@ -691,11 +705,11 @@ if CLIENT then
             if self:GetMMBase_Charge() > 0 && (!self.Primary.HideCharge || self.Owner:KeyDown(IN_ATTACK2)) then
                 if self.CrosshairChargeType == CHARGETYPE_CIRCLE then
                     local size = armMissing*self.CrosshairChargeSize/2
-                    size = ScrW()*(size/2560)
+                    size = wratio*(size/(1.5))
                     
                     self:DrawPercentageCircle(ScrW()/2, ScrH()/2, size, 100, 99-self:GetMMBase_Charge())
                 elseif self.CrosshairChargeType != CHARGETYPE_NONE then
-                    local size = (ScrW()*self.CrosshairSize*armMissing)/2560
+                    local size = wratio*(self.CrosshairSize/(1.5))*armMissing
                     local charge = self:GetMMBase_Charge()/100
                     local iheight = size*charge
                     local icharge = 1-charge
@@ -710,7 +724,7 @@ if CLIENT then
             if self.CrosshairRechargeMaterial != nil && self.Owner:GetWeaponCooldown(self) > 0 then
                 if self.CrosshairRechargeType == CHARGETYPE_SHRINK then
                     local size = (self.CrosshairSize+self.CrosshairRechargeSize*(self.Owner:GetWeaponCooldown(self)/self.Owner:GetWeaponCooldownMax(self)))*armMissing
-                    size = ScrW()*(size/2560)
+                    size = wratio*(size/1.5)
                     
                     surface.SetMaterial(self.CrosshairRechargeMaterial)
                     surface.SetDrawColor(self.CrosshairRechargeColor)
@@ -718,7 +732,7 @@ if CLIENT then
                 elseif self.CrosshairRechargeType == CHARGETYPE_CIRCLE then
                     //self:DrawPercentageCircle(ScrW()/2, ScrH()/2, self.CrosshairChargeSize/2, 100, 99-self:GetMMBase_Charge())
                 else 
-                    local size = (ScrW()*self.CrosshairSize*armMissing)/2560
+                    local size = wratio*(self.CrosshairSize*armMissing/1.5)
                     local charge = 1-(self.Owner:GetWeaponCooldown(self)/self.Owner:GetWeaponCooldownMax(self)) 
                     local iheight = size*charge
                     local icharge = 1-charge
@@ -733,7 +747,7 @@ if CLIENT then
             if self.CrosshairOverchargeMaterial != nil && self:GetMMBase_OverChargeAmount() > 0 then
                 if self.CrosshairOverchargeType == CHARGETYPE_SHRINK then
                     local size = (self.CrosshairSize+self.CrosshairOverchargeSize*(self:GetMMBase_OverChargeAmount()/100))*armMissing
-                    size = ScrW()*(size/2560)
+                    size = wratio*(size/1.5)
                     
                     surface.SetMaterial(self.CrosshairOverchargeMaterial)
                     surface.SetDrawColor(self.CrosshairOverchargeColor)
@@ -755,7 +769,7 @@ if CLIENT then
             // Crosshair
             if self.CrosshairMaterial != nil then
                 local size = self.CrosshairSize*armMissing
-                size = ScrW()*(size/2560)
+                size = wratio*(size/1.5)
                 
                 surface.SetMaterial(self.CrosshairMaterial)
                 if (self:LookingAtShootable()) then
@@ -838,6 +852,12 @@ function SWEP:OnDrop()
 end
 
 function SWEP:TranslateActivity(act)
+
+    /*
+    if CLIENT && act != 990 && act != 996 && act != 997 && act != 1001 then
+        self.Owner:ChatPrint(act)
+    end
+    */
 
 	if (self.Owner:IsNPC()) then
 		if (self.ActivityTranslateAI[ act ]) then

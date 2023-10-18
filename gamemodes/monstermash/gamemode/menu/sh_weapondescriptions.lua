@@ -1,3 +1,5 @@
+if GM.Weapons then return end // Prevent autorefresh
+
 GM.Weapons = {}
 
 GM.Weapons["Melee"] = {}

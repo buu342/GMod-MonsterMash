@@ -34,10 +34,9 @@ local controls = {
 local updates = {
     "What's new this update?",
     "",
-    "2 New Weapons",
-    "2 New Tricks",
-    "Post-Round Stats Screen",
-    "Brought back 2 old wacky rounds"
+    "Bug Fixes",
+    "QOL changes",
+    "General maintenance"
 }
 
 // Map credits
@@ -77,6 +76,7 @@ local optionslist = {
     { text = "Auto reload when empty",        command = "mm_autoreload" },
     { text = "Screen blood",                  command = "mm_screenblood" },
     { text = "End Round Scoreboard",          command = "mm_endroundboard" },
+    { text = "Ye Olde Mode (experimental)",   command = "mm_oldtimeymode" },
     //{ text = "Confetti blood",                command = "mm_confetti" },
 }
 
@@ -110,6 +110,7 @@ local adminoptions = {
     [19] = { text = "Tazerman Mode",               command = "mm_tasermanmode", checkbox = true },
     [20] = { text = "Wacky Taunts",                command = "mm_wackytaunts", checkbox = true },
     [21] = { text = "End of Monster Mash",         command = "mm_endofmonstermash", checkbox = true },
+    [21] = { text = "Throwable Cooldown on Spawn", command = "mm_throwablespawncool", checkbox = true },
 }
 
 // Add the map's creator to the credits

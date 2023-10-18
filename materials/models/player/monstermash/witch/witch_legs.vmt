@@ -1,5 +1,16 @@
-vertexlitgeneric
+patch
 {
-$basetexture "models/player/monstermash/witch/witch_legs"
-$surfaceprop flesh
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\witch\witch_legs"
 }
+}
+
+
+
+
+
+
+
+

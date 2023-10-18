@@ -1,3 +1,5 @@
+if currentPlaylist then return end // Prevent autorefresh
+
 local MUSFLAG_LOOP     = 0x01
 local MUSFLAG_SHUFFLE  = 0x02
 local MUSFLAG_AUTOPLAY = 0x04
@@ -14,6 +16,7 @@ local currentFlags = 0
 local oldState = MUSSTATE_NONE
 
 local currentPlaylist = {}
+
 
 function GeneratePlaylist(startsong)
     startsong = MusicList[startsong]
