@@ -94,7 +94,7 @@ end
 function GM:SetRoundState(val)
     self.MMGamemode_RoundState = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundState")
+        net.Start("MMGLOBAL_SetRoundState", true)
             net.WriteInt(val, 32)
         net.Broadcast()
     end
@@ -103,7 +103,7 @@ end
 function GM:SetRoundNum(val)
     self.MMGamemode_RoundNum = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundNum")
+        net.Start("MMGLOBAL_SetRoundNum", true)
             net.WriteInt(val, 32)
         net.Broadcast()
     end
@@ -112,7 +112,7 @@ end
 function GM:SetRoundBuyTime(val)
     self.MMGamemode_RoundBuyTime = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundBuyTime")
+        net.Start("MMGLOBAL_SetRoundBuyTime", true)
             net.WriteFloat(val)
         net.Broadcast()
     end
@@ -121,7 +121,7 @@ end
 function GM:SetRoundTime(val)
     self.MMGamemode_RoundTime = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundTime")
+        net.Start("MMGLOBAL_SetRoundTime", true)
             net.WriteFloat(val)
         net.Broadcast()
     end
@@ -130,7 +130,7 @@ end
 function GM:SetRoundEndTime(val)
     self.MMGamemode_RoundEndTime = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundEndTime")
+        net.Start("MMGLOBAL_SetRoundEndTime", true)
             net.WriteFloat(val)
         net.Broadcast()
     end
@@ -139,7 +139,7 @@ end
 function GM:SetRoundsToWacky(val)
     self.MMGamemode_RoundsToWacky = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundsToWacky")
+        net.Start("MMGLOBAL_SetRoundsToWacky", true)
             net.WriteInt(val, 32)
         net.Broadcast()
     end
@@ -148,7 +148,7 @@ end
 function GM:SetRoundWinnerType(val)
     self.MMGamemode_RoundWinnerType = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundWinnerType")
+        net.Start("MMGLOBAL_SetRoundWinnerType", true)
             net.WriteInt(val, 32)
         net.Broadcast()
     end
@@ -157,7 +157,7 @@ end
 function GM:SetRoundWinnerName(val)
     self.MMGamemode_RoundWinnerName = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundWinnerName")
+        net.Start("MMGLOBAL_SetRoundWinnerName", true)
             net.WriteString(val)
         net.Broadcast()
     end
@@ -166,7 +166,7 @@ end
 function GM:SetRoundWinnerEntity(val)
     self.MMGamemode_RoundWinnerEntity = val
     if SERVER then
-        net.Start("MMGLOBAL_SetRoundWinnerEntity")
+        net.Start("MMGLOBAL_SetRoundWinnerEntity", true)
             net.WriteEntity(val)
         net.Broadcast()
     end
@@ -175,7 +175,7 @@ end
 function GM:SetSuperPlayer(val)
     self.MMGamemode_SuperPlayer = val
     if SERVER then
-        net.Start("MMGLOBAL_SetSuperPlayer")
+        net.Start("MMGLOBAL_SetSuperPlayer", true)
             net.WriteEntity(val)
         net.Broadcast()
     end
@@ -184,7 +184,7 @@ end
 function GM:SetWackyRound(val)
     self.MMGamemode_WackyRound = val
     if SERVER then
-        net.Start("MMGLOBAL_SetWackyRound")
+        net.Start("MMGLOBAL_SetWackyRound", true)
             net.WriteString(val)
         net.Broadcast()
     end
@@ -227,37 +227,37 @@ if CLIENT then
 end
 
 function GM:RequestRoundDataRefresh(ply)
-    net.Start("MMGLOBAL_SetRoundState")
+    net.Start("MMGLOBAL_SetRoundState", true)
         net.WriteInt(self:GetRoundState(), 32)
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundNum")
+    net.Start("MMGLOBAL_SetRoundNum", true)
         net.WriteInt(self:GetRoundNum(), 32)
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundBuyTime")
+    net.Start("MMGLOBAL_SetRoundBuyTime", true)
         net.WriteFloat(self:GetRoundBuyTime())
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundTime")
+    net.Start("MMGLOBAL_SetRoundTime", true)
         net.WriteFloat(self:GetRoundTime())
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundEndTime")
+    net.Start("MMGLOBAL_SetRoundEndTime", true)
         net.WriteFloat(self:GetRoundEndTime())
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundsToWacky")
+    net.Start("MMGLOBAL_SetRoundsToWacky", true)
         net.WriteInt(self:GetRoundsToWacky(), 32)
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundWinnerType")
+    net.Start("MMGLOBAL_SetRoundWinnerType", true)
         net.WriteInt(self:GetRoundWinnerType(), 32)
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundWinnerName")
+    net.Start("MMGLOBAL_SetRoundWinnerName", true)
         net.WriteString(self:GetRoundWinnerName())
     net.Send(ply)
-    net.Start("MMGLOBAL_SetRoundWinnerEntity")
+    net.Start("MMGLOBAL_SetRoundWinnerEntity", true)
         net.WriteEntity(self:GetRoundWinnerEntity())
     net.Send(ply)
-    net.Start("MMGLOBAL_SetSuperPlayer")
+    net.Start("MMGLOBAL_SetSuperPlayer", true)
         net.WriteEntity(self:GetSuperPlayer())
     net.Send(ply)
-    net.Start("MMGLOBAL_SetWackyRound")
+    net.Start("MMGLOBAL_SetWackyRound", true)
         net.WriteString(self:GetWackyRound())
     net.Send(ply)
 end
@@ -368,7 +368,7 @@ function GM:UpdateRound()
     if (self:GetRoundState() == GMSTATE_BUYTIME) then
         
         if (SERVER && !PlayedSound[1] && (self:GetRoundBuyTime()-CurTime()) < 4) then
-            net.Start("MM_PlayUISound")
+            net.Start("MM_PlayUISound", true)
                 net.WriteString("gameplay/round_start.wav")
             net.Broadcast()
             PlayedSound[1] = true
@@ -387,7 +387,7 @@ function GM:UpdateRound()
         local scorers = self:GetHighestScorers()
         
         if (SERVER && !PlayedSound[2] && self:GetRoundTime() < CurTime()+30) then
-            net.Start("MM_PlayUISound")
+            net.Start("MM_PlayUISound", true)
                 net.WriteString("ui/time_ending.wav")
             net.Broadcast()
             PlayedSound[2] = true
@@ -483,7 +483,7 @@ function GM:UpdateRound()
 
     if (self:GetRoundState() == GMSTATE_ENDING) then
         if (SERVER && !PlayedSound[3]) then
-            net.Start("MM_PlayUISound")
+            net.Start("MM_PlayUISound", true)
                 net.WriteString("gameplay/round_end.wav")
             net.Broadcast()
             PlayedSound[3] = true

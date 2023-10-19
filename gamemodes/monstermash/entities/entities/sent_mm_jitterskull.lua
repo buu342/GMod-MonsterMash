@@ -200,7 +200,7 @@ function ENT:OnTakeDamage(dmginfo)
                     time = CurTime()+10,
                     text = dmginfo:GetAttacker():Name().." overpowered the Jitterskull"
                 }
-                net.Start("MMNPCKilled")
+                net.Start("MMNPCKilled", true)
                     net.WriteTable(dethtbl)
                 net.Broadcast()
             end

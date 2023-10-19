@@ -1,7 +1,0 @@
-"VertexLitGeneric"
-{
-	"$baseTexture" "models\player\monstermash\guest\suit_3"
-
-        "$nocull" "1"
-}
-

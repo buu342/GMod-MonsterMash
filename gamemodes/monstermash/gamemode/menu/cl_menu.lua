@@ -600,7 +600,7 @@ function DrawLoadout(frame, w, h)
             end
             if (v == "Random") then
                 for i=1, 5 do
-                    net.Start("MM_RequestWeaponChange") 
+                    net.Start("MM_RequestWeaponChange", true) 
                         net.WriteString("Random")
                         net.WriteString(GAMEMODE.WeaponOrder[i])
                     net.SendToServer()
@@ -661,7 +661,7 @@ function DrawLoadout(frame, w, h)
         end
         Weapons[i].Panel.DoClick = function()
             local retval
-            net.Start("MM_RequestWeaponChange") 
+            net.Start("MM_RequestWeaponChange", true) 
                 net.WriteString(Weapons[i].Class)
                 net.WriteString(Weapons[i].Category)
             net.SendToServer()
@@ -720,7 +720,7 @@ function DrawLoadout(frame, w, h)
                 class = LocalPlayer():GetWeaponTable()[category]
             end
             if (class != "None") then
-                net.Start("MM_RequestWeaponChange") 
+                net.Start("MM_RequestWeaponChange", true) 
                     net.WriteString("None")
                     net.WriteString(category)
                 net.SendToServer()
@@ -957,7 +957,7 @@ function DrawAdmin(frame, w, h)
                 Checkbox:SetValue(GetConVar(v.command):GetBool())
                 function Checkbox:OnChange(value)
                     surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-                    net.Start("MM_RequestAdminCVarChangeBool")
+                    net.Start("MM_RequestAdminCVarChangeBool", true)
                         net.WriteString(self.command)
                         net.WriteBool(value)
                     net.SendToServer()
@@ -980,7 +980,7 @@ function DrawAdmin(frame, w, h)
                     if self.Different && !self:IsEditing() then
                         self.Different = false
                         surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-                        net.Start("MM_RequestAdminCVarChangeVal")
+                        net.Start("MM_RequestAdminCVarChangeVal", true)
                             net.WriteString(self.command)
                             net.WriteInt(self:GetValue(), 32)
                         net.SendToServer()
@@ -1002,7 +1002,7 @@ function DrawAdmin(frame, w, h)
     AdminButton:SetSize(150*wratio, 48*hratio)
     AdminButton.DoClick = function()
         surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
-        net.Start("MM_EndCurrentRound")
+        net.Start("MM_EndCurrentRound", true)
             net.WriteString("The round was forcefully ended")
         net.SendToServer()
     end
@@ -1121,7 +1121,7 @@ function DrawAdmin(frame, w, h)
     AdminButton.DoClick = function()
         surface.PlaySound("ui/keycard_collision-0"..math.random(1,5)..".wav")
         if (selectedround != nil) then
-            net.Start("MM_ForceWacky")
+            net.Start("MM_ForceWacky", true)
                 net.WriteString(selectedround)
             net.SendToServer()
         end

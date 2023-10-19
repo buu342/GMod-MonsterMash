@@ -573,7 +573,7 @@ function SWEP:MM_BulletCallback(attacker, tr, dmginfo, mode)
     end
     if mode.ShockTime > 0 && tr.Entity:IsPlayer() && !tr.Entity:HasStatusEffect(STATUS_ELECTROCUTED) && tr.Entity:CanBeDamagedBy(dmginfo:GetAttacker()) && SERVER then
         tr.Entity:SetStatusEffect(STATUS_ELECTROCUTED, nil, mode.ShockTime)
-        net.Start("MM_ElectrocuteClient")
+        net.Start("MM_ElectrocuteClient", true)
             net.WriteInt(mode.ShockTime, 32)
         net.Send(tr.Entity)
     end

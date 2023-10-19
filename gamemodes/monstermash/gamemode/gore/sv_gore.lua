@@ -185,7 +185,7 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
     self:DoDeathGore(victim, attacker, dmginfo)
 
     // Notify everyone of player death
-    net.Start("MMPlayerKilled")
+    net.Start("MMPlayerKilled", true)
         net.WriteTable({ attacker = attacker, victim = victim, inflictor = dmginfo:GetInflictor(), killflags = victim:GetKillFlags() })
     net.Broadcast()
     
@@ -527,7 +527,8 @@ function GM:GoreExplode(ply, dmginfo)
 
     // Spawn generic gibs
     if (ply:GetCharacter().gib_stack != nil) then
-        self:GoreCreateGib(ply, ply:GetCharacter().gib_stack, ply:GetPos(), ply:GetAngles(), 500, true, true)
+        local ent = self:GoreCreateGib(ply, ply:GetCharacter().gib_stack, ply:GetPos(), ply:GetAngles(), 500, true, true)
+        ent:SetBodygroup(GIBGROUP_HEAD, GIBGROUP_HEAD_OFF)
     end
     
     // Spawn a gory particle effect

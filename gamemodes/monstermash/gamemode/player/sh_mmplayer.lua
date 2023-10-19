@@ -156,7 +156,7 @@ function metaplayer:BuyWeapon(wep, slot)
     if (slot == "Trick" || slot == "Trick_NextLife") then
         self.WeaponTemp["Trick_NextLife"] = wep
         if SERVER then
-            net.Start("MM_UpdateWeaponTemp")
+            net.Start("MM_UpdateWeaponTemp", true)
                 net.WriteString("Trick_NextLife")
                 net.WriteString(wep)
             net.Send(self)
@@ -165,7 +165,7 @@ function metaplayer:BuyWeapon(wep, slot)
             if (wep != "Random") then
                 self.WeaponTemp["Trick"] = wep
                 if SERVER then
-                    net.Start("MM_UpdateWeaponTemp")
+                    net.Start("MM_UpdateWeaponTemp", true)
                         net.WriteString("Trick")
                         net.WriteString(self.WeaponTemp["Trick"])
                     net.Send(self)
@@ -188,7 +188,7 @@ function metaplayer:BuyWeapon(wep, slot)
     if (finalcost <= GetConVar("mm_budget"):GetInt()) then
         self.WeaponTemp[slot] = wep
         if SERVER then
-            net.Start("MM_UpdateWeaponTemp")
+            net.Start("MM_UpdateWeaponTemp", true)
                 net.WriteString(slot)
                 net.WriteString(wep)
             net.Send(self)
@@ -220,7 +220,7 @@ function metaplayer:GiveRandomTrick()
             end
         end
         self.WeaponTemp["Trick"] = table.Random(tricksnametable)
-        net.Start("MM_UpdateWeaponTemp")
+        net.Start("MM_UpdateWeaponTemp", true)
             net.WriteString("Trick")
             net.WriteString(self.WeaponTemp["Trick"])
         net.Send(self)
@@ -362,7 +362,7 @@ if SERVER then
                 self:ResetTreatStack()
                 self.WeaponTemp["Trick"] = self.WeaponTemp["Trick_NextLife"]
                 if SERVER then
-                    net.Start("MM_UpdateWeaponTemp")
+                    net.Start("MM_UpdateWeaponTemp", true)
                         net.WriteString("Trick")
                         net.WriteString(self.WeaponTemp["Trick"])
                     net.Send(self)
@@ -375,7 +375,7 @@ if SERVER then
                 elseif (k == "Trick" && GAMEMODE:WackyRoundData().loadout_override["Trick"] != nil) then
                     self.WeaponTemp["Trick"] = GAMEMODE:WackyRoundData().loadout_override["Trick"]
                     if SERVER then
-                        net.Start("MM_UpdateWeaponTemp")
+                        net.Start("MM_UpdateWeaponTemp", true)
                             net.WriteString("Trick")
                             net.WriteString(self.WeaponTemp["Trick"])
                         net.Send(self)
@@ -388,14 +388,14 @@ end
 
 if CLIENT then
     function metaplayer:RequestCharacterChange(name)
-        net.Start("MM_RequestCharacterChange")
+        net.Start("MM_RequestCharacterChange", true)
             net.WriteString(name)
         net.SendToServer()
         self.CharacterTemp = name
     end
     
     function metaplayer:RequestSkinChange(skin)
-        net.Start("MM_RequestSkinChange")
+        net.Start("MM_RequestSkinChange", true)
             net.WriteInt(skin, 32)
         net.SendToServer()
         self.CharacterSkinTemp = skin
@@ -480,7 +480,7 @@ end
 function metaplayer:ClearStatusEffects()
     self:SetNWInt("MM_StatusEffects", 0)
     if SERVER then
-        net.Start("MM_UpdateStatusEffects")
+        net.Start("MM_UpdateStatusEffects", true)
             net.WriteInt(self:GetNWInt("MM_StatusEffects"), 32)
             net.WriteString("")
             net.WriteFloat(0)
@@ -526,7 +526,7 @@ function metaplayer:SetStatusEffect(effect, dmginfo, duration)
         end
     end
     if SERVER then
-        net.Start("MM_UpdateStatusEffects")
+        net.Start("MM_UpdateStatusEffects", true)
             net.WriteInt(self:GetNWInt("MM_StatusEffects"), 32)
             net.WriteString(tostring(effect))
             net.WriteFloat(CurTime())
@@ -538,7 +538,7 @@ end
 function metaplayer:RemoveStatusEffect(effect)
     self:SetNWInt("MM_StatusEffects", bit.band(self:GetNWInt("MM_StatusEffects"), bit.bnot(effect)))
     if SERVER then
-        net.Start("MM_UpdateStatusEffects")
+        net.Start("MM_UpdateStatusEffects", true)
             net.WriteInt(self:GetNWInt("MM_StatusEffects"), 32)
             net.WriteString("")
             net.WriteFloat(0)
@@ -662,7 +662,7 @@ function metaplayer:DodgeRoll(side)
     self:Freeze(true)
     self:SetStatusEffect(status, nil, 0.5)
     if SERVER then
-        net.Start("MM_SetAnimCycle")
+        net.Start("MM_SetAnimCycle", true)
             net.WriteFloat(cycle)
             net.WriteEntity(self)
         net.Broadcast()
@@ -681,7 +681,7 @@ function metaplayer:MeleeCharge()
     self:Freeze(true)
     self:SetStatusEffect(STATUS_MELEECHARGE, nil, 1)
     if SERVER then
-        net.Start("MM_SetAnimCycle")
+        net.Start("MM_SetAnimCycle", true)
             net.WriteFloat(0)
             net.WriteEntity(self)
         net.Broadcast()
@@ -732,12 +732,12 @@ local flinchAnim = {
 function metaplayer:Flinch(anim)
     if CLIENT then return end
     if anim != nil then
-        net.Start("MM_DoPlayerFlinch")
+        net.Start("MM_DoPlayerFlinch", true)
             net.WriteInt(anim, 32)
             net.WriteEntity(self)
         net.Broadcast()    
     else
-        net.Start("MM_DoPlayerFlinch")
+        net.Start("MM_DoPlayerFlinch", true)
             net.WriteInt(flinchAnim[math.random(1, #flinchAnim)], 32)
             net.WriteEntity(self)
         net.Broadcast()
@@ -756,7 +756,7 @@ function metaplayer:SetWeaponCooldown(weapon, time)
     end
     table.insert(self.weaponCooldowns, wepname)
     if SERVER then
-        net.Start("MM_UpdateWeaponCooldown")
+        net.Start("MM_UpdateWeaponCooldown", true)
             net.WriteString(wepname)
             net.WriteFloat(CurTime())
             net.WriteFloat(time)
@@ -806,7 +806,7 @@ function metaplayer:GiveWeapon(weapon, category, extracost)
                 if SERVER then
                     local swep = self:Give(weapon)
                     self:SetNWString("MM_WeaponSlot"..tostring(swep.Slot+1), weapon)
-                    net.Start("MM_UpdateWeapon")
+                    net.Start("MM_UpdateWeapon", true)
                         net.WriteString("MM_WeaponSlot"..tostring(swep.Slot+1))
                         net.WriteString(weapon)
                     net.Send(self)
@@ -823,7 +823,7 @@ function metaplayer:GiveWeapon(weapon, category, extracost)
     if SERVER then
         local swep = self:Give(weapon)
         self:SetNWString("MM_WeaponSlot"..tostring(swep.Slot+1), weapon)
-        net.Start("MM_UpdateWeapon")
+        net.Start("MM_UpdateWeapon", true)
             net.WriteString("MM_WeaponSlot"..tostring(swep.Slot+1))
             net.WriteString(weapon)
         net.Send(self)
@@ -960,7 +960,7 @@ function metaplayer:AddScore(score)
     if (score == nil) then score = 10 end
     self:SetNWInt("MM_PlayerScore", self:GetNWInt("MM_PlayerScore")+score)
     if SERVER then
-        net.Start("MM_UpdateScore")
+        net.Start("MM_UpdateScore", true)
             net.WriteInt(self:GetNWInt("MM_PlayerScore"), 32)
             net.WriteEntity(self)
         net.Broadcast(self)
@@ -970,7 +970,7 @@ end
 function metaplayer:ResetScore()
     self:SetNWInt("MM_PlayerScore", 0)
     if SERVER then
-        net.Start("MM_UpdateScore")
+        net.Start("MM_UpdateScore", true)
             net.WriteInt(0, 32)
             net.WriteEntity(self)
         net.Broadcast(self)
@@ -988,7 +988,7 @@ function metaplayer:AddTreatStack()
             self:SetNWInt("MM_PlayerTreatStack", GAMEMODE.Weapons["Trick"][self:GetWeaponTable()["Trick"]].cost)
         end
         if SERVER then
-            net.Start("MM_UpdateTreatStack")
+            net.Start("MM_UpdateTreatStack", true)
                 net.WriteInt(self:GetNWInt("MM_PlayerTreatStack"), 32)
             net.Send(self)
         end
@@ -998,7 +998,7 @@ end
 function metaplayer:ResetTreatStack()
     self:SetNWInt("MM_PlayerTreatStack", 0)
     if SERVER then
-        net.Start("MM_UpdateTreatStack")
+        net.Start("MM_UpdateTreatStack", true)
             net.WriteInt(self:GetNWInt("MM_PlayerTreatStack"), 32)
         net.Send(self)
     end

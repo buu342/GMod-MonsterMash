@@ -139,7 +139,7 @@ function GM:EntityTakeDamage(victim, dmginfo)
     
     // Nofify the attacker and victim
     if dmginfo:GetDamage() > 0 then
-        net.Start("MM_PlaySoundClient")
+        net.Start("MM_PlaySoundClient", true)
             if (victim:GetBloodColor() != BLOOD_COLOR_MECH) then
                 net.WriteString("gameplay/Flesh_Arm-0"..math.random(1,4)..".wav")
             else
@@ -147,7 +147,7 @@ function GM:EntityTakeDamage(victim, dmginfo)
             end
         net.Send(victim)
         if dmginfo:GetAttacker():IsPlayer() then
-            net.Start("MM_PlaySoundClient")
+            net.Start("MM_PlaySoundClient", true)
                 if bit.band(dmginfo:GetDamageCustom(), STATUS_CONCUSS) == STATUS_CONCUSS then
                     net.WriteString("gameplay/crit_hit.wav")
                 elseif (victim:GetBloodColor() == BLOOD_COLOR_MECH) then
@@ -161,7 +161,7 @@ function GM:EntityTakeDamage(victim, dmginfo)
     end
 	
 	if (IsValid(dmginfo:GetAttacker())) then
-		net.Start("MM_DamageDirection")
+		net.Start("MM_DamageDirection", true)
 			net.WriteVector(dmginfo:GetAttacker():GetPos())
 		net.Send(victim)
 	end

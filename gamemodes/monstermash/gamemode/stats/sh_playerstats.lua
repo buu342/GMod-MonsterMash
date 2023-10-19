@@ -73,7 +73,7 @@ end)
 
 function GM:RequestPlayerStats(caller, ply)
     if CLIENT then
-        net.Start("RequestPlayerStats")
+        net.Start("RequestPlayerStats", true)
             net.WriteEntity(caller)
             net.WriteEntity(ply)
         net.SendToServer()
@@ -87,7 +87,7 @@ function GM:RequestPlayerStats(caller, ply)
         local data = util.Compress(util.TableToJSON(self.PlayerStats[ply:SteamID64()]))
         local data2 = util.Compress(util.TableToJSON(self.PlayerStats[ply:SteamID64().."_round"]))
     
-        net.Start("SendPlayerStats")
+        net.Start("SendPlayerStats", true)
             net.WriteEntity(ply)
             net.WriteInt(data:len(), 32)
             net.WriteInt(data2:len(), 32)
@@ -139,7 +139,7 @@ function GM:ResetPlayerRoundStats(ply)
     end 
     self.PlayerWeaponKills[id] = {}
     if SERVER then
-        net.Start("ResetPlayerStatClient")
+        net.Start("ResetPlayerStatClient", true)
         net.Send(ply)
     end
 end
@@ -175,7 +175,7 @@ function GM:IncrementPlayerStat(ply, stat, amount)
     end
     
     if SERVER then
-        net.Start("IncrementPlayerStatClient")
+        net.Start("IncrementPlayerStatClient", true)
             net.WriteString(stat)
             net.WriteInt(amount, 32)
         net.Send(ply)
@@ -210,7 +210,7 @@ function GM:ModifyPlayerStatIfBetter(ply, stat, value)
     end
     
     if SERVER then
-        net.Start("ModifyPlayerStatIfBetterClient")
+        net.Start("ModifyPlayerStatIfBetterClient", true)
             net.WriteString(stat)
             net.WriteInt(amount, 32)
         net.Send(ply)

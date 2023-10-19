@@ -55,13 +55,13 @@ hook.Add("Think", "MM_SlowMoThink", function()
     if (GAMEMODE:GetWackyRound() == "Bullet Time" && GAMEMODE:GetRoundState() == GMSTATE_ROUND) then
         if (nextslow < CurTime()) then
             if (game.GetTimeScale() == 1) then
-                net.Start("MM_PlayUISound")
+                net.Start("MM_PlayUISound", true)
                     net.WriteString("gameplay/slowmo_start.wav")
                 net.Broadcast()
                 nextslow = CurTime() + 3
                 game.SetTimeScale(0.4)
             else
-                net.Start("MM_PlayUISound")
+                net.Start("MM_PlayUISound", true)
                     net.WriteString("gameplay/slowmo_end.wav")
                 net.Broadcast()
                 nextslow = CurTime() + 10

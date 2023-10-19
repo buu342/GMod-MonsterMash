@@ -1,4 +1,13 @@
-VertexLitGeneric
+patch
 {
-$baseTexture "models\player\monstermash\guest\skeleton_3"
+include "materials\models\player\monstermash/mm_rimlight.vmt"
+insert
+{
+$baseTexture "models\player\monstermash\skeletons\skeleton_3"
+$nocull 1
 }
+}
+
+
+
+

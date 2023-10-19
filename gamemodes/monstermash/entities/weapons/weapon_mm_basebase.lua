@@ -496,13 +496,13 @@ function SWEP:HandleTaunts()
         else
             LocalPlayer():SetStatusEffect(STATUS_TAUNT, nil, LocalPlayer():SequenceDuration(LocalPlayer():LookupSequence(LocalPlayer():GetCharacter().taunt[1]))-0.25)
         end
-        net.Start("ServerDoingTauntCamera")
+        net.Start("ServerDoingTauntCamera", true)
         net.SendToServer()
     end
     
     if (input.IsKeyDown(KEY_C) && LocalPlayer():GetWeaponTable()["Trick"] != "None") then
         LocalPlayer():ActivateTrick()
-        net.Start("ServerDoingTrick")
+        net.Start("ServerDoingTrick", true)
         net.SendToServer()
     end
 end
@@ -1198,7 +1198,7 @@ end)
 
 hook.Add("OnSpawnMenuOpen", "MM_Heal", function()
     if (LocalPlayer():GetNextHeal() < CurTime() && LocalPlayer():Health() < LocalPlayer():GetMaxHealth()) && !LocalPlayer():IsSuper() then
-        net.Start("MM_EquipHeal")
+        net.Start("MM_EquipHeal", true)
         net.SendToServer()
     end
 end)

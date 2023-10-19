@@ -16,7 +16,7 @@ local haydecalmat = Material("models/player/monstermash/gibs/hay_splat")
 function GibModelCallbackHay(ent, data)
     if SERVER then
         if ent:GetVelocity():Length() >= 100 then
-            net.Start("DoHayDecal")
+            net.Start("DoHayDecal", true)
                 net.WriteEntity(ent)
                 net.WriteTable({HitPos = data.HitPos, Ent = data.Entity, HitNormal = data.HitNormal})
             net.Broadcast()
@@ -239,7 +239,7 @@ end
 if SERVER then
     function GM:GoreEmitParticleClient(ent, effect, attachment, pos, angle, duration)
         timer.Simple(0.1, function() 
-            net.Start("EmitGoreParticleClientside")
+            net.Start("EmitGoreParticleClientside", true)
                 net.WriteEntity(ent)
                 net.WriteString(effect)
                 if (isstring(attachment)) then
@@ -257,7 +257,7 @@ if SERVER then
     end
 
     function GM:GoreCreateGibClient(ply, model, pos, ang, overrideforce, ragdoll, remove)
-        net.Start("CreateGorePropClientside")
+        net.Start("CreateGorePropClientside", true)
             net.WriteEntity(ply)
             net.WriteString(model)
             net.WriteVector(pos)
