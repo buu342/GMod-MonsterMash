@@ -363,7 +363,7 @@ function ENT:PhysicsCollide(data, phys)
             if (self.BleedChance >= math.random(1, 100)) then
                 dmginfo:SetDamageCustom(bit.bor(dmginfo:GetDamageCustom(), STATUS_BLEED))
             end
-            if self.BurnChance >= math.random(1, 100) then
+            if self.BurnChance >= math.random(1, 100) && data.HitEntity:IsPlayer() then
                 data.HitEntity:SetStatusEffect(STATUS_ONFIRE, dmginfo, 6)
             end
             if self.DamageType != 0 then

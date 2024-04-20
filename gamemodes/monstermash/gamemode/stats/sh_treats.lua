@@ -48,7 +48,6 @@ end
 
 local function WeaponHasKillFlag(wep, flag)
     if (wep == nil || !IsValid(wep)) then return nil end
-    
     return (wep:IsWeapon() && bit.band(wep.KillFlags, flag) != 0)
 end
 
@@ -183,7 +182,7 @@ function GM:GiveTreatsOnKill(victim, attacker, dmginfo)
             attacker:GiveTreat("melee_guns")
         end
         for k, v in pairs (attacker.WeaponTemp) do
-            if (v == "Random" && k != "Trick_NextLife" && GAMEMODE.Weapons[k][inflictor:GetClass()] != nil) then
+            if (v == "Random" && k != "Trick_NextLife" && inflictor != nil && IsValid(inflictor) && GAMEMODE.Weapons[k][inflictor:GetClass()] != nil) then
                 attacker:GiveTreat("random")
             end
         end

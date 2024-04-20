@@ -50,11 +50,6 @@ local function AddKillFeed(killtable)
     else
         victimname = tostring(killtable.victim)
     end
-     
-    // Suicide
-    if killtable.attacker == killtable.victim then
-        tbl.text = attackername..SuicideMessages[math.random(#SuicideMessages)]
-    end
     
     // Fall damage
     if killtable.attacker:IsWorld() then
@@ -97,6 +92,11 @@ local function AddKillFeed(killtable)
     
     if bit.band(killtable.killflags, KILL_FURY) > 0 then
         tbl.text = attackername.." said \"It's fury time!\", and then they fury'd all over "..victimname
+    end
+     
+    // Suicide
+    if killtable.attacker == killtable.victim then
+        tbl.text = attackername..SuicideMessages[math.random(#SuicideMessages)]
     end
     
     if tbl.text == "" && killtable.inflictor:IsWeapon() then

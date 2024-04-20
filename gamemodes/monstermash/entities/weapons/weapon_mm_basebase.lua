@@ -149,11 +149,45 @@ function SWEP:Deploy()
 end
 
 function SWEP:Holster(wep)
+    if self.LoopSound != nil then
+        self.LoopSound:Stop()
+        self.LoopSound = nil
+    end
     if self.IdleSound != nil then
         self:EmitSound("empty.wav", 75, 100, 1, CHAN_VOICE2)
     end
     self.Owner.PrevWeapon = self
     return true
+end
+
+function SWEP:OnRemove()
+    if self.LoopSound != nil then
+        self.LoopSound:Stop()
+        self.LoopSound = nil
+    end
+    if self.IdleSound != nil then
+        self:EmitSound("empty.wav", 75, 100, 1, CHAN_VOICE2)
+    end
+end
+
+function SWEP:OnDrop()
+    if self.LoopSound != nil then
+        self.LoopSound:Stop()
+        self.LoopSound = nil
+    end
+    if self.IdleSound != nil then
+        self:EmitSound("empty.wav", 75, 100, 1, CHAN_VOICE2)
+    end
+end
+
+function SWEP:OwnerChanged()
+    if self.LoopSound != nil then
+        self.LoopSound:Stop()
+        self.LoopSound = nil
+    end
+    if self.IdleSound != nil then
+        self:EmitSound("empty.wav", 75, 100, 1, CHAN_VOICE2)
+    end
 end
 
 function SWEP:Think()

@@ -32,14 +32,14 @@ SWEP.Points = 25
 SWEP.KillFeed = "%a sucked %v dry."
  
 SWEP.Primary.Sound         = Sound("weapons/bloodletter/bloodletter_fire.wav")
-SWEP.Primary.Damage        = 6
+SWEP.Primary.Damage        = 7
 SWEP.Primary.TakeAmmo      = 1
 SWEP.Primary.ClipSize      = 20
 SWEP.Primary.Spread        = 0.165
 SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic     = false
 SWEP.Primary.Recoil        = 0.2875
-SWEP.Primary.Delay         = 0.2
+SWEP.Primary.Delay         = 0.125
 
 SWEP.Secondary.ClipSize        = 0
 SWEP.Secondary.DefaultClip     = 0

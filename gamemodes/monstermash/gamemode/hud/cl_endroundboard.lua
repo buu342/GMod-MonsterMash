@@ -205,7 +205,6 @@ function MM_EndRoundboard:show()
     end
     
     // Treats
-    GAMEMODE:RequestPlayerStats(LocalPlayer(), LocalPlayer())
     Back.treats = GAMEMODE.PlayerStats[LocalPlayer():SteamID64().."_round"]
     Back.treatsicons = {}
     Back.treatssorted = false
@@ -253,7 +252,7 @@ function MM_EndRoundboard:show()
             end
             for k, v in pairs(statsorder) do
                 if (statsorder[k][2] != 0) then
-                    table.insert(textstack, {text=string.Replace(statsorder[k][3], "%d", tostring(statsorder[k][2])), item=nil})
+                    table.insert(textstack, {text=string.Replace(statsorder[k][3], "%d", tostring(math.Round(statsorder[k][2]))), item=nil})
                 end
             end
             if (#LocalPlayer():GetWeaponKills() != 0) then

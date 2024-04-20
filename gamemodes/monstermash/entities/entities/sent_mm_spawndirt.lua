@@ -54,21 +54,27 @@ end
 function ENT:Think()
 	if self.Animation1 > CurTime() then
 		if CLIENT then
-			self.TombModel:SetColor(Color(255, 255, 255, 255*(1-(self.Animation1-CurTime())/0.5)))
+            if IsValid(self.TombModel) then
+			    self.TombModel:SetColor(Color(255, 255, 255, 255*(1-(self.Animation1-CurTime())/0.5)))
+            end
             local effectdata = EffectData()
             effectdata:SetOrigin(self:GetPos())
             util.Effect("mm_dirtgib", effectdata)
 		end
 	elseif self.Animation2 > CurTime() then
 		if CLIENT then
-			self.TombModel:SetColor(Color(255, 255, 255, 255))
+            if IsValid(self.TombModel) then
+			    self.TombModel:SetColor(Color(255, 255, 255, 255))
+            end
             local effectdata = EffectData()
             effectdata:SetOrigin(self:GetPos())
             util.Effect("mm_dirtgib", effectdata)
 		end
 	elseif self.Animation3 > CurTime() then
 		if CLIENT then
-			self.TombModel:SetColor(Color(255, 255, 255, 255*((self.Animation3-CurTime())/0.5)))
+            if IsValid(self.TombModel) then
+			    self.TombModel:SetColor(Color(255, 255, 255, 255*((self.Animation3-CurTime())/0.5)))
+            end
 		end
 	else
 		if SERVER then

@@ -146,7 +146,7 @@ function GM:GoreCreateGib(ply, model, pos, ang, overrideforce, ragdoll, remove)
 end
 
 function GM:GoreCreateRagdoll(ply, model, pos, ang, matchbones, extra, remove, wep)
-    if (ply == nil) then
+    if (ply == nil || !IsValid(ply)) then
         return nil
     end
 
@@ -186,7 +186,7 @@ function GM:GoreCreateRagdoll(ply, model, pos, ang, matchbones, extra, remove, w
         ent:SetMaterial("models/player/monstermash/gibs/burn")
         self:GoreEmitParticleClient(ent, "mm_corpse_smoke", "ValveBiped.Bip01_Spine2", nil, nil, t)
     end
-    if wep != nil && wep:IsWeapon() && wep:GetClass() == "weapon_mm_stake" then
+    if wep != nil && IsValid(wep) && wep:IsWeapon() && wep:GetClass() == "weapon_mm_stake" then
         ent:SetBodygroup(GIBGROUP_STAKE, GIBGROUP_STAKE_ON)
     end
     if extra == nil then

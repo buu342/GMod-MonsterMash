@@ -1,6 +1,7 @@
 if SERVER then
     util.AddNetworkString("RequestPlayerStats")
     util.AddNetworkString("SendPlayerStats")
+    util.AddNetworkString("SendPlayerStats_Round")
     util.AddNetworkString("IncrementPlayerStatClient")
     util.AddNetworkString("ModifyPlayerStatIfBetterClient")
     util.AddNetworkString("ResetPlayerStatClient")
@@ -64,11 +65,25 @@ end)
 net.Receive("SendPlayerStats", function(len, pl)
     local ply = net.ReadEntity()
     local size = net.ReadInt(32)
-    local size2 = net.ReadInt(32)
     local data = util.JSONToTable(util.Decompress(net.ReadData(size)))
-    local data2 = util.JSONToTable(util.Decompress(net.ReadData(size2)))
-    GAMEMODE.PlayerStats[ply:SteamID64()] = data
-    GAMEMODE.PlayerStats[ply:SteamID64().."_round"] = data2
+    for k, v in pairs(data) do
+        if (GAMEMODE.PlayerStats[ply:SteamID64()] == nil) then
+            GAMEMODE.PlayerStats[ply:SteamID64()] = {}
+        end
+        GAMEMODE.PlayerStats[ply:SteamID64()][k] = v
+    end
+end)
+
+net.Receive("SendPlayerStats_Round", function(len, pl)
+    local ply = net.ReadEntity()
+    local size = net.ReadInt(32)
+    local data = util.JSONToTable(util.Decompress(net.ReadData(size)))
+    for k, v in pairs(data) do
+        if (GAMEMODE.PlayerStats[ply:SteamID64()] == nil) then
+            GAMEMODE.PlayerStats[ply:SteamID64()] = {}
+        end
+        GAMEMODE.PlayerStats[ply:SteamID64().."_round"][k] = v
+    end
 end)
 
 function GM:RequestPlayerStats(caller, ply)
@@ -84,16 +99,50 @@ function GM:RequestPlayerStats(caller, ply)
         if (self.PlayerStats[ply:SteamID64().."_round"] == nil) then
             self.PlayerStats[ply:SteamID64().."_round"] = {}
         end
-        local data = util.Compress(util.TableToJSON(self.PlayerStats[ply:SteamID64()]))
-        local data2 = util.Compress(util.TableToJSON(self.PlayerStats[ply:SteamID64().."_round"]))
-    
-        net.Start("SendPlayerStats", true)
-            net.WriteEntity(ply)
-            net.WriteInt(data:len(), 32)
-            net.WriteInt(data2:len(), 32)
-            net.WriteData(data, data:len())
-            net.WriteData(data2, data2:len())
-        net.Send(caller)
+
+        // Send this data in 10 stat chunks so we don't overflow client buffers
+        local maxstats = 10
+        local sendcount = 0
+        local seconds = 0
+        local data = {}
+        for k, v in pairs(self.PlayerStats[ply:SteamID64()]) do
+            if (sendcount < maxstats) then
+                data[k] = v
+                sendcount = sendcount + 1
+            end
+            if (sendcount == maxstats || (next(self.PlayerStats[ply:SteamID64()], k) == nil && sendcount != 0)) then
+                local thisdata = util.Compress(util.TableToJSON(data))
+                timer.Simple(seconds, function()
+                    net.Start("SendPlayerStats", true)
+                        net.WriteEntity(ply)
+                        net.WriteInt(thisdata:len(), 32)
+                        net.WriteData(thisdata, thisdata:len())
+                    net.Send(caller)
+                end)
+                data = {}
+                seconds = seconds + 1
+                sendcount = 0
+            end
+        end
+        for k, v in pairs(self.PlayerStats[ply:SteamID64().."_round"]) do
+            if (sendcount < maxstats) then
+                data[k] = v
+                sendcount = sendcount + 1
+            end
+            if (sendcount == maxstats || (next(self.PlayerStats[ply:SteamID64().."_round"], k) == nil && sendcount != 0)) then
+                local thisdata = util.Compress(util.TableToJSON(data))
+                timer.Simple(seconds, function()
+                    net.Start("SendPlayerStats_Round", true)
+                        net.WriteEntity(ply)
+                        net.WriteInt(thisdata:len(), 32)
+                        net.WriteData(thisdata, thisdata:len())
+                    net.Send(caller)
+                end)
+                data = {}
+                seconds = seconds + 1
+                sendcount = sendcount + 1
+            end
+        end
     end
 end
 

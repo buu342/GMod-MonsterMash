@@ -425,7 +425,9 @@ if CLIENT then
     
     net.Receive("MM_UpdateScore", function(len, ply)
         local pl = net.ReadEntity()
-        pl:SetNWInt("MM_PlayerScore", net.ReadInt(32))
+        if (pl != nil && IsValid(pl)) then
+            pl:SetNWInt("MM_PlayerScore", net.ReadInt(32))
+        end
     end)
     
     net.Receive("MM_UpdateTreatStack", function(len, ply)
@@ -754,7 +756,9 @@ function metaplayer:SetWeaponCooldown(weapon, time)
     if self.weaponCooldowns == nil then
         self.weaponCooldowns = {}
     end
-    table.insert(self.weaponCooldowns, wepname)
+    if (!table.HasValue(self.weaponCooldowns, wepname)) then
+        table.insert(self.weaponCooldowns, wepname)
+    end
     if SERVER then
         net.Start("MM_UpdateWeaponCooldown", true)
             net.WriteString(wepname)
@@ -785,6 +789,7 @@ function metaplayer:ResetAllWeaponCooldowns()
     for i=1, #self.weaponCooldowns do
         self:SetWeaponCooldown(self.weaponCooldowns[i], 0)
     end
+    self.weaponCooldowns = {}
     self:SetNWFloat("MM_NextHeal", 0)
 end
 

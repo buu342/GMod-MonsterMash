@@ -296,7 +296,7 @@ function ENT:OnTakeDamage(dmginfo)
                     time = CurTime()+10,
                     text = dmginfo:GetAttacker():Name().." fought off a skellington"
                 }
-                net.Start("MMNPCKilled", true)
+                net.Start("MMNPCKilled")
                     net.WriteTable(dethtbl)
                 net.Broadcast()
             end

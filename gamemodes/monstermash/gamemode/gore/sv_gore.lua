@@ -185,7 +185,7 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
     self:DoDeathGore(victim, attacker, dmginfo)
 
     // Notify everyone of player death
-    net.Start("MMPlayerKilled", true)
+    net.Start("MMPlayerKilled")
         net.WriteTable({ attacker = attacker, victim = victim, inflictor = dmginfo:GetInflictor(), killflags = victim:GetKillFlags() })
     net.Broadcast()
     
@@ -418,6 +418,8 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
             mdlreplace = character.gib_skeleton
         end
         local rag = self:GoreCreateRagdoll(ent, mdlreplace, nil, nil, true, extra, true, inflictor)
+        rag:SetBodygroup(GIBGROUP_ARMS, ent:GetBodygroup(GIBGROUP_ARMS))
+        rag:SetBodygroup(GIBGROUP_LEGS, ent:GetBodygroup(GIBGROUP_LEGS))
         for i = 0, rag:GetPhysicsObjectCount()-1 do
             local bone = rag:GetPhysicsObjectNum(i)
             if bone and bone.IsValid and bone:IsValid() then
