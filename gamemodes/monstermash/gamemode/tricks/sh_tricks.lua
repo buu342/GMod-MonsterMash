@@ -58,7 +58,8 @@ function DoTrick_Fury(self, dmginfo)
     self:SetStatusEffect(STATUS_FURY, nil, self:SequenceDuration(self:LookupSequence("taunt_mm_zombie"))-0.25)
         
     if SERVER then
-        
+        self:GodEnable()
+        timer.Simple(self:SequenceDuration(self:LookupSequence("taunt_mm_zombie"))-0.25, function() if IsValid(self) then self:GodDisable() end end)
         local ent = ents.Create("sent_mm_burstbarrier")
         if (!IsValid(ent)) then return end
         ent.Force = 1

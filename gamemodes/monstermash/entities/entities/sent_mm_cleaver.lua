@@ -10,3 +10,4 @@ ENT.BleedChance = 100
 ENT.Retrievable = false
 ENT.SwooshSound = Sound("weapons/cleaver_fly.wav")
 ENT.RemoveOnDamage = true
+ENT.SoftSeeker = true

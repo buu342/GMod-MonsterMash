@@ -42,9 +42,3 @@ function PLAYER:CalcView(view)
 end
 
 player_manager.RegisterClass("mm_player", PLAYER, "player_default")
-
-
-/*
-function metaplayer:CreateRagdoll()
-end
-*/

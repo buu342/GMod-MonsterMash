@@ -1,7 +1,8 @@
-"VertexLitGeneric"
+"LightmappedGeneric"
 {
 	"$basetexture" "models\player\monstermash\gibs\hay_splat"
-	"$surfaceprop" "default_silent"
 	"$translucent" "1"
 	"$decal" "1"
+    $vertexcolor 1
+    $vertexalpha 1
 }

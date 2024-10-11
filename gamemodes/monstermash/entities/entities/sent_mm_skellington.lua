@@ -119,7 +119,7 @@ function ENT:Think()
             effectdata:SetStart(self:GetPos()) 
             effectdata:SetOrigin(self:GetPos())
             effectdata:SetScale(1)
-            util.Effect("gibs_skellington", effectdata)
+            util.Effect("mm_gibs_skellington", effectdata)
 
 			self:Remove()
 		end
@@ -179,7 +179,7 @@ function ENT:RemoveExplode()
     effectdata:SetStart(self:GetPos()) 
     effectdata:SetOrigin(self:GetPos())
     effectdata:SetScale(1)
-    util.Effect("gibs_skellington", effectdata)
+    util.Effect("mm_gibs_skellington", effectdata)
     self:Remove()
 end
 
@@ -285,6 +285,9 @@ function ENT:OnTakeDamage(dmginfo)
 	if self:GetState() != "Dying" then
 		self:SetState("Pain")
 		self:SetCoolDown(CurTime()+0.5)
+        if (dmginfo:GetInflictor():GetClass() == "weapon_mm_revolver") then
+            dmginfo:SetDamage(dmginfo:GetDamage()*1.2)
+        end
 		self:SetHP(self:GetHP() - dmginfo:GetDamage())
 		self:SetCountFrame(1)
 		if self:GetHP() <= 0 then

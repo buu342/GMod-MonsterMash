@@ -34,7 +34,7 @@ SWEP.Primary.Sound         = "weapons/pumpaction/fire.wav"
 SWEP.Primary.Damage        = 8
 SWEP.Primary.TakeAmmo      = 1
 SWEP.Primary.ClipSize      = 6
-SWEP.Primary.Spread        = 4
+SWEP.Primary.Spread        = 3
 SWEP.Primary.NumberofShots = 8
 SWEP.Primary.Automatic     = false
 SWEP.Primary.Recoil        = 2
@@ -46,7 +46,7 @@ SWEP.Secondary.Sound         = "weapons/pumpaction/fire.wav"
 SWEP.Secondary.Damage        = 6
 SWEP.Secondary.TakeAmmo      = 2
 SWEP.Secondary.ClipSize      = 6
-SWEP.Secondary.Spread        = 4
+SWEP.Secondary.Spread        = 3
 SWEP.Secondary.NumberofShots = 8
 SWEP.Secondary.Automatic     = true
 SWEP.Secondary.Recoil        = 2
@@ -64,7 +64,7 @@ SWEP.HoldTypeReload   = "shotgun"
 SWEP.HoldTypeCrouch   = "ar2"
 
 SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
-SWEP.CrosshairSize = 112
+SWEP.CrosshairSize = 128
 
 SWEP.ShotgunReload = true
 SWEP.ReloadOutTime = 0.3

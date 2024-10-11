@@ -203,8 +203,6 @@ function SWEP:Think()
     self:HandlePlayerHull()
     
     self:HandleDodgeRollStuff()
-    
-    self:HandleTaunts()
 
 end
 
@@ -393,13 +391,8 @@ function SWEP:HandleHop()
                 vPoint = self.Owner:GetBonePosition(self.Owner:LookupBone("ValveBiped.Bip01_R_Thigh"))
             end
             
-            local effectdata = EffectData()
-            effectdata:SetOrigin(vPoint)
-            util.Effect("BloodImpact", effectdata)
-        
-            local start = self.Owner:GetPos()
-            local btr = util.TraceLine({start=start, endpos=(start + Vector(0,0,-256)), filter=ignore, mask=MASK_SOLID})
-            util.Decal("Blood", btr.HitPos+btr.HitNormal, btr.HitPos-btr.HitNormal, self.Owner)
+            GAMEMODE:EmitBlood(self.Owner:GetCharacter(), BLOODEFFECT_IMPACT, vPoint)
+            GAMEMODE:EmitBlood(self.Owner:GetCharacter(), BLOODEFFECT_DECAL, self.Owner:GetPos(), self.Owner:GetPos() + Vector(0, 0, -256), self.Owner)
         end
         
         local vec = Vector(self.Owner:GetAimVector().x, self.Owner:GetAimVector().y, 0):GetNormalized()
@@ -521,25 +514,25 @@ net.Receive("ServerDoingTrick", function(len, ply)
 	ply:ActivateTrick()
 end)
 
-function SWEP:HandleTaunts()
+hook.Add("PlayerButtonDown", "MM_HandleExtraKeys", function(ply, button)
     if SERVER then return end
-    if input.IsKeyDown(KEY_Z) && !LocalPlayer():HasStatusEffect(STATUS_TAUNT) && !LocalPlayer():IsSuper() then
-        LocalPlayer():SetCycle(0)
+    if button == KEY_Z && !ply:HasStatusEffect(STATUS_TAUNT) && !ply:IsSuper() then
+        ply:SetCycle(0)
         if GetConVar("mm_wackytaunts"):GetInt() == 1 then
-            LocalPlayer():SetStatusEffect(STATUS_TAUNT, nil, 6.25)
+            ply:SetStatusEffect(STATUS_TAUNT, nil, 6.25)
         else
-            LocalPlayer():SetStatusEffect(STATUS_TAUNT, nil, LocalPlayer():SequenceDuration(LocalPlayer():LookupSequence(LocalPlayer():GetCharacter().taunt[1]))-0.25)
+            ply:SetStatusEffect(STATUS_TAUNT, nil, ply:SequenceDuration(ply:LookupSequence(ply:GetCharacter().taunt[1]))-0.25)
         end
         net.Start("ServerDoingTauntCamera", true)
         net.SendToServer()
     end
     
-    if (input.IsKeyDown(KEY_C) && LocalPlayer():GetWeaponTable()["Trick"] != "None") then
-        LocalPlayer():ActivateTrick()
+    if (button == KEY_C && ply:GetWeaponTable()["Trick"] != "None") then
+        ply:ActivateTrick()
         net.Start("ServerDoingTrick", true)
         net.SendToServer()
     end
-end
+end)
 
 function SWEP:ExplodePlayer()
     self.Owner:EmitSound("weapons/cannon/explosion1.wav",140)
@@ -850,7 +843,6 @@ function SWEP:SetWeaponHoldType(t)
 		t = "normal"
 		index = ActIndex[ t ]
 	end
-	//print(self.Owner:Name().." - "..self.Owner:GetNWInt("LegMissing"))
 	
     self.ActivityTranslate = {}
     self.ActivityTranslate[ ACT_MP_STAND_IDLE ]					= index

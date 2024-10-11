@@ -20,7 +20,12 @@ MusicList = {
         name = "Der Erlkönig",
         author = "Franz Schubert",
         song = "sound/music/erlkonig.ogg",
-    },  
+    },
+    {
+        name = "Dracula",
+        author = "Gene Krupa",
+        song = "sound/music/dracula.ogg",
+    },
     {
         name = "Goosebumps Theme (Cover)",
         author = "Rhaeide",
@@ -42,9 +47,24 @@ MusicList = {
         song = "sound/music/HauntedHouse.ogg",
     },
     {
+        name = "Haunted House Boogie",
+        author = "Jack Rivers",
+        song = "sound/music/hauntedhouseboogie.ogg",
+    },
+    {
         name = "House on Haunted Hill",
         author = "Frank DeVol",
         song = "sound/music/hauntedhill.ogg",
+    },
+    {
+        name = "Haunted Nights",
+        author = "Duke Ellington",
+        song = "sound/music/hauntednights.ogg",
+    },
+    {
+        name = "Igor's Party",
+        author = "Tony's Monstrosities",
+        song = "sound/music/igorsparty.ogg",
     },
     {
         name = "Majin Castle Part 1",
@@ -68,9 +88,19 @@ MusicList = {
         song = "sound/music/MonsterMash.ogg",
     },
     {
+        name = "Monster Shindig",
+        author = "Danny Hutton",
+        song = "sound/music/monstershindig.ogg",
+    },
+    {
         name = "More Ghosts 'n Stuff",
         author = "deadmau5",
         song = "sound/music/ghostsnstuff.ogg",
+    },
+    {
+        name = "Move Your Dead Bones",
+        author = "Dr. Reanimator",
+        song = "sound/music/deadbones.ogg",
     },
     {
         name = "Mysterious Mose",
@@ -121,6 +151,21 @@ MusicList = {
         name = "Spooky Scary Skeletons (Piano)",
         author = "grande1899",
         song = "sound/music/SpookyScaryPiano.ogg",
+    },
+    {
+        name = "The Black Cat",
+        author = "Ozzie Nelson and his Orchestra",
+        song = "sound/music/blackcat.ogg",
+    },
+    {
+        name = "Terror",
+        author = "The Skeltons",
+        song = "sound/music/terror.ogg",
+    },
+    {
+        name = "The Goblin Band",
+        author = "Glen Gray & The Casa Loma Orchestra",
+        song = "sound/music/goblinband.ogg",
     },
     {
         name = "The Great Doot Doot Sneak",

@@ -1,9 +1,3 @@
-local bloodmats = {}
-
-for i=1, 42 do
-    bloodmats[i] = Material("particle/blood/"..tostring(i))
-end
-
 function EFFECT:Init(data)
 
 	self.Position = data:GetOrigin()
@@ -14,24 +8,26 @@ function EFFECT:Init(data)
 	
 	local emitter = ParticleEmitter(Pos)
 	
-	for i=1, 30 do
-		local tex = math.random(1,42)
-		local mat = bloodmats[tex]
+	for i=1, 1 do
+		local mat = GAMEMODE:GetBloodMatList(BLOODTYPE_NORMAL)[math.random(GAMEMODE:GetBloodMatList_Count(BLOODTYPE_NORMAL))]
 
-		local particle = emitter:Add(mat, Pos + Vector(math.random(-10, 10), math.random(-10, 10), 0))
-		particle:SetVelocity(Vector(math.random(-100, 100), math.random(-100, 100), math.random(10, 300)))
+		local particle = emitter:Add(mat, Pos + Vector(math.random(-5, 5), math.random(-5, 5), 0))
+		particle:SetVelocity(Vector(math.random(-50, 50), math.random(-50, 50), math.random(10, 100)))
 		particle:SetGravity(Vector(0,0,-600))
 		particle:SetDieTime(math.random(2.5,4))
 		particle:SetStartAlpha(255)
 		particle:SetEndAlpha(255)
-		local size = math.random(2,5)
+		local size = 8
 		particle:SetStartSize(size)
 		particle:SetEndSize(size)
 		particle:SetRoll(math.random(-360, 360))
 		particle:SetRollDelta(math.random(0,2))
-		particle:SetColor(255, 0, 0)
+		particle:SetColor(85, 0, 0)
 		particle:SetCollide(true)
 		particle:SetCollideCallback(function(part, hitpos, hitnormal) 
+            if (math.random(4) == 1) then
+                GAMEMODE:EmitBlood_Client(BLOODTYPE_NORMAL, BLOODEFFECT_DECAL, hitpos, hitnormal)
+            end
 			part:SetDieTime(0.1)
 		end)
 	end

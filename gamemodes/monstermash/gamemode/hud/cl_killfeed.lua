@@ -29,6 +29,7 @@ local SuicideMessages = {
     " went home to take a spooky dooky.",
     " was frightened by their own intelligence.",
     " did not return the slab, and suffered the curse.",
+    "  went to go kick alien butt in their robot.",
 }
 
 local function AddKillFeed(killtable)
@@ -136,13 +137,16 @@ hook.Add("HUDPaint", "MM_KillFeed", function()
     
 end)
 
-local g_station = nil
 net.Receive("MMPlayerKilled", function(len, ply)
     local killtable = net.ReadTable()
     AddKillFeed(killtable)
+    if (LocalPlayer() == killtable.victim) then
+        surface.PlaySound("gameplay/death.wav")
+    elseif (LocalPlayer() == killtable.attacker) then
+        surface.PlaySound("gameplay/kill_confirm.wav")
+    end
 end)
 
-local g_station = nil
 net.Receive("MMNPCKilled", function(len, ply)
     table.insert(Feed, net.ReadTable())
 end)

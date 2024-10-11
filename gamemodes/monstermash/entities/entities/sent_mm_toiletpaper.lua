@@ -11,6 +11,7 @@ ENT.ThrowAngle = Angle(60,-40,0)
 ENT.DoSomethingCollide = true
 ENT.DoDamage = true
 ENT.Retrievable = true
+ENT.SoftSeeker = true
 
 function ENT:DoCollideThing(data, phys)
     if data.HitEntity:IsPlayer() && data.HitEntity != self.Owner && data.HitEntity:CanBeDamagedBy(self.Owner) then

@@ -39,7 +39,7 @@ SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic     = true
 SWEP.Primary.Recoil        = 0.3
 SWEP.Primary.Delay         = 0.09
-SWEP.Primary.Magnetism = false
+SWEP.Primary.Magnetism     = false
 
 SWEP.Secondary.FireMode      = FIREMODE_BULLET
 SWEP.Secondary.Sound         = "weapons/undertaker/nailgun_alt.wav" 

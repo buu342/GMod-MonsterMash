@@ -76,20 +76,9 @@ hook.Add("PlayerTick", "MM_BleedThink", function(ply, mv)
 
             // If the player is alive, create blood
             if ply:Alive() then
-                if ply:GetCharacter().bloodtype == BLOODTYPE_NORMAL then
-                    local start = ply:GetPos()
-                    local btr = util.TraceLine({start=start, endpos=(start + Vector(0,0,-256)), filter=ignore, mask=MASK_SOLID})
-                    util.Decal("Blood", btr.HitPos+btr.HitNormal, btr.HitPos-btr.HitNormal,ply)
-                    local effectdata = EffectData()
-                    effectdata:SetOrigin(ply:GetBonePosition(ply:LookupBone("ValveBiped.Bip01_Spine2")))
-                    util.Effect("BloodImpact", effectdata)
-                elseif ply:GetCharacter().bloodtype == BLOODTYPE_HAY then
-                
-                elseif ply:GetCharacter().bloodtype == BLOODTYPE_NONE then
-                    local effectdata = EffectData()
-                    effectdata:SetOrigin(ply:GetBonePosition(ply:LookupBone("ValveBiped.Bip01_Spine2")))
-                    util.Effect("GlassImpact", effectdata)
-                end
+                local pos, ang = ply:GetBonePosition(ply:LookupBone("ValveBiped.Bip01_Spine2"))
+                GAMEMODE:EmitBlood(ply:GetCharacter(), BLOODEFFECT_IMPACT, pos)
+                GAMEMODE:EmitBlood(ply:GetCharacter(), BLOODEFFECT_DECAL, ply:GetPos(), ply:GetPos() + Vector(0, 0, -256), ply)
             end
 
             // Decrease the damage amount and call this again in a second
@@ -458,6 +447,7 @@ hook.Add("PlayerTick", "MM_DodgeThink", function(ply, mv)
         ply.JustDidDodge = true
         ply:GodEnable()
     elseif ply.JustDidDodge then
+        ply.JustDidDodge = false
         ply:GodDisable()
     end
 end)

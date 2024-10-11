@@ -97,6 +97,10 @@ function SWEP:MM_ShootCustom(mode)
             k:EmitSound("weapons/bloodletter/bloodletter_dart_explosion.wav")
             self.Owner:SetHealth(math.min(self.Owner:Health() + damage, self.Owner:GetMaxHealth()))
         end
+        if (k:IsPlayer()) then
+            local bonepos, boneang = k:GetBonePosition(k:LookupBone("ValveBiped.Bip01_Pelvis"))
+            GAMEMODE:EmitBlood(k:GetCharacter(), BLOODEFFECT_BLOODLETTER, bonepos)
+        end
         self:ResetWeaponDamageScale(k)
     end
     

@@ -40,6 +40,7 @@ SWEP.Primary.Automatic     = false
 SWEP.Primary.Recoil        = 0.3
 SWEP.Primary.Delay         = 0.3
 SWEP.Primary.TakeAmmoAffectsShootability = true
+SWEP.Primary.Magnetism = false
 
 SWEP.Secondary.FireMode      = FIREMODE_BULLET
 SWEP.Secondary.Sound         = "weapons/melter/melter_spray_loop.wav" 

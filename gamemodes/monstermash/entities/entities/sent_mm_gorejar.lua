@@ -31,5 +31,5 @@ function ENT:ExplodeEffect()
     effectdata4:SetStart(self:GetPos()) 
     effectdata4:SetOrigin(self:GetPos())
     effectdata4:SetScale(1)
-    util.Effect("gibs", effectdata4)
+    util.Effect("mm_gibs", effectdata4)
 end

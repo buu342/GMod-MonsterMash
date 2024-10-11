@@ -46,6 +46,7 @@ ENT.Material = ""
 ENT.NumBounces = 1
 ENT.RemoveBounces = false
 ENT.Seeker = false
+ENT.SoftSeeker = false
 
 ENT.BleedChance     = 0
 ENT.BurnChance      = 0
@@ -151,7 +152,7 @@ function ENT:Initialize()
     end
     
     if self.Trail != nil then
-        local trail = util.SpriteTrail(self, 0, Color(255, 255, 255), true, 5, 0, 1, 1 / (5 + 0) * 0.5, self.Trail)
+        local trail = util.SpriteTrail(self, 0, Color(255, 255, 255), false, 5, 0, 1, 1 / (5 + 0) * 0.5, self.Trail)
     end
     
     if (self.LoopSound != nil) then
@@ -225,6 +226,26 @@ function ENT:Think()
                 self.NextTargetTime = CurTime() + 0.7
                 self.RetargetLerp = CurTime() + 1
             end
+        end
+    end
+
+    if (self.SoftSeeker && self.DoDamage) then
+        local phys = self:GetPhysicsObject()
+        if (self.Target == nil || !(self.Target:IsPlayer() || self.Target:IsNPC())) then
+            for k, v in pairs(ents.FindInSphere(self:GetPos(), 256)) do
+                if ((v:IsPlayer() || v:IsNPC()) && v != self.Owner) then
+                    if ((v:IsPlayer() || v:IsNPC()) && v != self.Owner) then
+                        self.Target = v
+                        //self.Owner:ChatPrint("Found "..v:GetName())
+                        break
+                    end
+                end
+            end
+        end
+        if (self.Target != nil) then
+            local dir = self.Target:GetPos() - self:GetPos()
+            dir:Normalize()
+            phys:SetVelocity(phys:GetVelocity() + dir*50)
         end
     end
     

@@ -12,6 +12,7 @@ ENT.GibOnContact = false
 ENT.ContinuousEffect = "mm_wandtrail"
 ENT.RemoveBounces = true
 ENT.NumBounces = 4
+ENT.SoftSeeker = true
 
 ENT.LightSize = 256
 ENT.LightColor = Color(0, 255, 0)

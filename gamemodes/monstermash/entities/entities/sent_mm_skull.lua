@@ -9,3 +9,4 @@ ENT.Damage = 25
 ENT.ConcussChance = 100
 ENT.Retrievable = true
 ENT.ThrowAngle = Angle(45,180,-45)
+ENT.SoftSeeker = true

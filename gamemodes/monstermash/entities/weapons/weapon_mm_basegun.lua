@@ -444,9 +444,28 @@ function SWEP:MM_ShootBullet(mode)
         bullet.Spread = bullet.Spread*(1+boolToNumber(self.Owner:MissingAnArm())*3)
     end
     if (mode.Magnetism && (self:GetMMBase_Charge() == 100 || !mode.MaxChargeToMagnetise)) then
-        local tr = self.Owner:GetEyeTrace().Entity
-        if (tr != nil && tr:IsPlayer()) then
+        local HULLSIZE = 1
+        local rrange = mode.Range
+        if (!mode.UseRange) then
+            rrange = 100000
+        end
+        local tr = util.TraceHull({
+            start = self:GetOwner():GetShootPos(),
+            endpos = self:GetOwner():GetShootPos() + (self:GetOwner():GetAimVector() * rrange),
+            filter = self:GetOwner(),
+            mins = Vector(-1, -1, -1)*HULLSIZE,
+            maxs = Vector(1, 1, 1)*HULLSIZE,
+            mask = MASK_SHOT_HULL
+        })
+        if (tr.Entity != nil && tr.Entity:IsPlayer()) then
+            local ent = tr.Entity
+            local boneindex = ent:LookupBone("ValveBiped.Bip01_Spine2")
+            local pos = ent:GetBonePosition(boneindex)
+            if pos == ent:GetPos() then
+                pos = ent:GetBoneMatrix(boneindex):GetTranslation()
+            end
             bullet.Spread = Vector(0,0,0)
+            bullet.Dir = (pos - self.Owner:EyePos()):GetNormalized()
         end
     end
     
@@ -1155,47 +1174,8 @@ function SWEP:DoImpactEffect(tr, nDamageType)
             end
             
             if (IsValid(ply) && ply:IsPlayer() && ply:GetCharacter() != nil) then
-                if (ply:GetCharacter().bloodtype == BLOODTYPE_NONE) then
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                elseif (ply:GetCharacter().bloodtype == BLOODTYPE_HAY) then
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                    util.Effect("WheelDust", effectdata)
-                elseif (ply:GetCharacter().bloodtype == BLOODTYPE_GREEN) then
-                    util.Effect("AntlionGib", effectdata)
-                else
-                    if (GetConVar("mm_confetti"):GetBool()) then
-                        util.Effect("mm_confetti", effectdata)
-                    else
-                        util.Effect("BloodImpact", effectdata)
-                        local startp = tr.HitPos
-                        local endp = startp + tr.Normal*50
-                        local traceinfo = {
-                            start = startp, 
-                            endpos = endp, 
-                            filter = tr.Entity, 
-                            mask = MASK_SOLID_BRUSHONLY
-                        }
-                        
-                        // Emit the trace and draw the decal
-                        local trace = util.TraceHull(traceinfo)
-                        local todecal1 = trace.HitPos + trace.HitNormal
-                        local todecal2 = trace.HitPos - trace.HitNormal
-                        util.Decal("Blood", todecal1, todecal2)
-                    end
-                end
+                GAMEMODE:EmitBlood(ply:GetCharacter(), BLOODEFFECT_IMPACT, tr.HitPos, tr.Normal, tr.Entity)
+                GAMEMODE:EmitBlood(ply:GetCharacter(), BLOODEFFECT_DECAL, tr.HitPos, tr.Normal, tr.Entity)
             end
             return true
         end

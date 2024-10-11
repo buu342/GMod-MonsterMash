@@ -1,0 +1,7 @@
+"LightmappedGeneric"
+{
+	"$basetexture" "particle/confetti_splat2"
+	"$alphatest" "1"
+	$vertexcolor 1
+    $decal 1
+}

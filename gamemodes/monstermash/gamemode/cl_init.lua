@@ -1,7 +1,6 @@
 include("shared.lua")
 include("Tricks/sh_tricks.lua")
 include("Damage/cl_damage.lua")
-include("Gore/cl_gore.lua")
 include("Gore/cl_screenblood.lua")
 include("HUD/cl_hud.lua")
 include("HUD/cl_endroundboard.lua")

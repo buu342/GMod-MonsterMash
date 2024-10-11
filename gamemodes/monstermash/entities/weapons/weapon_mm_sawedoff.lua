@@ -55,7 +55,7 @@ SWEP.HoldTypeReload   = "pistol"
 SWEP.HoldTypeCrouch   = "pistol"
 
 SWEP.CrosshairMaterial = Material("vgui/hud/crosshair_carbine")
-SWEP.CrosshairSize = 128
+SWEP.CrosshairSize = 160
 
 SWEP.ReloadOutTime = 0.2
 SWEP.ReloadInTime  = 1.5

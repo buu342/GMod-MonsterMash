@@ -91,11 +91,8 @@ local deathanims = {
     }
 }
 
-util.AddNetworkString("DoHayDecal")
 util.AddNetworkString("MMPlayerKilled")
 util.AddNetworkString("MMNPCKilled")
-util.AddNetworkString("CreateGorePropClientside")
-util.AddNetworkString("EmitGoreParticleClientside")
 
 function GM:PlayerDeathSound()
     return true
@@ -195,10 +192,10 @@ function GM:DoPlayerDeath(victim, attacker, dmginfo)
     self:SavePlayerStats(victim)
     
     // Change teams
-    if (GAMEMODE:InWackyRound()) then
-        if (GAMEMODE:WackyRoundData().mode == MODE_CONVERT) then
+    if (self:InWackyRound()) then
+        if (self:WackyRoundData().mode == MODE_CONVERT) then
             victim:SetTeam(TEAM_COOPOTHER)
-        elseif (GAMEMODE:WackyRoundData().allow_respawn == false) then
+        elseif (self:WackyRoundData().allow_respawn == false) then
             victim:SetTeam(TEAM_COOPDEAD)
         end
     end
@@ -265,7 +262,7 @@ function GM:DoDeathGore(victim, attacker, dmginfo)
     local inflictor = dmginfo:GetInflictor()
 
     // Do the death animation/ragdoll
-   if (victim:HasKillFlag(KILL_ACID) || WeaponHasKillFlag(inflictor, KILL_MELTER) || victim:HasKillFlag(KILL_MELTER)) then
+    if (victim:HasKillFlag(KILL_ACID) || WeaponHasKillFlag(inflictor, KILL_MELTER) || victim:HasKillFlag(KILL_MELTER)) then
         self:GoreMelter(victim, dmginfo)
     elseif (victim:HasKillFlag(KILL_BLEED)) then
         self:GoreNormalDeath(victim, dmginfo)
@@ -333,6 +330,8 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
     local character = ply:GetCharacter()
     local spectateafter = true
     local ent = ents.Create("base_gmodentity")
+    local originalpos = ply:GetPos()
+    local originalang = ply:GetAngles()
     ent:SetPos(ply:GetPos())
     ent:SetAngles(Angle(0, ply:GetAngles().y, 0))
     ent:SetModel(ply:GetModel())
@@ -356,23 +355,19 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
     elseif (extra == "decapitate") then
         ent:SetBodygroup(GIBGROUP_HEAD, GIBGROUP_HEAD_OFF)
         ent:SetSequence(ent:LookupSequence(table.Random(deathanims["headshot"])))
-        if ply:GetCharacter().bloodtype == BLOODTYPE_NORMAL then
-            self:GoreEmitParticleClient(ent, "bloodspray", "ValveBiped.Bip01_Spine4", nil, nil, 1)
-        end
         ent.RagdollTime = 1
+        self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, nil, ent, "head_splurt", ent.RagdollTime)
         spectateafter = false
         local head = self:GoreCreateGib(ply, character.gib_head, ply:GetPos(), ply:GetAngles(), nil, nil, false)
         SpectateEntity(ply, head)
     elseif (extra == "headexplode") then
         ent:SetBodygroup(GIBGROUP_HEAD, GIBGROUP_HEAD_OFF)
         ent:SetSequence(ent:LookupSequence(table.Random(deathanims["headshot"])))
-        if ply:GetCharacter().bloodtype == BLOODTYPE_NORMAL then
-            self:GoreEmitParticleClient(ent, "bloodspray", "ValveBiped.Bip01_Spine4", nil, nil, 1)
-        end
         ent.RagdollTime = 1
-        ent:EmitSound(ply:GetCharacter().gib_headsnd)
-        local bonemat = ent:GetBoneMatrix(ent:LookupBone("ValveBiped.Bip01_Head1"))
-        local head = self:GoreCreateGib(ply, character.gib_headbits, bonemat:GetTranslation(), ply:GetAngles()+Angle(0,90,0), nil, true, true)
+        self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, nil, ent, "head_splurt", ent.RagdollTime)
+        ply:EmitSound(ply:GetCharacter().gib_headsnd)
+        // local bonemat = ent:GetBoneMatrix(ent:LookupBone("ValveBiped.Bip01_Head1"))
+        local head = self:GoreCreateGib(ply, character.gib_headbits, originalpos/*bonemat:GetTranslation()*/, originalang+Angle(0,90,0), 100, true, true)
     elseif (extra == "skeletize") then
         ent:SetSequence(ent:LookupSequence("electrocution"))
         ent:SetMaterial("models/player/monstermash/gibs/shock")
@@ -380,7 +375,7 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
     elseif (extra == "fire") then
         ent:SetSequence(ent:LookupSequence(table.Random(deathanims["burn"])))
         ent:SetMaterial("models/player/monstermash/gibs/burn")
-        ent.RagdollTime = 1
+        ent.RagdollTime = 3
     elseif inflictor:GetClass() == "weapon_mm_pumpshotgun" || inflictor:GetClass() == "weapon_mm_coachgun" || inflictor:GetClass() == "weapon_mm_sawedoff" then
         local attackervec = dmginfo:GetAttacker():GetAngles():Forward()
         ent:SetSequence(ent:LookupSequence(deathanims["shotgun"][ply.killang]))
@@ -501,17 +496,13 @@ function GM:GoreBifurcate(ply, dmginfo, notop)
                 bone:SetAngles(boneang)
             end
         end
-        if ply:GetCharacter().bloodtype == BLOODTYPE_NORMAL then
-            self:GoreEmitParticleClient(rag, "bloodspray", 1, nil, Angle(-90,0,0), bloodemitragdolltime)
-        end
+        self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, Vector(0, 0, 1), rag, "1", bloodemitragdolltime)
         ent:Remove()
     end)
     ply:EmitSound("physics/flesh/flesh_bloody_break.wav")
     
     // Emit a blood effect
-    if ply:GetCharacter().bloodtype == BLOODTYPE_NORMAL then
-        self:GoreEmitParticleClient(ent, "bloodspray", 1, nil, Angle(-90,0,0), ent.RagdollTime)
-    end
+    self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, Vector(0, 0, 1), ent, "1", ent.RagdollTime)
     
     // Spectate the top half
     if (!notop) then
@@ -533,16 +524,8 @@ function GM:GoreExplode(ply, dmginfo)
         ent:SetBodygroup(GIBGROUP_HEAD, GIBGROUP_HEAD_OFF)
     end
     
-    // Spawn a gory particle effect
-    if ply:GetCharacter().bloodtype == BLOODTYPE_NORMAL then
-        self:GoreEmitParticleClient(ply, "gibs", nil, Vector(0, 0, 50), nil, 0)
-        for i=1, 4 do
-            self:GoreEmitParticleClient(ply, "mm_gorejar_explosion", nil, nil, nil, 0)
-        end
-    elseif ply:GetCharacter().bloodtype == BLOODTYPE_HAY then
-        self:GoreEmitParticleClient(ply, "gibs_scarecrow", nil, Vector(0, 0, 50), nil, 0)
-    end
-    
+    // Spawn a gory particle effect and spectate the head
+    self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_GIBPLOSION, ply:GetPos() + Vector(0, 0, 50))
     SpectateEntity(ply, head)
 end
 
@@ -559,7 +542,7 @@ function GM:GoreBlownTorso(ply, dmginfo)
     end
 
     // Spawn the torso chunks
-    self:GoreGibChunks(ply, dmginfo)
+    self:GoreGibChunks(ply, dmginfo, true)
 
     // Spawn the head and spectate it
     local bonemat = ply:GetBoneMatrix(ply:LookupBone("ValveBiped.Bip01_Head1"))
@@ -567,12 +550,18 @@ function GM:GoreBlownTorso(ply, dmginfo)
     SpectateEntity(ply, head)
 end
 
-function GM:GoreGibChunks(ply, dmginfo)
-    local ent = self:GoreCreateRagdoll(ply, ply:GetCharacter().gib_chunks, dmginfo:GetDamagePosition(), ply:GetAngles(), false, nil, true)
+function GM:GoreGibChunks(ply, dmginfo, blowntorso)
+    local gib = ply:GetCharacter().gib_chunks
+    local pos = dmginfo:GetDamagePosition()
+    if (blowntorso) then
+        gib = ply:GetCharacter().gib_torso
+        pos = ply:GetPos()
+    end
+    local ent = self:GoreCreateRagdoll(ply, gib, pos, ply:GetAngles(), false, nil, true)
     if (ply:GetCharacter().bloodtype == BLOODTYPE_NONE) then
-        ent:EmitSound("death/damage_bones.wav")
+        ply:EmitSound("death/damage_bones.wav")
     else
-        ent:EmitSound("death/damage_flesh.wav")
+        ply:EmitSound("death/damage_flesh.wav")
     end
     if ent:IsValid() then
         for i = 1, ent:GetPhysicsObjectCount() do
@@ -601,7 +590,7 @@ function GM:GoreMelter(ply, dmginfo)
     effectdata:SetStart(ppos+Vector(0, 0, -50)) 
     effectdata:SetOrigin(ppos+Vector(0, 0, -50))
     util.Effect("mm_melterkill", effectdata)
-    ent:EmitSound("weapons/melter/melted.wav", 90)
+    ply:EmitSound("weapons/melter/melted.wav", 90)
     local phys = ent:GetPhysicsObject()
     if (!IsValid(phys)) then 
         ent:Remove() return 

@@ -77,7 +77,7 @@ local optionslist = {
     { text = "Screen blood",                  command = "mm_screenblood" },
     { text = "End Round Scoreboard",          command = "mm_endroundboard" },
     { text = "Ye Olde Mode (experimental)",   command = "mm_oldtimeymode" },
-    //{ text = "Confetti blood",                command = "mm_confetti" },
+    { text = "Confetti blood",                command = "mm_confetti" },
 }
 
 local musicbuttons = {

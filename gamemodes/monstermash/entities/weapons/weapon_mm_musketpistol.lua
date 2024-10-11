@@ -45,6 +45,7 @@ SWEP.Primary.ChargeDamage = 75
 SWEP.Primary.ChargeCrouch = false
 SWEP.Primary.SpecialCooldown = 15
 SWEP.Primary.SpecialCooldownGivesAmmo = true
+SWEP.Primary.Magnetism     = false
 
 SWEP.Secondary.ChargeCancel = true
 
