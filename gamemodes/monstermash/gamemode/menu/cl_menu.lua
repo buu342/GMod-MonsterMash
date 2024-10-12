@@ -1,4 +1,4 @@
-local version = "Version 2.10 Release" 
+local version = "Version 2.11 Release" 
 local panic_button = false
 local wratio = ScrW()/1600
 local hratio = ScrH()/900

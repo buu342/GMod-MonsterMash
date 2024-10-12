@@ -205,7 +205,7 @@ function EmitBloodEffect(bloodtype, effecttype, position, normal, entity, attach
             start = finalpos - normal*100, 
             endpos = finalpos + normal*100,
             filter = entity, 
-            mask = MASK_SOLID_BRUSHONLY
+            mask = MASK_SOLID
         }
         local trace = util.TraceHull(traceinfo)
         local todecal1 = trace.HitPos + trace.HitNormal

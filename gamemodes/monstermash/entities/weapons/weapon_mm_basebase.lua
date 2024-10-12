@@ -390,9 +390,8 @@ function SWEP:HandleHop()
             elseif self.Owner:MissingRightLeg() then
                 vPoint = self.Owner:GetBonePosition(self.Owner:LookupBone("ValveBiped.Bip01_R_Thigh"))
             end
-            
             GAMEMODE:EmitBlood(self.Owner:GetCharacter(), BLOODEFFECT_IMPACT, vPoint)
-            GAMEMODE:EmitBlood(self.Owner:GetCharacter(), BLOODEFFECT_DECAL, self.Owner:GetPos(), self.Owner:GetPos() + Vector(0, 0, -256), self.Owner)
+            GAMEMODE:EmitBlood(self.Owner:GetCharacter(), BLOODEFFECT_DECAL, self.Owner:GetPos(), Vector(0,0,-1), self.Owner)
         end
         
         local vec = Vector(self.Owner:GetAimVector().x, self.Owner:GetAimVector().y, 0):GetNormalized()
