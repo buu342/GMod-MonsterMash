@@ -28,6 +28,7 @@ CreateClientConVar("mm_screenblood", "1", true, false)
 CreateClientConVar("mm_confetti", "0", true, false)
 CreateClientConVar("mm_endroundboard", "1", true, false)
 CreateClientConVar("mm_oldtimeymode", "0", true, false)
+CreateClientConVar("mm_aimassist", "1", true, false)
 
 function GM:PlayerConnect(name, ip)
     chat.AddText(Color(255,105,0), name .. " has joined the mash.")

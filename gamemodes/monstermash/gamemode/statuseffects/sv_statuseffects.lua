@@ -15,9 +15,7 @@ hook.Add("PlayerTick", "MM_GoreJarTrailThink", function(ply, mv)
         
         if (ply.lastBloodTrail < CurTime()) then
             ply.lastBloodTrail = CurTime()+time
-            local start = ply:GetPos()
-            local btr = util.TraceLine({start=start, endpos=(start + Vector(0,0,-256)), filter=ignore, mask=MASK_SOLID})
-            util.Decal("Blood", btr.HitPos+btr.HitNormal, btr.HitPos-btr.HitNormal, ply)
+            GAMEMODE:EmitBlood(BLOODTYPE_NORMAL, BLOODEFFECT_DECAL, ply:GetPos(), Vector(0, 0, -1), ply)
         end
     elseif ply.lastBloodTrail != 0 then
         ply.lastBloodTrail = 0

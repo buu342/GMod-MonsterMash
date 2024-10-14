@@ -114,6 +114,7 @@ function MM_Scoreboard:show()
 		
 		function PlayerBox:Paint(w, h)
 		
+            if (v == nil || IsValid(v)) then return end
 			local UserRank = v:GetUserGroup()
 			
 			if v == LocalPlayer() then

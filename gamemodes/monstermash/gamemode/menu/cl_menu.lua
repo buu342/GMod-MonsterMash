@@ -76,6 +76,7 @@ local optionslist = {
     { text = "Auto reload when empty",        command = "mm_autoreload" },
     { text = "Screen blood",                  command = "mm_screenblood" },
     { text = "End Round Scoreboard",          command = "mm_endroundboard" },
+    { text = "Aim Assist",                    command = "mm_aimassist" },
     { text = "Ye Olde Mode (experimental)",   command = "mm_oldtimeymode" },
     { text = "Confetti blood",                command = "mm_confetti" },
 }

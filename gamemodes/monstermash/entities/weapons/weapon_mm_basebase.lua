@@ -892,6 +892,7 @@ function SWEP:TranslateActivity(act)
 	end
     
     if (self.ActivityTranslate[ act ] != nil) then
+        if (self.Owner == nil || !IsValid(self.Owner)) then return end
         if self.Owner:MissingBothLegs() && (self.HoldTypeProne == "pistol" || self.HoldTypeProne == "revolver" || self.HoldType == "pistol" || self.HoldType == "revolver") then
             if act == ACT_MP_STAND_IDLE then                return ACT_DOD_PRONE_AIM_PISTOL end
             if act == ACT_MP_WALK then                      return ACT_DOD_PRONEWALK_IDLE_PISTOL end

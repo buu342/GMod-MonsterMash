@@ -833,12 +833,14 @@ function SWEP:MM_ShootSpiral(mode)
 end
 
 function SWEP:AdjustMouseSensitivity()
+    if !GetConVar("mm_aimassist"):GetBool() then return end
     local maxrange
     if self.Primary.UseRange then
         maxrange = math.min(768, self.Primary.Range)
     else
         maxrange = 768
     end
+    if (self.Owner == nil || !IsValid(self.Owner)) then return end
     
     local ent = self.Owner:GetEyeTrace().Entity
     if ent != nil && ent:IsPlayer() && ent:GetPos():Distance(self.Owner:GetPos()) < maxrange && !ent:HasStatusEffect(STATUS_INVISIBLE) then

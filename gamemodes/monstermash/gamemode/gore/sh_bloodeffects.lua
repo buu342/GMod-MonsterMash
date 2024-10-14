@@ -108,8 +108,12 @@ GM.BloodMats = {
 }
 
 function GM:EmitBlood(character, effecttype, position, normal, entity, attachment, duration)
+    bloodtype = character
+    if (istable(character)) then
+        bloodtype = character.bloodtype
+    end
     if (effecttype == BLOODEFFECT_TRAIL) then
-        local effecttbl = GAMEMODE.BloodEffects[character.bloodtype]
+        local effecttbl = GAMEMODE.BloodEffects[bloodtype]
         if SERVER then
             util.SpriteTrail(entity, 0, effecttbl.trail.col, false, 7, 1, 1, 1/(15+1)*0.5, effecttbl.trail.mat)
         end
@@ -117,9 +121,9 @@ function GM:EmitBlood(character, effecttype, position, normal, entity, attachmen
     end
 
     if (CLIENT) then
-        self:EmitBlood_Client(character.bloodtype, effecttype, position or Vector(0, 0, 0), normal or Vector(0, 0, 1), entity, attachment or "", duration or 0)
+        self:EmitBlood_Client(bloodtype, effecttype, position or Vector(0, 0, 0), normal or Vector(0, 0, 1), entity, attachment or "", duration or 0)
         net.Start("MM_EmitBloodEffect", true)
-            net.WriteInt(character.bloodtype, 32)
+            net.WriteInt(bloodtype, 32)
             net.WriteInt(effecttype, 32)
             net.WriteVector(position or Vector(0, 0, 1))
             net.WriteVector(normal or Vector(0, 0, 1))
@@ -129,7 +133,7 @@ function GM:EmitBlood(character, effecttype, position, normal, entity, attachmen
         net.SendToServer()
     else
         timer.Simple(0, function()
-            EmitBlood_Server(nil, character.bloodtype, effecttype, position or Vector(0, 0, 0), normal or Vector(0, 0, 1), entity, attachment or "", duration or 0)
+            EmitBlood_Server(nil, bloodtype, effecttype, position or Vector(0, 0, 0), normal or Vector(0, 0, 1), entity, attachment or "", duration or 0)
         end)
     end
 end
@@ -157,11 +161,16 @@ function EmitBloodEffect(bloodtype, effecttype, position, normal, entity, attach
         if (attachment == "ent") then
             finalpos = entity:GetPos()
         elseif (string.StartsWith(attachment, "ValveBiped")) then
-            local bonepos, boneang = entity:GetBonePosition(entity:LookupBone(attachment))
+            local attach = entity:LookupBone(attachment)
+            if (attach == nil) then return end
+            local bonepos, boneang = entity:GetBonePosition(attach)
             finalpos = bonepos + position
             finalnorm = boneang:Forward()
         else
-            local attach = entity:GetAttachment(entity:LookupAttachment(attachment))
+            local attach = entity:LookupAttachment(attachment)
+            if (attach <= 0) then return end
+            attach = entity:GetAttachment(attach)
+            if (attach == nil) then return end
             finalpos = attach.Pos + position
             finalnorm = attach.Ang:Forward()
         end
