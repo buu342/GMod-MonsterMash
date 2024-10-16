@@ -96,7 +96,7 @@ function GM:EntityTakeDamage(victim, dmginfo)
     
     // Concuss the player
     if bit.band(dmginfo:GetDamageCustom(), STATUS_CONCUSS) == STATUS_CONCUSS then
-        victim:SetStatusEffect(STATUS_CONCUSS, dmginfo, 8)
+        victim:SetStatusEffect(STATUS_CONCUSS, dmginfo, 5)
 		victim:SetDSP(35, false)
         if dmginfo:GetAttacker():IsPlayer() && dmginfo:GetAttacker() != victim then
             dmginfo:GetAttacker():GiveTreat("concuss")

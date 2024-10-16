@@ -108,6 +108,7 @@ GM.BloodMats = {
 }
 
 function GM:EmitBlood(character, effecttype, position, normal, entity, attachment, duration)
+
     bloodtype = character
     if (istable(character)) then
         bloodtype = character.bloodtype
@@ -139,9 +140,15 @@ function GM:EmitBlood(character, effecttype, position, normal, entity, attachmen
 end
 
 function GM:EmitBlood_Client(bloodtype, effecttype, position, normal, entity, attachment, duration)
+    position = position or Vector(0, 0, 0)
+    normal = normal or Vector(0, 0, 1)
+    entity = entity or nil
+    attachment = attachment or ""
+    if (entity != nil && !IsValid(entity)) then return end
     EmitBloodEffect(bloodtype, effecttype, position, normal, entity, attachment)
     if (duration != nil && duration > 0) then
         timer.Create("EmitEffect_"..tostring(entity), 0.1, duration/0.1, function()
+            if (entity != nil && !IsValid(entity)) then return end
             EmitBloodEffect(bloodtype, effecttype, position, normal, entity, attachment)
         end)
     end
@@ -168,11 +175,15 @@ function EmitBloodEffect(bloodtype, effecttype, position, normal, entity, attach
             finalnorm = boneang:Forward()
         else
             local attach = entity:LookupAttachment(attachment)
-            if (attach <= 0) then return end
+            if (attach == nil) then return end
             attach = entity:GetAttachment(attach)
             if (attach == nil) then return end
             finalpos = attach.Pos + position
-            finalnorm = attach.Ang:Forward()
+            if (attachment == "blood_splurt") then
+                finalnorm = -attach.Ang:Right()
+            else
+                finalnorm = attach.Ang:Forward()
+            end
         end
     end
 

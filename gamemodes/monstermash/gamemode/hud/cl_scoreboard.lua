@@ -38,6 +38,10 @@ local admins = {
     "STEAM_0:1:30535198", // Cougar Magnum
 }
 
+local demonic = {
+    "STEAM_0:1:205329905", // Demonic
+}
+
 local aborter = {
     "STEAM_0:1:43032837", // Taserman
 }
@@ -114,7 +118,7 @@ function MM_Scoreboard:show()
 		
 		function PlayerBox:Paint(w, h)
 		
-            if (v == nil || IsValid(v)) then return end
+            if (v == nil || !IsValid(v)) then return end
 			local UserRank = v:GetUserGroup()
 			
 			if v == LocalPlayer() then
@@ -133,7 +137,9 @@ function MM_Scoreboard:show()
                 elseif table.HasValue(admins, v:SteamID()) then
                     NameColor = Color(0, 255, 255)
                 elseif table.HasValue(aborter, v:SteamID()) then
-                    NameColor = Color(0, 255, 0)                
+                    NameColor = Color(0, 255, 0)     
+                elseif table.HasValue(demonic, v:SteamID()) then
+                    NameColor = Color(214, 75, 226)                           
                 elseif table.HasValue(edgelord, v:SteamID()) then
                     NameColor = Color(255, 0, 255)
                 else
@@ -153,10 +159,12 @@ function MM_Scoreboard:show()
 					draw.DrawText("Developer", "MMScoreboardFont", width*0.6, 7*hratio, NameColor, TEXT_ALIGN_CENTER)
 				elseif table.HasValue(admins, v:SteamID()) then
                     draw.DrawText("Administrator", "MMScoreboardFont", width*0.6, 7*hratio, NameColor, TEXT_ALIGN_CENTER)
+                elseif table.HasValue(demonic, v:SteamID()) then
+                    draw.DrawText("Skibidi Demonic", "MMScoreboardFont", width*0.6, 7*hratio, NameColor, TEXT_ALIGN_CENTER) // Do not change this ever, even if demonic begs
 				elseif table.HasValue(aborter, v:SteamID()) then
-					draw.DrawText("Professional Aborter", "MMScoreboardFont", width*0.6, 7*hratio, Color(0, 255, 0), TEXT_ALIGN_CENTER)				
+					draw.DrawText("Professional Aborter", "MMScoreboardFont", width*0.6, 7*hratio, NameColor, TEXT_ALIGN_CENTER)
                 elseif table.HasValue(edgelord, v:SteamID()) then
-					draw.DrawText("Friendly Neighborhood Edgelord", "MMScoreboardFont", width*0.6, 7*hratio, Color(255, 0, 255), TEXT_ALIGN_CENTER)
+					draw.DrawText("Friendly Neighborhood Edgelord", "MMScoreboardFont", width*0.6, 7*hratio, NameColor, TEXT_ALIGN_CENTER)
 				else
 					draw.DrawText("User", "MMScoreboardFont", width*0.6, 7*hratio, NameColor, TEXT_ALIGN_CENTER)			
 				end

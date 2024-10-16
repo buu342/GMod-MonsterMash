@@ -400,6 +400,9 @@ end
 
 function SWEP:Holster(wep)
     BaseClass.Holster(self)
+    if (self.Owner != nil && IsValid(self.Owner)) then
+        self.Owner:SetFOV(0, 0)
+    end
     if (self:GetMMBase_BurstCount() != 0) then
         return false
     end

@@ -294,6 +294,9 @@ function GM:DoDeathGore(victim, attacker, dmginfo)
         self:GoreElectric(victim, dmginfo)
     elseif (!victim:MissingBothLegs() && WeaponHasKillFlag(inflictor, KILL_SCRIPTED)) then
         self:GoreScriptedDeath(victim, dmginfo)
+        if (victim:GetLastDamage().totalamount >= 30 && dmginfo:IsDamageType(DMG_BULLET)) then
+            self:GoreGibChunks(victim, dmginfo)
+        end
     elseif (WeaponHasKillFlag(inflictor, KILL_GRAVE)) then
         self:GoreGrave(victim, dmginfo)
     elseif (victim:HasStatusEffect(STATUS_ONFIRE)) then
@@ -496,13 +499,13 @@ function GM:GoreBifurcate(ply, dmginfo, notop)
                 bone:SetAngles(boneang)
             end
         end
-        self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, Vector(0, 0, 1), rag, "1", bloodemitragdolltime)
+        self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, Vector(0, 0, 1), rag, "blood_splurt", bloodemitragdolltime)
         ent:Remove()
     end)
     ply:EmitSound("physics/flesh/flesh_bloody_break.wav")
     
     // Emit a blood effect
-    self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, Vector(0, 0, 1), ent, "1", ent.RagdollTime)
+    self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, Vector(0, 0, 1), ent, "blood_splurt", ent.RagdollTime)
     
     // Spectate the top half
     if (!notop) then

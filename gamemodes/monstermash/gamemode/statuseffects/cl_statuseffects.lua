@@ -299,14 +299,15 @@ local blinking = 0
 local blinkTime = 0
 hook.Add("HUDPaint", "MM_HUD_Concuss", function()
     
+    local concusstime = 5
     if LocalPlayer():HasStatusEffect(STATUS_CONCUSS) then
         local time = LocalPlayer():GetStatusEffectTime(STATUS_CONCUSS)
         if time < 0.5 then
             blinking = 1-time*2
-        elseif time < 7 then
+        elseif time < (concusstime-1) then
             blinking = 0
         else
-            blinking = (time-7)
+            blinking = (time-(concusstime-1))
         end
     else
         if blinking > 0 then

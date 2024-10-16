@@ -37,14 +37,9 @@ SWEP.Primary.Spread        = 0.275
 SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic     = true
 SWEP.Primary.Recoil        = 1
-//SWEP.Primary.Delay         = 0.75
-SWEP.Primary.Delay         = 1.1
+SWEP.Primary.Delay         = 0.75
 SWEP.Primary.Chargeup      = false
-//SWEP.Primary.ChargeShrinksXHair = true
-//SWEP.Primary.ChargeDamage = 0
-//SWEP.Primary.ChargeTime   = 3
-//SWEP.Primary.HideCharge   = true
-//SWEP.Primary.MaxChargeToMagnetise = true
+SWEP.Primary.Magnetism     = false
 
 SWEP.Secondary.FireMode      = FIREMODE_BULLET
 SWEP.Secondary.Sound         = "weapons/repeater/fire.wav" 
