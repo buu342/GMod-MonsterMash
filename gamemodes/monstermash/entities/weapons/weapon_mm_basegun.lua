@@ -421,7 +421,7 @@ function SWEP:MM_ShootBullet(mode)
     if !self.Owner:IsOnGround() then return end
     if self:GetMMBase_ReloadTimer() != 0 || self:GetMMBase_ShootTimer() != 0 then return end
     if self:Clip1() == 0 || (mode.TakeAmmoAffectsShootability && self:Clip1()-mode.TakeAmmo < 0) then 
-        if (!GetConVar("mm_autoreload"):GetBool()) then
+        if (GetConVar("mm_autoreload") != nil && !GetConVar("mm_autoreload"):GetBool()) then
             self:EmitSound("weapons/shotgun/shotgun_empty.wav", 75, 100, 1, CHAN_ITEM) 
             self:SetMMBase_ShootTimer(CurTime() + 0.2)
         end
@@ -673,7 +673,7 @@ function SWEP:MM_ShootProjectile(mode)
     if self:GetMMBase_ReloadTimer() != 0 || self:GetMMBase_ShootTimer() != 0 then return end
     if (mode.SpecialCooldown != 0 && self.Owner:GetWeaponCooldown(self) > 0) then return end
     if (mode.TakeAmmo != 0 && self:Clip1() == 0) || (mode.TakeAmmoAffectsShootability && self:Clip1()-mode.TakeAmmo < 0) then 
-        if (!GetConVar("mm_autoreload"):GetBool()) then
+        if (GetConVar("mm_autoreload") != nil && !GetConVar("mm_autoreload"):GetBool()) then
             self:EmitSound("weapons/shotgun/shotgun_empty.wav", 75, 100, 1, CHAN_ITEM) 
             self:SetMMBase_ShootTimer(CurTime() + 0.2)
         end
@@ -836,7 +836,7 @@ function SWEP:MM_ShootSpiral(mode)
 end
 
 function SWEP:AdjustMouseSensitivity()
-    if !GetConVar("mm_aimassist"):GetBool() then return end
+    if GetConVar("mm_aimassist") == nil || !GetConVar("mm_aimassist"):GetBool() then return end
     local maxrange
     if self.Primary.UseRange then
         maxrange = math.min(768, self.Primary.Range)
@@ -1238,7 +1238,7 @@ function SWEP:FireAnimationEvent(pos, ang, event, options)
 end
 
 hook.Add("StartCommand", "MM_GunBaseAutoReload", function(ply, cmd)
-    if (CLIENT && ply:GetActiveWeapon() != nil && ply:GetActiveWeapon().Base == "weapon_mm_basegun" && GetConVar("mm_autoreload"):GetBool() && ply:GetActiveWeapon():Clip1() == 0) then
+    if (CLIENT && ply:GetActiveWeapon() != nil && ply:GetActiveWeapon().Base == "weapon_mm_basegun" && GetConVar("mm_autoreload") != nil && GetConVar("mm_autoreload"):GetBool() && ply:GetActiveWeapon():Clip1() == 0) then
         cmd:SetButtons(bit.bor(cmd:GetButtons(), IN_RELOAD))
     end
 end)  

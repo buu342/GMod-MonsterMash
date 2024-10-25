@@ -208,9 +208,10 @@ function KillTimer(name)
     end
 end
 
-function SpectateEntity(ply, ent)
+function SpectateEntityMM(ply, ent)
     if !IsValid(ply) || ply == nil then return end
     if !IsValid(ent) || ent == nil then return end
+    if (ply:Alive()) then return end
     ply:Spectate(OBS_MODE_CHASE)
     ply:SpectateEntity(ent)
     KillTimer("Cleanup_"..tostring(ent))
@@ -321,7 +322,7 @@ end
 
 function GM:GoreNormalDeath(ply, dmginfo)
     local ent = self:GoreCreateRagdoll(ply, nil, nil, nil, nil, nil, false, dmginfo:GetInflictor())
-    SpectateEntity(ply, ent)
+    SpectateEntityMM(ply, ent)
     if IsValid(ply:GetRagdollEntity()) then
         ply:GetRagdollEntity():Remove()
     end
@@ -341,7 +342,7 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
     ent:SetSkin(ply:GetSkin())
     ent:Spawn()
     ent:Activate()
-    SpectateEntity(ply, ent)
+    SpectateEntityMM(ply, ent)
     ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
     ent:SetSolid(SOLID_VPHYSICS)
     ent:PhysicsInit(SOLID_VPHYSICS)
@@ -362,7 +363,7 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
         self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_SPRAY, nil, nil, ent, "head_splurt", ent.RagdollTime)
         spectateafter = false
         local head = self:GoreCreateGib(ply, character.gib_head, ply:GetPos(), ply:GetAngles(), nil, nil, false)
-        SpectateEntity(ply, head)
+        SpectateEntityMM(ply, head)
     elseif (extra == "headexplode") then
         ent:SetBodygroup(GIBGROUP_HEAD, GIBGROUP_HEAD_OFF)
         ent:SetSequence(ent:LookupSequence(table.Random(deathanims["headshot"])))
@@ -427,7 +428,7 @@ function GM:GoreScriptedDeath(ply, dmginfo, extra)
             end
         end
         if (spectateafter) then
-            SpectateEntity(ply, rag)
+            SpectateEntityMM(ply, rag)
         end
         ent:Remove()
     end)
@@ -444,7 +445,7 @@ function GM:GoreGrave(ply, dmginfo)
     ent:SetModel("models/misc/gravestone.mdl")
     ent:Spawn()
     ent:SetCollisionGroup(COLLISION_GROUP_WEAPON or COLLISION_GROUP_DEBRIS_TRIGGER)
-    SpectateEntity(ply, ent)
+    SpectateEntityMM(ply, ent)
 
     // Remove the ragdoll entity
     if IsValid(ply:GetRagdollEntity()) then
@@ -509,7 +510,7 @@ function GM:GoreBifurcate(ply, dmginfo, notop)
     
     // Spectate the top half
     if (!notop) then
-        SpectateEntity(ply, top)
+        SpectateEntityMM(ply, top)
     end
 
     // Remove the ragdoll entity
@@ -529,7 +530,7 @@ function GM:GoreExplode(ply, dmginfo)
     
     // Spawn a gory particle effect and spectate the head
     self:EmitBlood(ply:GetCharacter(), BLOODEFFECT_GIBPLOSION, ply:GetPos() + Vector(0, 0, 50))
-    SpectateEntity(ply, head)
+    SpectateEntityMM(ply, head)
 end
 
 function GM:GoreBlownTorso(ply, dmginfo)
@@ -550,7 +551,7 @@ function GM:GoreBlownTorso(ply, dmginfo)
     // Spawn the head and spectate it
     local bonemat = ply:GetBoneMatrix(ply:LookupBone("ValveBiped.Bip01_Head1"))
     local head = self:GoreCreateGib(ply, ply:GetCharacter().gib_head, bonemat:GetTranslation(), ply:GetAngles()+Angle(0,90,0), nil, nil, false)
-    SpectateEntity(ply, head)
+    SpectateEntityMM(ply, head)
 end
 
 function GM:GoreGibChunks(ply, dmginfo, blowntorso)

@@ -132,9 +132,12 @@ function GM:GoreCreateRagdoll(ply, model, pos, ang, matchbones, extra, remove, w
         timer.Create("CorpseSmoke"..tostring(ent), 0.1, t/0.1, function()
             if (IsValid(ent)) then
                 local effectdata = EffectData()
-                local bonepos, boneang = ent:GetBonePosition(ent:LookupBone("ValveBiped.Bip01_Spine2"))
-                effectdata:SetOrigin(bonepos)
-                util.Effect("mm_corpse_smoke", effectdata)
+                local bone = ent:LookupBone("ValveBiped.Bip01_Spine2")
+                if (bone != nil) then
+                    local bonepos, boneang = ent:GetBonePosition(ent:LookupBone("ValveBiped.Bip01_Spine2"))
+                    effectdata:SetOrigin(bonepos)
+                    util.Effect("mm_corpse_smoke", effectdata)
+                end
             end
         end)
     end

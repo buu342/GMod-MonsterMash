@@ -713,6 +713,8 @@ if CLIENT then
 
     function SWEP:DrawHUD()
         
+        if (self.Owner == nil || !IsValid(self.Owner)) then return end
+
         // Ammo counter
         local ammo = self:Clip1()
         if ammo != -1 then 
