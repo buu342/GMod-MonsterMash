@@ -16,6 +16,7 @@ include("Tricks/sh_tricks.lua")
 include("Gore/sh_goreprops.lua")
 include("Gore/sh_bloodeffects.lua")
 
+CreateConVar("mm_teammode",            "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_orgasmicdeathsounds", "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_tasermanmode",        "0",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
 CreateConVar("mm_ludicrousgibs",       "1",   FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
@@ -42,6 +43,8 @@ team.SetUp(TEAM_MONST,     "Monsters",      Color(255, 140, 0, 255))
 team.SetUp(TEAM_COOPMONST, "COOP-Monsters", Color(0, 255, 0, 255))
 team.SetUp(TEAM_COOPOTHER, "COOP-Other",    Color(194, 120, 194, 255))
 team.SetUp(TEAM_COOPDEAD,  "COOP-Dead",     Color(0, 0, 0, 255))
+team.SetUp(TEAM_TDM1,      "TDM1",          Color(0, 255, 0, 255)) // Friend team is green, enemy team is orange
+team.SetUp(TEAM_TDM2,      "TDM2",          Color(0, 255, 0, 255))
 
 local count = 0
 local function cacheit(str)

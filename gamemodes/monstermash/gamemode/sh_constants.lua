@@ -6,6 +6,8 @@ TEAM_MONST     = 2
 TEAM_COOPMONST = 3
 TEAM_COOPOTHER = 4
 TEAM_COOPDEAD  = 5
+TEAM_TDM1      = 6
+TEAM_TDM2      = 7
 
 
 // Character blood types

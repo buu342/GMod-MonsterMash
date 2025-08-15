@@ -202,7 +202,7 @@ hook.Add("CreateMove", "MM_MeleeChargeCreateMove", function(cmd)
 end)
 
 function SWEP:AdjustMouseSensitivity()
-    if (self.Owner:IsMeleeCharging()) then
+    if (self.Owner != nil && IsValid(self.Owner) && self.Owner:IsMeleeCharging()) then
         return 0.2
     else
         return 1

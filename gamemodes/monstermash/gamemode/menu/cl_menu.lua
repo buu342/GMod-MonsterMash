@@ -34,9 +34,9 @@ local controls = {
 local updates = {
     "What's new this update?",
     "",
-    "Bug Fixes",
-    "QOL changes",
-    "General maintenance"
+    "Team support",
+    "",
+    ""
 }
 
 // Map credits
@@ -112,6 +112,7 @@ local adminoptions = {
     [20] = { text = "Wacky Taunts",                command = "mm_wackytaunts", checkbox = true },
     [21] = { text = "End of Monster Mash",         command = "mm_endofmonstermash", checkbox = true },
     [21] = { text = "Throwable Cooldown on Spawn", command = "mm_throwablespawncool", checkbox = true },
+    [21] = { text = "Enable team mode",            command = "mm_teammode", checkbox = true },
 }
 
 // Add the map's creator to the credits
@@ -973,7 +974,7 @@ function DrawAdmin(frame, w, h)
                 local TextEntry = vgui.Create("DTextEntry", frame)
                 TextEntry:SetPos(x+200*wratio, y)
                 TextEntry:SetFont("MMCharacterDesc")
-                TextEntry:SetSize(75*wratio, 20*hratio)
+                TextEntry:SetSize(75*wratio, 18*hratio)
                 TextEntry.Different = false
                 TextEntry.command = v.command
                 TextEntry:SetText(tostring(GetConVar(v.command):GetInt()))
@@ -992,7 +993,7 @@ function DrawAdmin(frame, w, h)
                 end
             end
         end
-        y = y+20*hratio
+        y = y+18*hratio
     end
     
     local AdminButton = vgui.Create("DButton", frame)

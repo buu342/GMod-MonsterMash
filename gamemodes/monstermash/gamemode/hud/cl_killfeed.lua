@@ -29,7 +29,12 @@ local SuicideMessages = {
     " went home to take a spooky dooky.",
     " was frightened by their own intelligence.",
     " did not return the slab, and suffered the curse.",
-    "  went to go kick alien butt in their robot.",
+    " went to go kick alien butt in their robot.",
+    " was eaten by actual cannibal Shia Lebeouf.",
+    " could not handle the potion seller's strongest potion.",
+    " died trying to prove that green dick is better than blue dick oh shit mothafuckaaaaaa~!",
+    " tasted the pain.",
+    " slumbered a cucumber.",
 }
 
 local function AddKillFeed(killtable)
